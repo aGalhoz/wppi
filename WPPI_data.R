@@ -30,17 +30,33 @@ names(GO.data) <- c("Gene_Symbol","GO_ID","Type_GO")
 save(GO.raw, file = "WPPI_Data/GO_raw.RData")
 save(GO.data, file = "WPPI_Data/GO_data.RData")
 # UniProt
-Uniprot.raw <- read.delim("./WPPI_Data/UniProt_Human.tab")
-UniProt.data <- Uniprot.raw %>% mutate(UniProt_ID = Entry) %>% 
-  dplyr::select(UniProt_ID) %>% distinct()
+Uniprot.raw <- OmnipathR::all_uniprots(
+    fields = c(
+        'id', 'entry name', 'reviewed', 'protein names',
+        'genes', 'organism', 'length'
+    )
+)
+UniProt.data <- Uniprot.raw %>% dplyr::mutate(UniProt_ID = Entry) %>%
+  dplyr::select(UniProt_ID) %>% dplyr::distinct()
 save(Uniprot.raw, file = "WPPI_Data/UniProt_raw.RData")
 save(UniProt.data, file = "WPPI_Data/UniProt_data.RData")
 # Omnipath
 # Omnipath.raw <- data.table::fread(Omnipath.link)
-Omnipath.raw <- import_omnipath_interactions()
+Omnipath.raw <- OmnipathR::import_post_translational_interactions(
+    entity_type = 'protein'
+)
+# I don't see why we need distinct here
+# but still, would be better to state the column names explicitely
+# e.g. distinct(across(c('source', 'target', 'is_directed')))
 Omnipath.data <- Omnipath.raw[,1:10] %>% distinct()
-Omnipath.human.data <- Omnipath.data %>% 
-  filter((source %in% UniProt.data$UniProt_ID) & (target %in% UniProt.data$UniProt_ID)) 
+
+# this shouldn't be necessary
+Omnipath.human.data <- Omnipath.data %>%
+  filter(
+      source %in% UniProt.data$UniProt_ID &
+      target %in% UniProt.data$UniProt_ID
+    )
+
 save(Omnipath.raw, file = "WPPI_Data/Omnipath_raw.RData")
 save(Omnipath.data, file = "WPPI_Data/Omnipath_data.RData")
 save(Omnipath.human.data, file = "WPPI_Data/Omnipath_human_data.RData")
