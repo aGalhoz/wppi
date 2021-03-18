@@ -29,6 +29,7 @@ Depends:
     R(>= 4.0)
 Imports:
     utils,
+    methods,
     plyr,
     dplyr,
     data.table,
@@ -42,4 +43,7 @@ Imports:
     tidyr,
     purrr,
     reshape2
+Suggests:
+    knitr,
+    testthat
 RoxygenNote: 7.1.1
