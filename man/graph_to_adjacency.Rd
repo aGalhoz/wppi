@@ -7,11 +7,15 @@
 graph_to_adjacency(graph_op)
 }
 \arguments{
-\item{graph_op}{???}
+\item{graph_op}{Igraph graph object.}
 }
 \value{
-???
+Matrix: the adjacency matrix of the graph.
 }
 \description{
 Convert network graph into adjacency matrix
+}
+\examples{
+adj_matrix <- graph_to_adjacency(graph)
+
 }

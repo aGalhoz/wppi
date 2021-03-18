@@ -78,9 +78,12 @@ subgraph_op <- function(graph_op, gene_set, sub_level){
 
 #' Convert network graph into adjacency matrix
 #'
-#' @param graph_op ???
+#' @param graph_op Igraph graph object.
 #'
-#' @return ???
+#' @return Matrix: the adjacency matrix of the graph.
+#'
+#' @examples
+#' adj_matrix <- graph_to_adjacency(graph)
 #'
 #' @importFrom igraph as_adjacency_matrix
 #' @export
