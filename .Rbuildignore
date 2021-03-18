@@ -1,3 +1,4 @@
 ^omnipathr-log.*$
 ^vignettes/.*pdf$
 ^vignettes/.*html$
+^.*tar\.gz$
