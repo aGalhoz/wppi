@@ -11,6 +11,15 @@ score_candidate_genes_from_PPI(
   graph_order
 )
 }
+\arguments{
+\item{genes_interest}{???}
+
+\item{HPO_interest}{???}
+
+\item{percentage_output_genes}{???}
+
+\item{graph_order}{???}
+}
 \value{
 Data frame with protein-protein interactions of the genes of
      interest scored in the context of the ontology terms of interest.

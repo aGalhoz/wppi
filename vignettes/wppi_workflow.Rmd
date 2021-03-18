@@ -10,7 +10,7 @@ author:
 institute:
   - hcm: Helmholtz Centrum Munich
   - unihd: Institute for Computational Biomedicine, Heidelberg University
-package: WPPI
+package: wppi
 output:
   BiocStyle::html_document:
     number_sections: yes
@@ -43,7 +43,7 @@ Below we should make the comments text blocks and expand them a bit.
 ## PPI creation
 
 ```{r eval=FALSE}
-library(WPPI)
+library(wppi)
 # example gene set
 genes.interest <- c("ERCC8","AKT3","NOL3","TTK","GFI1B","CDC25A","TPX2","SHE")
 

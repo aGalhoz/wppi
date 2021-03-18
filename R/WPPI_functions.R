@@ -56,7 +56,7 @@ isgene_omnipath <- function(graph_op, gene_set, exist_bol){
 #'
 #' @return ???
 #'
-#' @importFrom igraph vertex_attr induced_subgraph V
+#' @importFrom igraph vertex_attr induced_subgraph V ego
 #' @export
 subgraph_op <- function(graph_op, gene_set, sub_level){
 
@@ -83,7 +83,11 @@ subgraph_op <- function(graph_op, gene_set, sub_level){
 #' @return Matrix: the adjacency matrix of the graph.
 #'
 #' @examples
+#' \donttest{
+#' interactions <- OmnipathR::import_omnipath_interactions()
+#' graph <- OmnipathR::interaction_graph(interactions)
 #' adj_matrix <- graph_to_adjacency(graph)
+#' }
 #'
 #' @importFrom igraph as_adjacency_matrix
 #' @export
@@ -105,6 +109,7 @@ graph_to_adjacency <- function(graph_op){
 #' @importFrom data.table data.table
 #' @importFrom igraph get.adjacency neighbors
 #' @importFrom utils count.fields
+#' @importFrom methods as
 #' @export
 common_neighbors <- function(graph_op){
 
@@ -269,7 +274,7 @@ random_walk <- function(weighted_adj_matrix, restart_prob, threshold){
 #'
 #' @importFrom igraph vertex_attr
 #' @importFrom magrittr %>%
-#' @importFrom dplyr arrange
+#' @importFrom dplyr arrange desc
 #' @export
 prioritization_genes <- function(
     graph_op,

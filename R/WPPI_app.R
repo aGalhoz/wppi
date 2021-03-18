@@ -3,13 +3,18 @@
 #' General function to run all auxiliar functions in WPPI_functions and
 #' Annot_functions
 #'
+#' @param genes_interest ???
+#' @param HPO_interest ???
+#' @param percentage_output_genes ???
+#' @param graph_order ???
+#'
+#' @return Data frame with protein-protein interactions of the genes of
+#'      interest scored in the context of the ontology terms of interest.
+#'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr filter
 #' @importFrom igraph vertex_attr E V
 #' @export
-#'
-#' @return Data frame with protein-protein interactions of the genes of
-#'      interest scored in the context of the ontology terms of interest.
 score_candidate_genes_from_PPI <- function(
     genes_interest,
     HPO_interest,

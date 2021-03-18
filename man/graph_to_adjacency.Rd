@@ -16,6 +16,10 @@ Matrix: the adjacency matrix of the graph.
 Convert network graph into adjacency matrix
 }
 \examples{
+\donttest{
+interactions <- OmnipathR::import_omnipath_interactions()
+graph <- OmnipathR::interaction_graph(interactions)
 adj_matrix <- graph_to_adjacency(graph)
+}
 
 }
