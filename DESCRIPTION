@@ -28,8 +28,21 @@ VignetteBuilder: knitr
 Depends:
     R(>= 4.0)
 Imports:
+    plyr,
     dplyr,
+    data.table,
     magrittr,
     igraph,
-    OmnipathR
+    OmnipathR,
+    RCurl,
+    readxl,
+    rtf,
+    stringr,
+    ggplot2,
+    tidyr,
+    purrr,
+    reshape2,
+    factoextra,
+    biomaRt,
+    RCy3
 RoxygenNote: 7.1.1
