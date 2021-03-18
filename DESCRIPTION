@@ -1,0 +1,35 @@
+Package: wppi
+Type: Package
+Title: Weighting protein interaction
+Version: 0.0.1
+Authors@R: c(
+    person(
+        given = "Ana",
+        family = "Galhoz",
+        role = c("cre", "aut"),
+        email = "ana.galhoz@helmholtz-muenchen.de",
+        comment = c(ORCID = "0000-0001-7402-5292")),
+    person(
+        given = "Denes",
+        family = "Turei",
+        role = "aut",
+        email = "turei.denes@gmail.com",
+        comment = c(ORCID = "0000-0002-7249-9379")))
+Description: Predicting functional relevance of protein-protein interactions
+    based on functional annotations such as Human Protein Ontology and Gene
+    Ontology.
+License: MIT + file LICENSE
+URL: https://saezlab.github.io/OmnipathR/
+BugReports: https://github.com/saezlab/OmnipathR/issues
+biocViews: GraphAndNetwork, Network, Pathways, Software, GeneSignaling,
+    SystemsBiology, Transcriptomics, Annotation
+Encoding: UTF-8
+VignetteBuilder: knitr
+Depends:
+    R(>= 4.0)
+Imports:
+    dplyr,
+    magrittr,
+    igraph,
+    OmnipathR
+RoxygenNote: 7.1.1
