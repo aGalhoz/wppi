@@ -3,7 +3,7 @@
 #' Aggregate annotation datasets
 #'
 #' @param data_annot ???
-#' @parma type_annot ???
+#' @param type_annot ???
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr group_by mutate ungroup
