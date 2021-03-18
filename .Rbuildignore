@@ -1,0 +1,3 @@
+^omnipathr-log.*$
+^vignettes/.*pdf$
+^vignettes/.*html$
