@@ -37,13 +37,9 @@ Imports:
     OmnipathR,
     RCurl,
     readxl,
-    rtf,
     stringr,
     ggplot2,
     tidyr,
     purrr,
-    reshape2,
-    factoextra,
-    biomaRt,
-    RCy3
+    reshape2
 RoxygenNote: 7.1.1
