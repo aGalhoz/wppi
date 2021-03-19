@@ -2,13 +2,13 @@
 title: "WPPI workflow"
 author:
   - name: Ana Galhoz
-    affiliation: hcm
+    affiliation: hmgu
     email: ana.galhoz@helmholtz-muenchen.de
     correspondance: true
   - name: Denes Turei
     affiliation: unihd
 institute:
-  - hcm: Helmholtz Centrum Munich
+  - hcm: Helmholtz Zentrum Muenchen
   - unihd: Institute for Computational Biomedicine, Heidelberg University
 package: wppi
 output:
