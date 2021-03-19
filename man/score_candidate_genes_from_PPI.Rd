@@ -5,10 +5,14 @@
 \title{Weight protein-protein interactions}
 \usage{
 score_candidate_genes_from_PPI(
-  genes_interest,
-  HPO_interest,
-  percentage_output_genes,
-  graph_order
+  genes_interest = NULL,
+  HPO_interest = NULL,
+  percentage_output_genes = NULL,
+  graph_order = NULL,
+  GO_annot = TRUE,
+  HPO_annot = TRUE,
+  restart_prob_rw = NULL,
+  threshold_rw = NULL
 )
 }
 \arguments{
