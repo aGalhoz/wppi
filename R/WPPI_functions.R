@@ -108,6 +108,7 @@ graph_to_adjacency <- function(graph_op) {
 #' @importFrom igraph get.adjacency neighbors
 #' @importFrom utils count.fields
 #' @importFrom methods as
+#' @importFrom Matrix .__C__dgTMatrix
 #' @export
 common_neighbors <- function(graph_op) {
   adj_matrix <- as(get.adjacency(graph_op), "dgTMatrix")
