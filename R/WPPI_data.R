@@ -1,77 +1,74 @@
-#' Compile data for WPPI
+#' Compile database knowledge for WPPI
 #'
-#' This I will largely rewrite, for now it's fine as it is, I just wanted to
-#' have the docstring for roxygen.
+#' Retrieves the database knowledge necessary for WPPI directly from the
+#' databases. The databases used here are the Human Phenotype Ontology (HPO,
+#' \url{https://hpo.jax.org/app/}), Gene Ontology (GO,
+#' \url{http://geneontology.org/}), OmniPath (\url{https://omnipathdb.org/})
+#' and UniProt (\url{https://uniprot.org/}). The downloads carried out by
+#' the OmnipathR package and data required by WPPI is extracted from each
+#' table.
+#'
+#' @param ... Passed to
+#'     \code{OmnipathR::import_post_translational_interactions}.
+#'
+#' @return A list of data frames (tibbles) with database knowledge from HPO,
+#'     GO, OmniPath and UniProt.
 #'
 #' @importFrom dplyr select distinct mutate filter
 #' @importFrom magrittr %>%
 #' @importFrom OmnipathR import_post_translational_interactions all_uniprots
-#' @importFrom data.table fread
+#' @importFrom OmnipathR hpo_download go_annot_download
+#' @importFrom rlang !!! exec
+#' @importFrom RCurl merge.list
 #' @export
-#'
-#' @return Returns `NULL`.
-wppi_data <- function(){
-    ### Data
-    # note: links updated on Feb 23 2021
+wppi_data <- function(...){
 
+    # NSE vs. R CMD check workaround
+    entrez_gene_id <- entrez_gene_symbol <- hpo_term_id <- hpo_term_name <-
+    db_object_symbol <- go_id <- aspect <- Entry <- NULL
+
+    ### Collect database data
     # HPO
-    HPO.link <- "https://ci.monarchinitiative.org/view/hpo/job/hpo.annotations/lastSuccessfulBuild/artifact/rare-diseases/util/annotation/genes_to_phenotype.txt"
+    hpo <-
+        OmnipathR::hpo_download() %>%
+        select(
+            Gene_ID = entrez_gene_id,
+            Gene_Symbol = entrez_gene_symbol,
+            HPO_ID = hpo_term_id,
+            HPO_Name = hpo_term_name
+        ) %>%
+        distinct()
 
     # GO
-    GO.link <- "http://geneontology.org/gene-associations/goa_human.gaf.gz"
+    go <-
+        OmnipathR::go_annot_download() %>%
+        select(
+            Gene_Symbol = db_object_symbol,
+            GO_ID = go_id,
+            Type_GO = aspect
+        )
 
-    # Omnipath
-    Omnipath.link <- "https://archive.omnipathdb.org/omnipath_webservice_annotations__recent.tsv"
-
-    ### Create directories
-    dir.create(file.path(getwd(), "WPPI_Data"), showWarnings = TRUE)
-    dir.create(file.path(getwd(), "WPPI_Plots"), showWarnings = TRUE)
-
-    ### Read and save data
-    # HPO
-    HPO.raw <- data.table::fread(HPO.link)
-    names(HPO.raw) <- c("Gene_ID","Gene_Symbol","HPO_ID","HPO_Name","Frequency_raw",
-                        "Frequency_HPO","Add_info","GD_source","DiseaseID_link")
-    HPO.data <- HPO.raw %>%
-    dplyr::select(Gene_ID,Gene_Symbol,HPO_ID,HPO_Name) %>% distinct()
-    save(HPO.raw, file = "WPPI_Data/HPO_raw.RData")
-    save(HPO.data, file = "WPPI_Data/HPO_data.RData")
-    # GO
-    GO.raw <- data.table::fread(GO.link)
-    GO.data <- GO.raw[,c(3,5,9)] %>% distinct()
-    names(GO.data) <- c("Gene_Symbol","GO_ID","Type_GO")
-    save(GO.raw, file = "WPPI_Data/GO_raw.RData")
-    save(GO.data, file = "WPPI_Data/GO_data.RData")
     # UniProt
-    Uniprot.raw <- OmnipathR::all_uniprots(
-        fields = c(
-            'id', 'entry name', 'reviewed', 'protein names',
-            'genes', 'organism', 'length'
-        )
-    )
-    UniProt.data <- Uniprot.raw %>% dplyr::mutate(UniProt_ID = Entry) %>%
-    dplyr::select(UniProt_ID) %>% dplyr::distinct()
-    save(Uniprot.raw, file = "WPPI_Data/UniProt_raw.RData")
-    save(UniProt.data, file = "WPPI_Data/UniProt_data.RData")
-    # Omnipath
-    # Omnipath.raw <- data.table::fread(Omnipath.link)
-    Omnipath.raw <- OmnipathR::import_post_translational_interactions(
-        entity_type = 'protein'
-    )
-    # I don't see why we need distinct here
-    # but still, would be better to state the column names explicitely
-    # e.g. distinct(across(c('source', 'target', 'is_directed')))
-    Omnipath.data <- Omnipath.raw[,1:10] %>% distinct()
+    uniprot <-
+        OmnipathR::all_uniprots() %>%
+        select(UniProt_ID = Entry) %>%
+        distinct()
 
-    # this shouldn't be necessary
-    Omnipath.human.data <- Omnipath.data %>%
-    filter(
-        source %in% UniProt.data$UniProt_ID &
-        target %in% UniProt.data$UniProt_ID
-        )
+    # OmniPath
+    omnipath_param <-
+        list(...) %>%
+        merge.list(list(entity_type = 'protein'))
 
-    save(Omnipath.raw, file = "WPPI_Data/Omnipath_raw.RData")
-    save(Omnipath.data, file = "WPPI_Data/Omnipath_data.RData")
-    save(Omnipath.human.data, file = "WPPI_Data/Omnipath_human_data.RData")
+    omnipath <-
+        OmnipathR::import_post_translational_interactions %>%
+        exec(!!!omnipath_param) %>%
+        select(seq(10))
+
+    list(
+        hpo = hpo,
+        go = go,
+        omnipath = omnipath,
+        uniprot = uniprot
+    )
 
 }

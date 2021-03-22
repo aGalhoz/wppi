@@ -2,14 +2,24 @@
 % Please edit documentation in R/WPPI_data.R
 \name{wppi_data}
 \alias{wppi_data}
-\title{Compile data for WPPI}
+\title{Compile database knowledge for WPPI}
 \usage{
-wppi_data()
+wppi_data(...)
+}
+\arguments{
+\item{...}{Passed to
+\code{OmnipathR::import_post_translational_interactions}.}
 }
 \value{
-Returns `NULL`.
+A list of data frames (tibbles) with database knowledge from HPO,
+    GO, OmniPath and UniProt.
 }
 \description{
-This I will largely rewrite, for now it's fine as it is, I just wanted to
-have the docstring for roxygen.
+Retrieves the database knowledge necessary for WPPI directly from the
+databases. The databases used here are the Human Phenotype Ontology (HPO,
+\url{https://hpo.jax.org/app/}), Gene Ontology (GO,
+\url{http://geneontology.org/}), OmniPath (\url{https://omnipathdb.org/})
+and UniProt (\url{https://uniprot.org/}). The downloads carried out by
+the OmnipathR package and data required by WPPI is extracted from each
+table.
 }
