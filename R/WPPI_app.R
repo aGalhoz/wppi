@@ -28,9 +28,6 @@ score_candidate_genes_from_PPI <- function(
     # import data object
     data_info <- wppi_data()
     
-    # graph object from PPI data
-    graph_op <- graph_from_op(op_data = data_info$omnipath)
-    
     if (is.null(genes_interest)) {
         stop('A vector of genes needs to be provided.')
     } else if(!is.vector(genes_interest)) {
@@ -52,6 +49,10 @@ score_candidate_genes_from_PPI <- function(
     } else if(graph_order == 0){
         stop('A graph order bigger than zero needs to be provided.')
     }
+    
+    # graph object from PPI data
+    graph_op <- graph_from_op(op_data = data_info$omnipath)
+    
     # build ith-order graph based on genes of interest
     sub_graph <- subgraph_op(graph_op = graph_op,
                              gene_set = genes_interest, 
