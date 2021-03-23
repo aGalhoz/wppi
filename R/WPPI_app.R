@@ -25,8 +25,11 @@ score_candidate_genes_from_PPI <- function(
     restart_prob_rw = NULL,
     threshold_rw = NULL
 ) {
+    # import data object
+    data_info <- wppi_data()
+    
     # graph object from PPI data
-    graph_op <- graph_from_op(op_data = Omnipath.human.data)
+    graph_op <- graph_from_op(op_data = data_info$omnipath)
     
     if (is.null(genes_interest)) {
         stop('A vector of genes needs to be provided.')
@@ -35,9 +38,9 @@ score_candidate_genes_from_PPI <- function(
     }
     
     if (!is.null(HPO_interest)) {
-        HPO_data <- HPO.data %>% filter(HPO_Name %in% HPO_interest)
+        HPO_data <- data_info$hpo %>% filter(HPO_Name %in% HPO_interest)
     } else {
-        HPO_data <- HPO.data
+        HPO_data <- data_info$hpo
         message('Using all HPO annotations available.')
     }
     if (is.null(percentage_output_genes)) {
@@ -46,6 +49,8 @@ score_candidate_genes_from_PPI <- function(
     if (is.null(graph_order)) {
         graph_order <- 1 # set as default to use the first order neighbors of the graph
         message("Using first order degree neighbors PPI network.")
+    } else if(graph_order == 0){
+        stop('A graph order bigger than zero needs to be provided.')
     }
     # build ith-order graph based on genes of interest
     sub_graph <- subgraph_op(graph_op = graph_op,
@@ -54,7 +59,7 @@ score_candidate_genes_from_PPI <- function(
     
     # subset GO info based on PPI
     if (GO_annot){
-        GO_data_sub <- filter_annot_with_network(data_annot = GO.data, 
+        GO_data_sub <- filter_annot_with_network(data_annot = data_info$go, 
                                                  graph_op = sub_graph)
         nr_genes_GO <- nr_genes(data_annot = GO_data_sub)
     } else{

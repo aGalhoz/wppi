@@ -116,24 +116,29 @@ common_neighbors <- function(graph_op) {
     source = adj_matrix@i + 1,
     get = adj_matrix@j + 1
   )
-  adj_matrix_table$neighbors <- apply(
-    adj_matrix_table,
-    1,
-    function(x) {
-      paste(
-        intersect(
-          neighbors(graph_op, x[1]),
-          neighbors(graph_op, x[2])
-        ),
-        collapse = ","
-      )
-    }
-  )
-  table_neighbors <- adj_matrix_table[!adj_matrix_table$neighbors == "", ]
-  table_neighbors$nr_neighbors <- count.fields(
-    textConnection(table_neighbors$neighbors),
-    sep = ","
-  )
+  if(nrow(adj_matrix_table)!=0){
+    adj_matrix_table$neighbors <- apply(
+      adj_matrix_table,
+      1,
+      function(x) {
+        paste(
+          intersect(
+            neighbors(graph_op, x[1]),
+            neighbors(graph_op, x[2])
+          ),
+          collapse = ","
+        )
+      }
+    )
+    table_neighbors <- adj_matrix_table[!adj_matrix_table$neighbors == "", ]
+    table_neighbors$nr_neighbors <- count.fields(
+      textConnection(table_neighbors$neighbors),
+      sep = ","
+    )
+  }
+  else{
+    table_neighbors <- adj_matrix_table
+  }
   
   return(table_neighbors)
 }
@@ -162,9 +167,11 @@ weighted_adj <- function(
   adj_data <- as.matrix(graph_to_adjacency(graph_op))
   matrix_neighbors <- matrix_GO <- matrix_HPO <- 0 * adj_data
   
-  for (i in seq(nrow(neighbors_data))) {
-    x <- neighbors_data[i, ]
-    matrix_neighbors[[x[[1]], x[[2]]]] <- x[[4]]
+  if(nrow(neighbors_data)!=0){
+    for (i in seq(nrow(neighbors_data))) {
+      x <- neighbors_data[i, ]
+      matrix_neighbors[[x[[1]], x[[2]]]] <- x[[4]]
+    }
   }
   
   if(is.null(GO_data)){
