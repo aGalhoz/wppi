@@ -7,6 +7,10 @@
 #' @param HPO_interest ???
 #' @param percentage_output_genes ???
 #' @param graph_order ???
+#' @param GO_annot 
+#' @param HPO_annot 
+#' @param restart_prob_rw 
+#' @param threshold_rw 
 #'
 #' @return Data frame with protein-protein interactions of the genes of
 #'      interest scored in the context of the ontology terms of interest.
