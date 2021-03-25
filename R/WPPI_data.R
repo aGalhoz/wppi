@@ -13,6 +13,16 @@
 #'
 #' @return A list of data frames (tibbles) with database knowledge from HPO,
 #'     GO, OmniPath and UniProt.
+#' 
+#' @examples 
+#' # Download all data
+#' data_wppi <- wppi_data()
+#' # Omnipath
+#' omnipath_data <- data_wppi$omnipath
+#' # HPO
+#' HPO_data <- data_wppi$hpo
+#' # GO
+#' GO_data <- data_wppi$go
 #'
 #' @importFrom dplyr select distinct mutate filter
 #' @importFrom magrittr %>%
