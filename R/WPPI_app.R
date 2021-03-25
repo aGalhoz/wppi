@@ -1,19 +1,61 @@
-#' Weight protein-protein interactions
+#'  Application of functional WPPI networks 
+#' 
+#' The wppi package is a functional inference of new disease specific genes 
+#' based on a given set of known disease-related genes and annotation Weighted 
+#' Protein-Protein Interactions (WPPI). The PPI networks are obtained using the 
+#' Omnipath (\url{https://omnipathdb.org/}) resource and functionality is 
+#' deduced using the Gene Ontology (GO, \url{http://geneontology.org/}) and 
+#' Human Phenotype Ontology (HPO, \url{https://hpo.jax.org/app/}) annotation 
+#' databases. To score the candidate genes, a Random Walk with Restart 
+#' algorithm is applied on the weighted network. 
 #'
-#' General function to run all auxiliar functions in WPPI_functions and
-#' Annot_functions
+#' @param genes_interest Character vector with known-disease specific genes 
+#' @param HPO_interest Character vector with Human Phenotype Ontology (HPO) 
+#' annotations of interest from which to construct the functionality (for a list 
+#' of available annotations call \code{\link{wppi_data}}). If not specified, all 
+#' the annotations available in the HPO database will be used. 
+#' @param percentage_output_genes Positive integer (range between 0 and 100) 
+#' specifying the percentage (%) of the total candidate genes in the network 
+#' returned in the output. If not specified, the score of all the candidate 
+#' genes is delivered. 
+#' @param graph_order Positive integer bigger than 0 which defines the x-order 
+#' neighbors of the given genes of interest. These new genes, also called
+#' candidate genes, together with the given genes of interest define the 
+#' Protein-Protein Interaction (PPI) network used in the analysis. If not 
+#' specified, is used the first-order neighbors. 
+#' @param GO_annot Boolean parameter declaring to use or not the Gene Ontology 
+#' (GO) annotation database to weight the PPI network. The default setting is to
+#' use it (GO_annot = TRUE).
+#' @param HPO_annot Boolean parameter declaring to use or not the Human 
+#' Phenotype Ontology (HPO) annotation database to weight the PPI network. The 
+#' default setting is to use it (HPO_annot = TRUE).
+#' @param restart_prob_rw Positive value between 0 and 1 defining the restart 
+#' probability parameter used in the Random Walk with Restart algorithm. If not 
+#' specified, 0.4 is the default value. 
+#' @param threshold_rw Positive value depicting the threshold parameter in the 
+#' Random Walk with Restart algorithm. When the error between probabilities is
+#' smaller than the threshold defined, the algorithm stops. If not specified, 
+#' 10^(-6) is the default value.
 #'
-#' @param genes_interest ???
-#' @param HPO_interest ???
-#' @param percentage_output_genes ???
-#' @param graph_order ???
-#' @param GO_annot 
-#' @param HPO_annot 
-#' @param restart_prob_rw 
-#' @param threshold_rw 
-#'
-#' @return Data frame with protein-protein interactions of the genes of
-#'      interest scored in the context of the ontology terms of interest.
+#' @return Data frame with the ranked candidate genes based on the functional
+#' score inferred from given ontology terms, PPI and Random Walk with Restart 
+#' parameters.
+#' 
+#' @examples 
+#' # example gene set
+#' genes.interest <-
+#'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+#' # example HPO annotations set
+#' HPO.interest <-
+#'     filter(wppi_data()$hpo, grepl("Diabetes", HPO_Name)) %>%
+#'     dplyr::select(HPO_Name) %>% unique() %>% dplyr::pull(HPO_Name)
+#' # Score 1st-order candidate genes
+#' new_genes_diabetes <-
+#'     score_candidate_genes_from_PPI(
+#'         genes_interest = genes.interest,
+#'         HPO_interest = HPO.interest,
+#'         percentage_output_genes = 10,
+#'         graph_order = 1)
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr filter
