@@ -7,8 +7,8 @@
 #' connection between proteins/genes and phenotype/disease. 
 #' 
 #' Aggregate information in the ontology datasets
-#' @param data_annot ???
-#' @param type_annot ???
+#' @param data_annot Data frame (tibble) 
+#' @param type_annot String 
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr group_by mutate ungroup
