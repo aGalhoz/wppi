@@ -1,11 +1,11 @@
-#'  Application of functional WPPI networks 
+#'  Application of functional WPPI networks using GO and HPO annotations
 #' 
 #' The wppi package is a functional inference of new disease specific genes 
 #' based on a given set of known disease-related genes and annotation Weighted 
 #' Protein-Protein Interactions (WPPI). The PPI networks are obtained using the 
 #' Omnipath (\url{https://omnipathdb.org/}) resource and functionality is 
 #' deduced using the Gene Ontology (GO, \url{http://geneontology.org/}) and 
-#' Human Phenotype Ontology (HPO, \url{https://hpo.jax.org/app/}) annotation 
+#' Human Phenotype Ontology (HPO, \url{https://hpo.jax.org/app/}) ontology 
 #' databases. To score the candidate genes, a Random Walk with Restart 
 #' algorithm is applied on the weighted network. 
 #'

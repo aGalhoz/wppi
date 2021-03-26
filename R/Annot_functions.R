@@ -1,7 +1,12 @@
-### Annotation datasets auxiliary functions
-
-#' Aggregate annotation datasets
-#'
+#' Treatment of biological ontology databases 
+#' 
+#' Ontology databases such as Gene Ontology (GO) 
+#' (GO, \url{http://geneontology.org/}) and Human Phenotype Ontology 
+#' (HPO, \url{https://hpo.jax.org/app/}) provide important genome and disease 
+#' related functional information of genes. These combined allow to build a 
+#' connection between proteins/genes and phenotype/disease. 
+#' 
+#' Aggregate information in the ontology datasets
 #' @param data_annot ???
 #' @param type_annot ???
 #'
