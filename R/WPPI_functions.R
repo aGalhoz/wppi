@@ -1,8 +1,20 @@
-#' Creation of igraph object from Omnipath dataset
+#' Practical functions to create igraph objects, weight Protein-Protein 
+#' Interaction (PPI) networks and prioritize genes in the wppi package
+#' 
+#' Creation of igraph object from PPI Omnipath database with information 
+#' regarding proteins and gene symbols.
 #'
-#' @param op_data ???
+#' @param op_data Data frame (tibble) of Omnipath PPI interactions from 
+#' wppi_data().
 #'
-#' @return ???
+#' @return Igraph PPI graph object with vertices defined by UniProt ID and Gene 
+#' Symbol, and edges based on interactions, for all connections in Omnipath.
+#' 
+#' @examples 
+#' # igraph PPI object
+#' graph_op <- graph_from_op(wppi_data()$omnipath)
+#' edges_op <- E(graph_op)
+#' vertices_op <- V(graph_op)
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select distinct
@@ -27,13 +39,21 @@ graph_from_op <- function(op_data) {
 }
 
 
-#' Check which genes are or not in Omnipath
+#' Check which genes of interest are or not in Omnipath.
 #'
-#' @param graph_op ???
-#' @param gene_set ???
-#' @param exist_bol ???
+#' @param graph_op Igraph object based on Omnipath PPI interactions from 
+#' \code{\link{graph_from_op}}).
+#' @param gene_set Character vector with known-disease specific genes from which
+#' is built the functional weighted PPI.
+#' @param exist_bol Boolean parameter declaring if the query is to check (TRUE) 
+#' or not (FALSE) which genes of interest are in Omnipath.
 #'
-#' @return ???
+#' @return Character vector with genes corresponding to the query. 
+#' 
+#' @examples 
+#' # genes mapped and not mapped in Omnipath 
+#' genes_mapped <- isgene_omnipath(graph_op,genes.interest,1)
+#' genes_notmapped <- isgene_omnipath(graph_op,genes.interest,0)
 #'
 #' @importFrom igraph vertex_attr
 #' @export
@@ -47,14 +67,25 @@ isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
 }
 
 
-#' Subgraph from Omnipath graph object and genes of interest
+#' Subgraph from Omnipath graph object and genes of interest for given x-order 
+#' degree neighbors.
 #'
-#' @param graph_op ???
-#' @param gene_set ???
-#' @param sub_level ???
+#' @param graph_op Igraph object based on Omnipath PPI interactions from 
+#' \code{\link{graph_from_op}}).
+#' @param gene_set Character vector with known-disease specific genes from which
+#' is built the functional weighted PPI.
+#' @param sub_level Positive integer bigger than 0 which defines the x-order 
+#' neighbors of the given genes of interest. If not specified, is used the 
+#' first-order neighbors. 
 #'
-#' @return ???
-#'
+#' @return Igraph graph object with PPI network of given genes of interest and 
+#' their x-order degree neighbors.
+#' 
+#' @examples 
+#' # Subgraphs of first and second order
+#' graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
+#' graph_op_1 <- subgraph_op(graph_op,genes.interest,2)
+#' 
 #' @importFrom igraph vertex_attr induced_subgraph V ego
 #' @export
 subgraph_op <- function(graph_op, gene_set, sub_level) {
@@ -76,18 +107,16 @@ subgraph_op <- function(graph_op, gene_set, sub_level) {
 }
 
 
-#' Convert network graph into adjacency matrix
+#' Convert network graph into adjacency matrix.
 #'
-#' @param graph_op Igraph graph object.
+#' @param graph_op Igraph object based on Omnipath PPI interactions from 
+#' \code{\link{graph_from_op}}).
 #'
-#' @return Matrix: the adjacency matrix of the graph.
+#' @return Adjacency matrix of the graph object.
 #'
 #' @examples
-#' \donttest{
-#' interactions <- OmnipathR::import_omnipath_interactions()
-#' graph <- OmnipathR::interaction_graph(interactions)
-#' adj_matrix <- graph_to_adjacency(graph)
-#' }
+#' # Adjacency Matrix
+#' adj_op_1 <- graph_to_adjacency(graph_op_1)
 #'
 #' @importFrom igraph as_adjacency_matrix
 #' @export

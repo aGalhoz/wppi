@@ -6,9 +6,12 @@
 #' related functional information of genes. These combined allow to build a 
 #' connection between proteins/genes and phenotype/disease. 
 #' 
-#' Aggregate information in the ontology datasets
-#' @param data_annot Data frame (tibble) 
-#' @param type_annot String 
+#' Aggregate information in the GO and HPO ontology datasets.
+#' @param data_annot Data frame (tibble) of GO or HPO datasets from wppi_data().
+#' @param type_annot String "GO" or "HPO" depending on the ontology used.
+#' 
+#' @return Data frame with gene symbols aggregated for each annotation for 
+#' GO/HPO databases.
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr group_by mutate ungroup
@@ -41,9 +44,11 @@ aggregate_annot <- function(data_annot, type_annot) {
 }
 
 
-#' Number of total genes in each dataset
+#' Number of total genes in each ontology database.
 #'
-#' @param data_annot ???
+#' @param data_annot Data frame (tibble) of GO or HPO datasets from wppi_data().
+#' 
+#' @return Number of total unique genes in each ontology database.
 #'
 #' @export
 nr_genes <- function(data_annot) {
@@ -51,10 +56,25 @@ nr_genes <- function(data_annot) {
 }
 
 
-#' Filter annotation datasets using network object
+#' Filter ontology datasets using PPI network object.
 #'
-#' @param data_annot ???
-#' @param graph_op ???
+#' @param data_annot Data frame (tibble) of GO or HPO datasets from wppi_data().
+#' @param graph_op igraph graph object obtained from built Omnipath PPI of genes
+#' of interest and x-degree neighbors. 
+#' 
+#' @return Data frame (tibble) of GO or HPO datasets filtered based on proteins 
+#' available in the igraph object.
+#' 
+#' @example 
+#' # Get GO database
+#' GO_data <- wppi_data()$go
+#' # Create igraph object based on genes of interest and first neighbors
+#' genes.interest <-
+#'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+#' graph_op <- graph_from_op(wppi_data()$omnipath)
+#' graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
+#' # Filter GO data
+#' GO_data_filter <- filter_annot_with_network(GO_data,graph_op_1)
 #'
 #' @importFrom igraph vertex_attr
 #' @importFrom magrittr %>%
@@ -70,12 +90,23 @@ filter_annot_with_network <- function(data_annot, graph_op) {
 }
 
 
-#' Functional similarity between two genes in annotation database
+#' Functional similarity between two genes in ontology database (GO or HPO). For
+#' each pair of interacting proteins in the PPI graph network, is quantified the
+#' shared annotations between them using the Fisher's combined probability test
+#' (\url{https://doi.org/10.1007/978-1-4612-4380-9_6}). This is based on the 
+#' number of genes annotated in each shared ontology term and the total amount 
+#' of unique genes available in the ontology database. 
 #'
-#' @param data_aggregated ???
-#' @param nr_genes ???
-#' @param gene_i ???
-#' @param gene_j ???
+#' @param data_aggregated Data frame with gene symbols aggregated by annotation 
+#' for GO/HPO databases.
+#' @param nr_genes Integer value with number of total unique genes in ontology 
+#' database.
+#' @param gene_i String with the gene symbol in the row of the adjacency matrix.
+#' @param gene_j String with the gene symbol in the column of the adjacency 
+#' matrix.
+#' 
+#' @return Integer value with GO/HPO functional similarity between given pair of 
+#' proteins. 
 #'
 #' @export
 functional_annot <- function(data_aggregated, nr_genes, gene_i, gene_j) {
