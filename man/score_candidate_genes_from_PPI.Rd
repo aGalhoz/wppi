@@ -2,7 +2,7 @@
 % Please edit documentation in R/WPPI_app.R
 \name{score_candidate_genes_from_PPI}
 \alias{score_candidate_genes_from_PPI}
-\title{Application of functional WPPI networks using GO and HPO annotations.}
+\title{Application of WPPI networks using GO and HPO annotations.}
 \usage{
 score_candidate_genes_from_PPI(
   genes_interest = NULL,

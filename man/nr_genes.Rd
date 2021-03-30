@@ -7,7 +7,8 @@
 nr_genes(data_annot)
 }
 \arguments{
-\item{data_annot}{Data frame (tibble) of GO or HPO datasets from wppi_data().}
+\item{data_annot}{Data frame (tibble) of GO or HPO datasets from 
+\code{\link{wppi_data}}.}
 }
 \value{
 Number of total unique genes in each ontology database.

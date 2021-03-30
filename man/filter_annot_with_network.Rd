@@ -7,9 +7,10 @@
 filter_annot_with_network(data_annot, graph_op)
 }
 \arguments{
-\item{data_annot}{Data frame (tibble) of GO or HPO datasets from wppi_data().}
+\item{data_annot}{Data frame (tibble) of GO or HPO datasets from
+\code{\link{wppi_data}}.}
 
-\item{graph_op}{igraph graph object obtained from built Omnipath PPI of genes
+\item{graph_op}{Igraph graph object obtained from built Omnipath PPI of genes
 of interest and x-degree neighbors.}
 }
 \value{

@@ -9,7 +9,7 @@ subgraph_op(graph_op, gene_set, sub_level)
 }
 \arguments{
 \item{graph_op}{Igraph object based on Omnipath PPI interactions from 
-\code{\link{graph_from_op}}).}
+\code{\link{graph_from_op}}.}
 
 \item{gene_set}{Character vector with known-disease specific genes from which
 is built the functional weighted PPI.}

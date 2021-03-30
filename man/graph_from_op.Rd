@@ -20,7 +20,6 @@ Creation of igraph object from PPI Omnipath database with information
 regarding proteins and gene symbols.
 }
 \examples{
-# igraph PPI object
 graph_op <- graph_from_op(wppi_data()$omnipath)
 edges_op <- E(graph_op)
 vertices_op <- V(graph_op)

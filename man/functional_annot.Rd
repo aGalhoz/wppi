@@ -2,12 +2,7 @@
 % Please edit documentation in R/Annot_functions.R
 \name{functional_annot}
 \alias{functional_annot}
-\title{Functional similarity between two genes in ontology database (GO or HPO). For
-each pair of interacting proteins in the PPI graph network, is quantified the
-shared annotations between them using the Fisher's combined probability test
-(\url{https://doi.org/10.1007/978-1-4612-4380-9_6}). This is based on the 
-number of genes annotated in each shared ontology term and the total amount 
-of unique genes available in the ontology database.}
+\title{Functional similarity score based on ontology.}
 \usage{
 functional_annot(data_aggregated, nr_genes, gene_i, gene_j)
 }

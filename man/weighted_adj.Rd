@@ -12,7 +12,7 @@ weighted_adj(graph_op, neighbors_data, GO_data, HPO_data, nr_GO, nr_HPO)
 }
 \arguments{
 \item{graph_op}{Igraph object based on Omnipath PPI interactions from 
-\code{\link{graph_from_op}}).}
+\code{\link{graph_from_op}}.}
 
 \item{neighbors_data}{Data table output from \code{\link{functional_annot}}.}
 

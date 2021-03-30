@@ -8,7 +8,7 @@ graph_to_adjacency(graph_op)
 }
 \arguments{
 \item{graph_op}{Igraph object based on Omnipath PPI interactions from 
-\code{\link{graph_from_op}}).}
+\code{\link{graph_from_op}}.}
 }
 \value{
 Adjacency matrix of the graph object.
@@ -17,7 +17,6 @@ Adjacency matrix of the graph object.
 Convert network graph into adjacency matrix.
 }
 \examples{
-# Adjacency Matrix
 graph_op <- graph_from_op(wppi_data()$omnipath)
 adj_op <- graph_to_adjacency(graph_op)
 
