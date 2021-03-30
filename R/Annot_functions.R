@@ -65,7 +65,7 @@ nr_genes <- function(data_annot) {
 #' @return Data frame (tibble) of GO or HPO datasets filtered based on proteins 
 #' available in the igraph object.
 #' 
-#' @example 
+#' @examples 
 #' # Get GO database
 #' GO_data <- wppi_data()$go
 #' # Create igraph object based on genes of interest and first neighbors
