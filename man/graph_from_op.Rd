@@ -2,16 +2,27 @@
 % Please edit documentation in R/WPPI_functions.R
 \name{graph_from_op}
 \alias{graph_from_op}
-\title{Creation of igraph object from Omnipath dataset}
+\title{Practical functions to create igraph objects, weight Protein-Protein 
+Interaction (PPI) networks and prioritize genes in the wppi package.}
 \usage{
 graph_from_op(op_data)
 }
 \arguments{
-\item{op_data}{???}
+\item{op_data}{Data frame (tibble) of Omnipath PPI interactions from 
+wppi_data().}
 }
 \value{
-???
+Igraph PPI graph object with vertices defined by UniProt ID and Gene 
+Symbol, and edges based on interactions, for all connections in Omnipath.
 }
 \description{
-Creation of igraph object from Omnipath dataset
+Creation of igraph object from PPI Omnipath database with information 
+regarding proteins and gene symbols.
+}
+\examples{
+# igraph PPI object
+graph_op <- graph_from_op(wppi_data()$omnipath)
+edges_op <- E(graph_op)
+vertices_op <- V(graph_op)
+
 }

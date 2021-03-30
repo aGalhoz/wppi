@@ -2,15 +2,26 @@
 % Please edit documentation in R/Annot_functions.R
 \name{aggregate_annot}
 \alias{aggregate_annot}
-\title{Aggregate annotation datasets}
+\title{Treatment of biological ontology databases}
 \usage{
 aggregate_annot(data_annot, type_annot)
 }
 \arguments{
-\item{data_annot}{???}
+\item{data_annot}{Data frame (tibble) of GO or HPO datasets from wppi_data().}
 
-\item{type_annot}{???}
+\item{type_annot}{String "GO" or "HPO" depending on the ontology used.}
+}
+\value{
+Data frame with gene symbols aggregated for each annotation for 
+GO/HPO databases.
 }
 \description{
-Aggregate annotation datasets
+Ontology databases such as Gene Ontology (GO) 
+(GO, \url{http://geneontology.org/}) and Human Phenotype Ontology 
+(HPO, \url{https://hpo.jax.org/app/}) provide important genome and disease 
+related functional information of genes. These combined allow to build a 
+connection between proteins/genes and phenotype/disease.
+}
+\details{
+Aggregate information in the GO and HPO ontology datasets.
 }

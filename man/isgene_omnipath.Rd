@@ -2,20 +2,32 @@
 % Please edit documentation in R/WPPI_functions.R
 \name{isgene_omnipath}
 \alias{isgene_omnipath}
-\title{Check which genes are or not in Omnipath}
+\title{Check which genes of interest are or not in Omnipath.}
 \usage{
 isgene_omnipath(graph_op, gene_set, exist_bol)
 }
 \arguments{
-\item{graph_op}{???}
+\item{graph_op}{Igraph object based on Omnipath PPI interactions from 
+\code{\link{graph_from_op}}).}
 
-\item{gene_set}{???}
+\item{gene_set}{Character vector with known-disease specific genes from which
+is built the functional weighted PPI.}
 
-\item{exist_bol}{???}
+\item{exist_bol}{Boolean parameter declaring if the query is to check (TRUE) 
+or not (FALSE) which genes of interest are in Omnipath.}
 }
 \value{
-???
+Character vector with genes corresponding to the query.
 }
 \description{
-Check which genes are or not in Omnipath
+Check which genes of interest are or not in Omnipath.
+}
+\examples{
+# genes mapped and not mapped in Omnipath 
+graph_op <- graph_from_op(wppi_data()$omnipath)
+genes.interest <-
+    c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+genes_mapped <- isgene_omnipath(graph_op,genes.interest,1)
+genes_notmapped <- isgene_omnipath(graph_op,genes.interest,0)
+
 }

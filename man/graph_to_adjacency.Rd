@@ -2,24 +2,23 @@
 % Please edit documentation in R/WPPI_functions.R
 \name{graph_to_adjacency}
 \alias{graph_to_adjacency}
-\title{Convert network graph into adjacency matrix}
+\title{Convert network graph into adjacency matrix.}
 \usage{
 graph_to_adjacency(graph_op)
 }
 \arguments{
-\item{graph_op}{Igraph graph object.}
+\item{graph_op}{Igraph object based on Omnipath PPI interactions from 
+\code{\link{graph_from_op}}).}
 }
 \value{
-Matrix: the adjacency matrix of the graph.
+Adjacency matrix of the graph object.
 }
 \description{
-Convert network graph into adjacency matrix
+Convert network graph into adjacency matrix.
 }
 \examples{
-\donttest{
-interactions <- OmnipathR::import_omnipath_interactions()
-graph <- OmnipathR::interaction_graph(interactions)
-adj_matrix <- graph_to_adjacency(graph)
-}
+# Adjacency Matrix
+graph_op <- graph_from_op(wppi_data()$omnipath)
+adj_op <- graph_to_adjacency(graph_op)
 
 }

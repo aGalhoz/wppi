@@ -2,20 +2,36 @@
 % Please edit documentation in R/WPPI_functions.R
 \name{subgraph_op}
 \alias{subgraph_op}
-\title{Subgraph from Omnipath graph object and genes of interest}
+\title{Subgraph from Omnipath graph object and genes of interest for given x-order 
+degree neighbors.}
 \usage{
 subgraph_op(graph_op, gene_set, sub_level)
 }
 \arguments{
-\item{graph_op}{???}
+\item{graph_op}{Igraph object based on Omnipath PPI interactions from 
+\code{\link{graph_from_op}}).}
 
-\item{gene_set}{???}
+\item{gene_set}{Character vector with known-disease specific genes from which
+is built the functional weighted PPI.}
 
-\item{sub_level}{???}
+\item{sub_level}{Positive integer bigger than 0 which defines the x-order 
+neighbors of the given genes of interest. If not specified, is used the 
+first-order neighbors.}
 }
 \value{
-???
+Igraph graph object with PPI network of given genes of interest and 
+their x-order degree neighbors.
 }
 \description{
-Subgraph from Omnipath graph object and genes of interest
+Subgraph from Omnipath graph object and genes of interest for given x-order 
+degree neighbors.
+}
+\examples{
+# Subgraphs of first and second order
+graph_op <- graph_from_op(wppi_data()$omnipath)
+genes.interest <-
+    c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
+graph_op_1 <- subgraph_op(graph_op,genes.interest,2)
+
 }

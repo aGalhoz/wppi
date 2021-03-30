@@ -2,26 +2,40 @@
 % Please edit documentation in R/WPPI_functions.R
 \name{weighted_adj}
 \alias{weighted_adj}
-\title{Convert adjacency to weighted adjacency}
+\title{Convert adjacency to weighted adjacency using network topology information 
+(shared neighbors between connected nodes via \code{\link{common_neighbors}}) 
+integrated with genome and phenotype factors from GO and HPO 
+annotation terms (functionality computed by \code{\link{functional_annot}}). 
+At the end, the weighted adjacency matrix is normalized by column.}
 \usage{
 weighted_adj(graph_op, neighbors_data, GO_data, HPO_data, nr_GO, nr_HPO)
 }
 \arguments{
-\item{graph_op}{???}
+\item{graph_op}{Igraph object based on Omnipath PPI interactions from 
+\code{\link{graph_from_op}}).}
 
-\item{neighbors_data}{???}
+\item{neighbors_data}{Data table output from \code{\link{functional_annot}}.}
 
-\item{GO_data}{???}
+\item{GO_data}{Data frame with GO annotations filtered and aggregated for 
+the proteins/genes available in the graph object.}
 
-\item{HPO_data}{???}
+\item{HPO_data}{Data frame with HPO annotations filtered and aggregated for 
+the proteins/genes available in the graph object.}
 
-\item{nr_GO}{???}
+\item{nr_GO}{Integer value with number of total unique genes in the GO 
+database.}
 
-\item{nr_HPO}{???}
+\item{nr_HPO}{Integer value with number of total unique genes in the HPO 
+database.}
 }
 \value{
-???
+Weighted adjacency matrix based on network topology and functional 
+similarity between interacting proteins/genes based on ontology databases.
 }
 \description{
-Convert adjacency to weighted adjacency
+Convert adjacency to weighted adjacency using network topology information 
+(shared neighbors between connected nodes via \code{\link{common_neighbors}}) 
+integrated with genome and phenotype factors from GO and HPO 
+annotation terms (functionality computed by \code{\link{functional_annot}}). 
+At the end, the weighted adjacency matrix is normalized by column.
 }

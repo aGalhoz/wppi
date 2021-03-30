@@ -2,16 +2,28 @@
 % Please edit documentation in R/WPPI_functions.R
 \name{common_neighbors}
 \alias{common_neighbors}
-\title{Shared neighbors between proteins}
+\title{Shared neighbors between proteins. For each interacting pair of proteins in 
+the PPI network, store the nodes of the common neighbors.}
 \usage{
 common_neighbors(graph_op)
 }
 \arguments{
-\item{graph_op}{???}
+\item{graph_op}{Igraph object based on Omnipath PPI interactions from 
+\code{\link{graph_from_op}}).}
 }
 \value{
-???
+Data table with all connected pairs of source and target PPI network 
+nodes, and respective common neighbor nodes.
+
+ @examples 
+ # Shared neighbors in igraph object
+ graph_op <- graph_from_op(wppi_data()$omnipath)
+genes.interest <-
+    c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+ graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
+ shared_neighbors <- common_neighbors(graph_op_1)
 }
 \description{
-Shared neighbors between proteins
+Shared neighbors between proteins. For each interacting pair of proteins in 
+the PPI network, store the nodes of the common neighbors.
 }

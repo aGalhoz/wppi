@@ -2,15 +2,32 @@
 % Please edit documentation in R/Annot_functions.R
 \name{filter_annot_with_network}
 \alias{filter_annot_with_network}
-\title{Filter annotation datasets using network object}
+\title{Filter ontology datasets using PPI network object.}
 \usage{
 filter_annot_with_network(data_annot, graph_op)
 }
 \arguments{
-\item{data_annot}{???}
+\item{data_annot}{Data frame (tibble) of GO or HPO datasets from wppi_data().}
 
-\item{graph_op}{???}
+\item{graph_op}{igraph graph object obtained from built Omnipath PPI of genes
+of interest and x-degree neighbors.}
+}
+\value{
+Data frame (tibble) of GO or HPO datasets filtered based on proteins 
+available in the igraph object.
 }
 \description{
-Filter annotation datasets using network object
+Filter ontology datasets using PPI network object.
+}
+\examples{
+# Get GO database
+GO_data <- wppi_data()$go
+# Create igraph object based on genes of interest and first neighbors
+genes.interest <-
+    c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+graph_op <- graph_from_op(wppi_data()$omnipath)
+graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
+# Filter GO data
+GO_data_filter <- filter_annot_with_network(GO_data,graph_op_1)
+
 }

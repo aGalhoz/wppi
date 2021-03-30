@@ -2,7 +2,11 @@
 % Please edit documentation in R/WPPI_functions.R
 \name{prioritization_genes}
 \alias{prioritization_genes}
-\title{Prioritization of genes based on probabilities}
+\title{Prioritization of candidate genes based on correlation with the given seed 
+genes of interest. For this, the source proteins/genes (i.e. starting nodes) 
+are reduced to the candidate genes and the target proteins/genes (i.e. end 
+nodes) to the given genes of interest. Each candidate gene score is defined 
+by the sum of its correlations towards the known disease-related genes.}
 \usage{
 prioritization_genes(
   graph_op,
@@ -12,17 +16,28 @@ prioritization_genes(
 )
 }
 \arguments{
-\item{graph_op}{???}
+\item{graph_op}{Igraph object based on Omnipath PPI interactions from 
+\code{\link{graph_from_op}}).}
 
-\item{prob_matrix}{???}
+\item{prob_matrix}{Matrix object with correlations/probabilities of the all 
+nodes in the network from \code{\link{random_walk}}.}
 
-\item{genes_interest}{???}
+\item{genes_interest}{Character vector with known-disease specific genes.}
 
-\item{percentage_genes_ranked}{???}
+\item{percentage_genes_ranked}{Positive integer (range between 0 and 100) 
+specifying the percentage (%) of the total candidate genes in the network 
+returned in the output. If not specified, the score of all the candidate 
+genes is delivered.}
 }
 \value{
-???
+Data frame with the ranked candidate genes based on the functional
+score inferred from given ontology terms, PPI and Random Walk with Restart 
+parameters.
 }
 \description{
-Prioritization of genes based on probabilities
+Prioritization of candidate genes based on correlation with the given seed 
+genes of interest. For this, the source proteins/genes (i.e. starting nodes) 
+are reduced to the candidate genes and the target proteins/genes (i.e. end 
+nodes) to the given genes of interest. Each candidate gene score is defined 
+by the sum of its correlations towards the known disease-related genes.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/WPPI_data.R
 \name{wppi_data}
 \alias{wppi_data}
-\title{Compile database knowledge for WPPI}
+\title{Compile database knowledge for wppi}
 \usage{
 wppi_data(...)
 }
@@ -20,6 +20,17 @@ databases. The databases used here are the Human Phenotype Ontology (HPO,
 \url{https://hpo.jax.org/app/}), Gene Ontology (GO,
 \url{http://geneontology.org/}), OmniPath (\url{https://omnipathdb.org/})
 and UniProt (\url{https://uniprot.org/}). The downloads carried out by
-the OmnipathR package and data required by WPPI is extracted from each
+the OmnipathR package and data required by wppi is extracted from each
 table.
+}
+\examples{
+# Download all data
+data_wppi <- wppi_data()
+# Omnipath
+omnipath_data <- data_wppi$omnipath
+# HPO
+HPO_data <- data_wppi$hpo
+# GO
+GO_data <- data_wppi$go
+
 }
