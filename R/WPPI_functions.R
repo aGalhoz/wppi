@@ -11,7 +11,6 @@
 #' Symbol, and edges based on interactions, for all connections in Omnipath.
 #' 
 #' @examples 
-#' # igraph PPI object
 #' graph_op <- graph_from_op(wppi_data()$omnipath)
 #' edges_op <- E(graph_op)
 #' vertices_op <- V(graph_op)
@@ -42,7 +41,7 @@ graph_from_op <- function(op_data) {
 #' Check which genes of interest are or not in Omnipath.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from 
-#' \code{\link{graph_from_op}}).
+#' \code{\link{graph_from_op}}.
 #' @param gene_set Character vector with known-disease specific genes from which
 #' is built the functional weighted PPI.
 #' @param exist_bol Boolean parameter declaring if the query is to check (TRUE) 
@@ -74,7 +73,7 @@ isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
 #' degree neighbors.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from 
-#' \code{\link{graph_from_op}}).
+#' \code{\link{graph_from_op}}.
 #' @param gene_set Character vector with known-disease specific genes from which
 #' is built the functional weighted PPI.
 #' @param sub_level Positive integer bigger than 0 which defines the x-order 
@@ -116,12 +115,11 @@ subgraph_op <- function(graph_op, gene_set, sub_level) {
 #' Convert network graph into adjacency matrix.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from 
-#' \code{\link{graph_from_op}}).
+#' \code{\link{graph_from_op}}.
 #'
 #' @return Adjacency matrix of the graph object.
 #'
 #' @examples
-#' # Adjacency Matrix
 #' graph_op <- graph_from_op(wppi_data()$omnipath)
 #' adj_op <- graph_to_adjacency(graph_op)
 #'
@@ -138,18 +136,17 @@ graph_to_adjacency <- function(graph_op) {
 #' the PPI network, store the nodes of the common neighbors. 
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from 
-#' \code{\link{graph_from_op}}).
+#' \code{\link{graph_from_op}}.
 #'
 #' @return Data table with all connected pairs of source and target PPI network 
 #' nodes, and respective common neighbor nodes.
 #' 
-#'  @examples 
-#'  # Shared neighbors in igraph object
-#'  graph_op <- graph_from_op(wppi_data()$omnipath)
+#' @examples 
+#' graph_op <- graph_from_op(wppi_data()$omnipath)
 #' genes.interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
-#'  graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
-#'  shared_neighbors <- common_neighbors(graph_op_1) 
+#' graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
+#' shared_neighbors <- common_neighbors(graph_op_1) 
 #'
 #' @importFrom data.table data.table
 #' @importFrom igraph get.adjacency neighbors
@@ -198,7 +195,7 @@ common_neighbors <- function(graph_op) {
 #' At the end, the weighted adjacency matrix is normalized by column.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from 
-#' \code{\link{graph_from_op}}).
+#' \code{\link{graph_from_op}}.
 #' @param neighbors_data Data table output from \code{\link{functional_annot}}.
 #' @param GO_data Data frame with GO annotations filtered and aggregated for 
 #' the proteins/genes available in the graph object.
@@ -284,7 +281,9 @@ weighted_adj <- function(
 }
 
 
-#' Random Walk with Restart (RWR) on the normalized weighted adjacency matrix. 
+#' Random Walk with Restart (RWR) algorithm
+#' 
+#' RWR on the normalized weighted adjacency matrix. 
 #' The RWR algorithm estimates each protein/gene relevance based on the 
 #' functional similarity of genes and disease/phenotype, and the topology of the 
 #' network. This similarity score between nodes measures how closely two 
@@ -343,14 +342,16 @@ random_walk <- function(weighted_adj_matrix, restart_prob, threshold) {
 }
 
 
-#' Prioritization of candidate genes based on correlation with the given seed 
+#' Candidate genes prioritization.
+#' 
+#' Rank of candidate genes based on correlation with the given seed 
 #' genes of interest. For this, the source proteins/genes (i.e. starting nodes) 
 #' are reduced to the candidate genes and the target proteins/genes (i.e. end 
 #' nodes) to the given genes of interest. Each candidate gene score is defined 
 #' by the sum of its correlations towards the known disease-related genes. 
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from 
-#' \code{\link{graph_from_op}}).
+#' \code{\link{graph_from_op}}.
 #' @param prob_matrix Matrix object with correlations/probabilities of the all 
 #' nodes in the network from \code{\link{random_walk}}.
 #' @param genes_interest Character vector with known-disease specific genes.

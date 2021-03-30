@@ -1,4 +1,4 @@
-#' Treatment of biological ontology databases 
+#' Treatment of biological ontology databases. 
 #' 
 #' Ontology databases such as Gene Ontology (GO) 
 #' (GO, \url{http://geneontology.org/}) and Human Phenotype Ontology 
@@ -7,7 +7,8 @@
 #' connection between proteins/genes and phenotype/disease. 
 #' 
 #' Aggregate information in the GO and HPO ontology datasets.
-#' @param data_annot Data frame (tibble) of GO or HPO datasets from wppi_data().
+#' @param data_annot Data frame (tibble) of GO or HPO datasets from 
+#' \code{\link{wppi_data}}.
 #' @param type_annot String "GO" or "HPO" depending on the ontology used.
 #' 
 #' @return Data frame with gene symbols aggregated for each annotation for 
@@ -46,7 +47,8 @@ aggregate_annot <- function(data_annot, type_annot) {
 
 #' Number of total genes in each ontology database.
 #'
-#' @param data_annot Data frame (tibble) of GO or HPO datasets from wppi_data().
+#' @param data_annot Data frame (tibble) of GO or HPO datasets from 
+#' \code{\link{wppi_data}}.
 #' 
 #' @return Number of total unique genes in each ontology database.
 #'
@@ -58,8 +60,9 @@ nr_genes <- function(data_annot) {
 
 #' Filter ontology datasets using PPI network object.
 #'
-#' @param data_annot Data frame (tibble) of GO or HPO datasets from wppi_data().
-#' @param graph_op igraph graph object obtained from built Omnipath PPI of genes
+#' @param data_annot Data frame (tibble) of GO or HPO datasets from
+#'  \code{\link{wppi_data}}.
+#' @param graph_op Igraph graph object obtained from built Omnipath PPI of genes
 #' of interest and x-degree neighbors. 
 #' 
 #' @return Data frame (tibble) of GO or HPO datasets filtered based on proteins 
@@ -90,6 +93,8 @@ filter_annot_with_network <- function(data_annot, graph_op) {
 }
 
 
+#' Functional similarity score based on ontology.
+#' 
 #' Functional similarity between two genes in ontology database (GO or HPO). For
 #' each pair of interacting proteins in the PPI graph network, is quantified the
 #' shared annotations between them using the Fisher's combined probability test

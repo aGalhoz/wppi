@@ -1,4 +1,4 @@
-#'  Application of functional WPPI networks using GO and HPO annotations.
+#'  Application of WPPI networks using GO and HPO annotations.
 #' 
 #' The wppi package is a functional prioritization of new disease specific genes 
 #' based on a given set of known disease-related genes and annotation Weighted 
