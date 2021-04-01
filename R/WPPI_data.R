@@ -13,8 +13,8 @@
 #'
 #' @return A list of data frames (tibbles) with database knowledge from HPO,
 #'     GO, OmniPath and UniProt.
-#' 
-#' @examples 
+#'
+#' @examples
 #' # Download all data
 #' data_wppi <- wppi_data()
 #' # Omnipath
