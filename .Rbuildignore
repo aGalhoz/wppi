@@ -2,4 +2,6 @@
 ^vignettes/.*pdf$
 ^vignettes/.*html$
 ^.*tar\.gz$
-^.*\.Rcheck.*$
+^.*Rcheck.*$
+^vignettes/.*pdf$
+^vignettes/.*html$
