@@ -1,18 +1,18 @@
-#' Treatment of biological ontology databases.
+#' Processing of biological ontology databases
 #'
 #' Ontology databases such as Gene Ontology (GO)
 #' (GO, \url{http://geneontology.org/}) and Human Phenotype Ontology
 #' (HPO, \url{https://hpo.jax.org/app/}) provide important genome and disease
 #' related functional information of genes. These combined allow to build a
-#' connection between proteins/genes and phenotype/disease.
+#' connection between proteins/genes and phenotype/disease. This function
+#' aggregates information in the GO and HPO ontology datasets.
 #'
-#' Aggregate information in the GO and HPO ontology datasets.
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
-#' \code{\link{wppi_data}}.
+#'     \code{\link{wppi_data}}.
 #' @param type_annot String "GO" or "HPO" depending on the ontology used.
 #'
 #' @return Data frame with gene symbols aggregated for each annotation for
-#' GO/HPO databases.
+#'     GO/HPO databases.
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr group_by mutate ungroup
@@ -45,10 +45,10 @@ aggregate_annot <- function(data_annot, type_annot) {
 }
 
 
-#' Number of total genes in each ontology database.
+#' Number of total genes in an ontology database
 #'
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
-#' \code{\link{wppi_data}}.
+#'     \code{\link{wppi_data}}.
 #'
 #' @return Number of total unique genes in each ontology database.
 #'
@@ -58,15 +58,15 @@ nr_genes <- function(data_annot) {
 }
 
 
-#' Filter ontology datasets using PPI network object.
+#' Filter ontology datasets using PPI network object
 #'
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
-#'  \code{\link{wppi_data}}.
-#' @param graph_op Igraph graph object obtained from built Omnipath PPI of genes
-#' of interest and x-degree neighbors.
+#'     \code{\link{wppi_data}}.
+#' @param graph_op Igraph graph object obtained from built Omnipath PPI of
+#'     genes of interest and x-degree neighbors.
 #'
-#' @return Data frame (tibble) of GO or HPO datasets filtered based on proteins
-#' available in the igraph object.
+#' @return Data frame (tibble) of GO or HPO datasets filtered based on
+#'     proteins available in the igraph object.
 #'
 #' @examples
 #' # Get GO database
@@ -93,25 +93,26 @@ filter_annot_with_network <- function(data_annot, graph_op) {
 }
 
 
-#' Functional similarity score based on ontology.
+#' Functional similarity score based on ontology
 #'
-#' Functional similarity between two genes in ontology database (GO or HPO). For
-#' each pair of interacting proteins in the PPI graph network, is quantified the
-#' shared annotations between them using the Fisher's combined probability test
-#' (\url{https://doi.org/10.1007/978-1-4612-4380-9_6}). This is based on the
-#' number of genes annotated in each shared ontology term and the total amount
-#' of unique genes available in the ontology database.
+#' Functional similarity between two genes in ontology database (GO or HPO).
+#' For each pair of interacting proteins in the PPI graph network, is
+#' quantified the shared annotations between them using the Fisher's combined
+#' probability test (\url{https://doi.org/10.1007/978-1-4612-4380-9_6}). This
+#' is based on the number of genes annotated in each shared ontology term and
+#' the total amount of unique genes available in the ontology database.
 #'
-#' @param data_aggregated Data frame with gene symbols aggregated by annotation
-#' for GO/HPO databases.
+#' @param data_aggregated Data frame with gene symbols aggregated by
+#'     annotation for GO/HPO databases.
 #' @param nr_genes Integer value with number of total unique genes in ontology
-#' database.
-#' @param gene_i String with the gene symbol in the row of the adjacency matrix.
+#'     database.
+#' @param gene_i String with the gene symbol in the row of the adjacency
+#'     matrix.
 #' @param gene_j String with the gene symbol in the column of the adjacency
-#' matrix.
+#'     matrix.
 #'
-#' @return Integer value with GO/HPO functional similarity between given pair of
-#' proteins.
+#' @return Integer value with GO/HPO functional similarity between given pair
+#'     of proteins.
 #'
 #' @export
 functional_annot <- function(data_aggregated, nr_genes, gene_i, gene_j) {

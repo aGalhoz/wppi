@@ -1,14 +1,18 @@
-#' Practical functions to create igraph objects, weight Protein-Protein
-#' Interaction (PPI) networks and prioritize genes in the wppi package.
+# Practical functions to create igraph objects, weight Protein-Protein
+# Interaction (PPI) networks and prioritize genes in the wppi package.
+
+
+#' Igraph object from OmniPath network
 #'
-#' Creation of igraph object from PPI Omnipath database with information
+#' Creates of igraph object from PPI Omnipath database with information
 #' regarding proteins and gene symbols.
 #'
 #' @param op_data Data frame (tibble) of Omnipath PPI interactions from
 #' wppi_data().
 #'
-#' @return Igraph PPI graph object with vertices defined by UniProt ID and Gene
-#' Symbol, and edges based on interactions, for all connections in Omnipath.
+#' @return Igraph PPI graph object with vertices defined by UniProt ID and
+#'     Gene Symbol, and edges based on interactions, for all connections in
+#'     Omnipath.
 #'
 #' @examples
 #' graph_op <- graph_from_op(wppi_data()$omnipath)
@@ -20,32 +24,33 @@
 #' @importFrom igraph graph_from_data_frame
 #' @export
 graph_from_op <- function(op_data) {
-  edges <- op_data %>%
-    dplyr::select(-c(source_genesymbol, target_genesymbol))
-  node_source <- op_data %>%
-    dplyr::select(source, source_genesymbol)
-  node_target <- op_data %>%
-    dplyr::select(target, target_genesymbol)
-  names(node_source) <- c("UniProt_ID", "Gene_Symbol")
-  names(node_target) <- c("UniProt_ID", "Gene_Symbol")
-  nodes <- rbind(node_source, node_target) %>%
-    distinct()
-  op_graph <- graph_from_data_frame(
-    d = edges,
-    vertices = nodes
-  )
-  return(op_graph)
+    edges <- op_data %>%
+        dplyr::select(-c(source_genesymbol, target_genesymbol))
+    node_source <- op_data %>%
+        dplyr::select(source, source_genesymbol)
+    node_target <- op_data %>%
+        dplyr::select(target, target_genesymbol)
+    names(node_source) <- c("UniProt_ID", "Gene_Symbol")
+    names(node_target) <- c("UniProt_ID", "Gene_Symbol")
+    nodes <- rbind(node_source, node_target) %>%
+        distinct()
+    op_graph <- graph_from_data_frame(
+        d = edges,
+        vertices = nodes
+    )
+    return(op_graph)
 }
 
 
-#' Check which genes of interest are or not in Omnipath.
+#' Check which genes of interest are or not in Omnipath
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
-#' \code{\link{graph_from_op}}.
-#' @param gene_set Character vector with known-disease specific genes from which
-#' is built the functional weighted PPI.
-#' @param exist_bol Boolean parameter declaring if the query is to check (TRUE)
-#' or not (FALSE) which genes of interest are in Omnipath.
+#'     \code{\link{graph_from_op}}.
+#' @param gene_set Character vector with known-disease specific genes from
+#'     which is built the functional weighted PPI.
+#' @param exist_bol Boolean parameter declaring if the query is to check
+#'     (\code{TRUE}) or not (\code{FALSE}) which genes of interest are in
+#'     OmniPath.
 #'
 #' @return Character vector with genes corresponding to the query.
 #'
@@ -60,12 +65,12 @@ graph_from_op <- function(op_data) {
 #' @importFrom igraph vertex_attr
 #' @export
 isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
-  idx_vertex_bool <- gene_set %in% vertex_attr(graph_op)$Gene_Symbol
-  if (exist_bol) {
-    gene_set[idx_vertex_bool]
-  } else {
-    gene_set[!idx_vertex_bool]
-  }
+    idx_vertex_bool <- gene_set %in% vertex_attr(graph_op)$Gene_Symbol
+    if (exist_bol) {
+        gene_set[idx_vertex_bool]
+    } else {
+        gene_set[!idx_vertex_bool]
+    }
 }
 
 
@@ -73,15 +78,15 @@ isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
 #' degree neighbors.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
-#' \code{\link{graph_from_op}}.
-#' @param gene_set Character vector with known-disease specific genes from which
-#' is built the functional weighted PPI.
+#'     \code{\link{graph_from_op}}.
+#' @param gene_set Character vector with known-disease specific genes from
+#'     which is built the functional weighted PPI.
 #' @param sub_level Positive integer bigger than 0 which defines the x-order
-#' neighbors of the given genes of interest. If not specified, is used the
-#' first-order neighbors.
+#'     neighbors of the given genes of interest. If not specified, is used the
+#'     first-order neighbors.
 #'
 #' @return Igraph graph object with PPI network of given genes of interest and
-#' their x-order degree neighbors.
+#'     their x-order degree neighbors.
 #'
 #' @examples
 #' # Subgraphs of first and second order
@@ -112,10 +117,10 @@ subgraph_op <- function(graph_op, gene_set, sub_level) {
 }
 
 
-#' Convert network graph into adjacency matrix.
+#' Convert network graph into adjacency matrix
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
-#' \code{\link{graph_from_op}}.
+#'     \code{\link{graph_from_op}}.
 #'
 #' @return Adjacency matrix of the graph object.
 #'
@@ -132,14 +137,16 @@ graph_to_adjacency <- function(graph_op) {
 }
 
 
-#' Shared neighbors between proteins. For each interacting pair of proteins in
-#' the PPI network, store the nodes of the common neighbors.
+#' Shared neighbors between proteins
+#'
+#' For each interacting pair of proteins in the PPI network, store the nodes
+#' of the common neighbors.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
-#' \code{\link{graph_from_op}}.
+#'     \code{\link{graph_from_op}}.
 #'
-#' @return Data table with all connected pairs of source and target PPI network
-#' nodes, and respective common neighbor nodes.
+#' @return Data table with all connected pairs of source and target PPI
+#'     network nodes, and respective common neighbor nodes.
 #'
 #' @examples
 #' graph_op <- graph_from_op(wppi_data()$omnipath)
@@ -188,26 +195,31 @@ common_neighbors <- function(graph_op) {
 }
 
 
-#' Convert adjacency to weighted adjacency using network topology information
-#' (shared neighbors between connected nodes via \code{\link{common_neighbors}})
-#' integrated with genome and phenotype factors from GO and HPO
-#' annotation terms (functionality computed by \code{\link{functional_annot}}).
-#' At the end, the weighted adjacency matrix is normalized by column.
+#' Weighted adjacency matrix
+#'
+#' Converts adjacency to weighted adjacency using network topology
+#' information (shared neighbors between connected nodes via
+#' \code{\link{common_neighbors}}) integrated with genome and phenotype
+#' factors from GO and HPO annotation terms (functionality computed by
+#' \code{\link{functional_annot}}). At the end, the weighted adjacency
+#' matrix is normalized by column.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
-#' \code{\link{graph_from_op}}.
-#' @param neighbors_data Data table output from \code{\link{functional_annot}}.
+#'     \code{\link{graph_from_op}}.
+#' @param neighbors_data Data table output from
+#'     \code{\link{functional_annot}}.
 #' @param GO_data Data frame with GO annotations filtered and aggregated for
-#' the proteins/genes available in the graph object.
+#'     the proteins/genes available in the graph object.
 #' @param HPO_data Data frame with HPO annotations filtered and aggregated for
-#' the proteins/genes available in the graph object.
+#'     the proteins/genes available in the graph object.
 #' @param nr_GO Integer value with number of total unique genes in the GO
-#' database.
+#'     database.
 #' @param nr_HPO Integer value with number of total unique genes in the HPO
-#' database.
+#'     database.
 #'
 #' @return Weighted adjacency matrix based on network topology and functional
-#' similarity between interacting proteins/genes based on ontology databases.
+#'     similarity between interacting proteins/genes based on ontology
+#'     databases.
 #'
 #' @importFrom igraph vertex_attr
 #' @export
@@ -285,23 +297,23 @@ weighted_adj <- function(
 #'
 #' RWR on the normalized weighted adjacency matrix.
 #' The RWR algorithm estimates each protein/gene relevance based on the
-#' functional similarity of genes and disease/phenotype, and the topology of the
-#' network. This similarity score between nodes measures how closely two
-#' proteins/genes are correlated in a network. Thus, enabling to identify which
-#' candidate genes are more related to our given genes of interest.
+#' functional similarity of genes and disease/phenotype, and the topology
+#' of the network. This similarity score between nodes measures how closely
+#' two proteins/genes are correlated in a network. Thus, enabling to identify
+#' which candidate genes are more related to our given genes of interest.
 #'
 #' @param weighted_adj_matrix Matrix object corresponding to the weighted
-#' adjacency from \code{\link{weighted_adj}}.
+#'     adjacency from \code{\link{weighted_adj}}.
 #' @param restart_prob Positive value between 0 and 1 defining the restart
-#' probability parameter used in the RWR algorithm. If not specified, 0.4 is
-#' the default value.
+#'     probability parameter used in the RWR algorithm. If not specified, 0.4
+#'     is the default value.
 #' @param threshold Positive value depicting the threshold parameter in the
-#' RWR algorithm. When the error between probabilities is smaller than the
-#' threshold defined, the algorithm stops. If not specified, 10^(-6) is the
-#' default value.
+#'     RWR algorithm. When the error between probabilities is smaller than the
+#'     threshold defined, the algorithm stops. If not specified, 10^(-6) is
+#'     the default value.
 #'
 #' @return Matrix of correlation/probabilities for the functional similarities
-#' for all proteins/genes in the network.
+#'     for all proteins/genes in the network.
 #'
 #' @export
 random_walk <- function(weighted_adj_matrix, restart_prob, threshold) {
@@ -342,27 +354,28 @@ random_walk <- function(weighted_adj_matrix, restart_prob, threshold) {
 }
 
 
-#' Candidate genes prioritization.
+#' Candidate genes prioritization
 #'
 #' Rank of candidate genes based on correlation with the given seed
-#' genes of interest. For this, the source proteins/genes (i.e. starting nodes)
-#' are reduced to the candidate genes and the target proteins/genes (i.e. end
-#' nodes) to the given genes of interest. Each candidate gene score is defined
-#' by the sum of its correlations towards the known disease-related genes.
+#' genes of interest. For this, the source proteins/genes (i.e. starting
+#' nodes) are reduced to the candidate genes and the target proteins/genes
+#' (i.e. end nodes) to the given genes of interest. Each candidate gene score
+#' is defined by the sum of its correlations towards the known disease-related
+#' genes.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
-#' \code{\link{graph_from_op}}.
+#'     \code{\link{graph_from_op}}.
 #' @param prob_matrix Matrix object with correlations/probabilities of the all
-#' nodes in the network from \code{\link{random_walk}}.
+#'     nodes in the network from \code{\link{random_walk}}.
 #' @param genes_interest Character vector with known-disease specific genes.
 #' @param percentage_genes_ranked Positive integer (range between 0 and 100)
-#' specifying the percentage (%) of the total candidate genes in the network
-#' returned in the output. If not specified, the score of all the candidate
-#' genes is delivered.
+#'     specifying the percentage (%) of the total candidate genes in the
+#'     network returned in the output. If not specified, the score of all the
+#'     candidate genes is delivered.
 #'
 #' @return Data frame with the ranked candidate genes based on the functional
-#' score inferred from given ontology terms, PPI and Random Walk with Restart
-#' parameters.
+#'     score inferred from given ontology terms, PPI and Random Walk with
+#'     Restart parameters.
 #'
 #' @importFrom igraph vertex_attr
 #' @importFrom magrittr %>%
