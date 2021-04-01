@@ -2,17 +2,17 @@
 % Please edit documentation in R/Annot_functions.R
 \name{nr_genes}
 \alias{nr_genes}
-\title{Number of total genes in each ontology database.}
+\title{Number of total genes in an ontology database}
 \usage{
 nr_genes(data_annot)
 }
 \arguments{
-\item{data_annot}{Data frame (tibble) of GO or HPO datasets from 
+\item{data_annot}{Data frame (tibble) of GO or HPO datasets from
 \code{\link{wppi_data}}.}
 }
 \value{
 Number of total unique genes in each ontology database.
 }
 \description{
-Number of total genes in each ontology database.
+Number of total genes in an ontology database
 }
