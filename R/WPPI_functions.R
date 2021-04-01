@@ -247,7 +247,7 @@ common_neighbors <- function(graph_op) {
 #'
 #' @importFrom igraph vertex_attr
 #' @importFrom progress progress_bar
-#' @importFrom purrr transpose map
+#' @importFrom purrr map_dbl
 #' @importFrom magrittr %>%
 #' @export
 weighted_adj <- function(
@@ -257,9 +257,9 @@ weighted_adj <- function(
     HPO_data) {
 
     adj_data <- as.matrix(graph_to_adjacency(graph_op))
-    matrix_neighbors <- matrix_GO <- matrix_HPO <- 0L * adj_data
+    matrix_neighbors <- matrix_sim <- 0L * adj_data
 
-    if(nrow(neighbors_data)!=0){
+    if(nrow(neighbors_data) != 0L){
         for (i in seq(nrow(neighbors_data))) {
             x <- neighbors_data[i, ]
             matrix_neighbors[[x[[1]], x[[2]]]] <- x[[4]]
@@ -297,32 +297,28 @@ weighted_adj <- function(
 
     similarity <-
         which(adj_data != 0L) %>%
-        map(
+        map_dbl(
             function(ij){
                 pb$tick()
                 i <- ij %% nrow(adj_data)
                 j <- ij %/% nrow(adj_data) + 1
                 gene_i <- genes_op[i]
                 gene_j <- genes_op[j]
-                list(
-                    GO = `if`(
-                        nr_GO == 0L, 0L,
-                        functional_annot(GO_data_agg, gene_i, gene_j)
-                    ),
-                    HPO = `if`(
-                        nr_HPO == 0L, 0L,
-                        functional_annot(HPO_data_agg, gene_i, gene_j)
-                    )
+
+                `if`(
+                    nr_GO == 0L, 0L,
+                    functional_annot(GO_data_agg, gene_i, gene_j)
+                ) +
+                `if`(
+                    nr_HPO == 0L, 0L,
+                    functional_annot(HPO_data_agg, gene_i, gene_j)
                 )
             }
-        ) %>%
-        transpose %>%
-        map(unlist)
+        )
 
-    matrix_GO[which(adj_data != 0L)] <- similarity$GO
-    matrix_HPO[which(adj_data != 0L)] <- similarity$HPO
+    matrix_sim[which(adj_data != 0L)] <- similarity
 
-    weighted_matrix <- matrix_neighbors + matrix_GO + matrix_HPO
+    weighted_matrix <- matrix_neighbors + matrix_sim
 
     # normalization by column
     norm_weighted_matrix <- sweep(
