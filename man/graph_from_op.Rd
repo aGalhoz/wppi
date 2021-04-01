@@ -8,7 +8,7 @@ graph_from_op(op_data)
 }
 \arguments{
 \item{op_data}{Data frame (tibble) of Omnipath PPI interactions from
-wppi_data().}
+\code{\link{wppi_omnipath_data}}.}
 }
 \value{
 Igraph PPI graph object with vertices defined by UniProt ID and
@@ -20,8 +20,11 @@ Creates of igraph object from PPI Omnipath database with information
 regarding proteins and gene symbols.
 }
 \examples{
-graph_op <- graph_from_op(wppi_data()$omnipath)
+graph_op <- graph_from_op(wppi_omnipath_data())
 edges_op <- igraph::E(graph_op)
 vertices_op <- igraph::V(graph_op)
 
+}
+\seealso{
+\code{\link{wppi_omnipath_data}}
 }

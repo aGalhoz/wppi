@@ -8,14 +8,14 @@
 #' regarding proteins and gene symbols.
 #'
 #' @param op_data Data frame (tibble) of Omnipath PPI interactions from
-#' wppi_data().
+#'     \code{\link{wppi_omnipath_data}}.
 #'
 #' @return Igraph PPI graph object with vertices defined by UniProt ID and
 #'     Gene Symbol, and edges based on interactions, for all connections in
 #'     Omnipath.
 #'
 #' @examples
-#' graph_op <- graph_from_op(wppi_data()$omnipath)
+#' graph_op <- graph_from_op(wppi_omnipath_data())
 #' edges_op <- igraph::E(graph_op)
 #' vertices_op <- igraph::V(graph_op)
 #'
@@ -23,6 +23,7 @@
 #' @importFrom dplyr select distinct
 #' @importFrom igraph graph_from_data_frame
 #' @export
+#' @seealso \code{\link{wppi_omnipath_data}}
 graph_from_op <- function(op_data) {
 
     # NSE vs. R CMD check workaround
@@ -60,7 +61,7 @@ graph_from_op <- function(op_data) {
 #'
 #' @examples
 #' # genes mapped and not mapped in Omnipath
-#' graph_op <- graph_from_op(wppi_data()$omnipath)
+#' graph_op <- graph_from_op(wppi_omnipath_data())
 #' genes.interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' genes_mapped <- isgene_omnipath(graph_op,genes.interest,1)
@@ -68,6 +69,10 @@ graph_from_op <- function(op_data) {
 #'
 #' @importFrom igraph vertex_attr
 #' @export
+#' @seealso \itemize{
+#'     \item{\code{\link{wppi_omnipath_data}}}
+#'     \item{\code{\link{graph_from_op}}}
+#' }
 isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
     idx_vertex_bool <- gene_set %in% vertex_attr(graph_op)$Gene_Symbol
     if (exist_bol) {
@@ -94,7 +99,7 @@ isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
 #'
 #' @examples
 #' # Subgraphs of first and second order
-#' graph_op <- graph_from_op(wppi_data()$omnipath)
+#' graph_op <- graph_from_op(wppi_omnipath_data())
 #' genes.interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
@@ -129,7 +134,7 @@ subgraph_op <- function(graph_op, gene_set, sub_level) {
 #' @return Adjacency matrix of the graph object.
 #'
 #' @examples
-#' graph_op <- graph_from_op(wppi_data()$omnipath)
+#' graph_op <- graph_from_op(wppi_omnipath_data())
 #' adj_op <- graph_to_adjacency(graph_op)
 #'
 #' @importFrom igraph as_adjacency_matrix
@@ -153,7 +158,7 @@ graph_to_adjacency <- function(graph_op) {
 #'     network nodes, and respective common neighbor nodes.
 #'
 #' @examples
-#' graph_op <- graph_from_op(wppi_data()$omnipath)
+#' graph_op <- graph_from_op(wppi_omnipath_data())
 #' genes.interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' graph_op_1 <- subgraph_op(graph_op,genes.interest,1)

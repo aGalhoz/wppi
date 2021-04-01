@@ -25,10 +25,16 @@ Check which genes of interest are or not in Omnipath
 }
 \examples{
 # genes mapped and not mapped in Omnipath
-graph_op <- graph_from_op(wppi_data()$omnipath)
+graph_op <- graph_from_op(wppi_omnipath_data())
 genes.interest <-
     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 genes_mapped <- isgene_omnipath(graph_op,genes.interest,1)
 genes_notmapped <- isgene_omnipath(graph_op,genes.interest,0)
 
+}
+\seealso{
+\itemize{
+    \item{\code{\link{wppi_omnipath_data}}}
+    \item{\code{\link{graph_from_op}}}
+}
 }

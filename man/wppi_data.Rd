@@ -2,7 +2,7 @@
 % Please edit documentation in R/WPPI_data.R
 \name{wppi_data}
 \alias{wppi_data}
-\title{Compile database knowledge for wppi}
+\title{Database knowledge for wppi}
 \usage{
 wppi_data(...)
 }
@@ -33,4 +33,12 @@ HPO_data <- data_wppi$hpo
 # GO
 GO_data <- data_wppi$go
 
+}
+\seealso{
+\itemize{
+    \item{\code{\link{wppi_go_data}}}
+    \item{\code{\link{wppi_hpo_data}}}
+    \item{\code{\link{wppi_omnipath_data}}}
+    \item{\code{\link{wppi_uniprot_data}}}
+}
 }

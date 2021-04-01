@@ -19,7 +19,7 @@ For each interacting pair of proteins in the PPI network, store the nodes
 of the common neighbors.
 }
 \examples{
-graph_op <- graph_from_op(wppi_data()$omnipath)
+graph_op <- graph_from_op(wppi_omnipath_data())
 genes.interest <-
     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 graph_op_1 <- subgraph_op(graph_op,genes.interest,1)

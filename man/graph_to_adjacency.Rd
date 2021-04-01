@@ -17,7 +17,7 @@ Adjacency matrix of the graph object.
 Convert network graph into adjacency matrix
 }
 \examples{
-graph_op <- graph_from_op(wppi_data()$omnipath)
+graph_op <- graph_from_op(wppi_omnipath_data())
 adj_op <- graph_to_adjacency(graph_op)
 
 }
