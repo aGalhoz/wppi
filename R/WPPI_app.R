@@ -64,6 +64,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr filter
 #' @importFrom igraph vertex_attr E V
+#' @importFrom logger log_fatal log_info
 #' @export
 score_candidate_genes_from_PPI <- function(
     genes_interest = NULL,
@@ -83,16 +84,20 @@ score_candidate_genes_from_PPI <- function(
     data_info <- wppi_data()
 
     if (is.null(genes_interest)) {
-        stop('A vector of genes needs to be provided.')
+        msg <- 'A vector of genes needs to be provided.'
+        log_fatal(msg)
+        stop(msg)
     } else if(!is.vector(genes_interest)) {
-        stop('only vector of genes are acceptable.')
+        msg <- 'only vector of genes are acceptable.'
+        log_fatal(msg)
+        stop(msg)
     }
 
     if (!is.null(HPO_interest)) {
         HPO_data <- data_info$hpo %>% filter(HPO_Name %in% HPO_interest)
     } else {
         HPO_data <- data_info$hpo
-        message('Using all HPO annotations available.')
+        log_info('Using all HPO annotations available.')
     }
     if (is.null(percentage_output_genes)) {
         percentage_output_genes <- 100 # default value
@@ -100,9 +105,11 @@ score_candidate_genes_from_PPI <- function(
     if (is.null(graph_order)) {
         # set as default to use the first order neighbors of the graph
         graph_order <- 1
-        message("Using first order degree neighbors PPI network.")
+        log_info('Using first order degree neighbors PPI network.')
     } else if(graph_order == 0){
-        stop('A graph order bigger than zero needs to be provided.')
+        msg <- 'A graph order bigger than zero needs to be provided.'
+        log_fatal(msg)
+        stop(msg)
     }
 
     # graph object from PPI data

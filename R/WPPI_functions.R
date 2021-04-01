@@ -249,12 +249,14 @@ weighted_adj <- function(
     }
 
     if(is.null(GO_data)){
-        message('No weight of PPI based on Gene Ontology annotations.')
+        log_info('No weight of PPI based on Gene Ontology annotations.')
     } else {
-        GO_data_agg <- aggregate_annot(GO_data,"GO")
+        GO_data_agg <- aggregate_annot(GO_data, "GO")
     }
     if(is.null(HPO_data)){
-        message('No weight of PPI based on Human Phenotype Ontology annotations.')
+        log_info(
+            'No weight of PPI based on Human Phenotype Ontology annotations.'
+        )
     } else {
         HPO_data_agg <- aggregate_annot(HPO_data, "HPO")
     }

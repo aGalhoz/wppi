@@ -17,6 +17,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr group_by mutate ungroup
 #' @importFrom utils count.fields
+#' @importFrom logger log_fatal
 #' @export
 aggregate_annot <- function(data_annot, type_annot) {
 
@@ -38,7 +39,9 @@ aggregate_annot <- function(data_annot, type_annot) {
             ) %>%
             ungroup()
     } else {
-        stop("Only possible to aggregate GO or HPO datasets.")
+        msg <- "Only possible to aggregate GO or HPO datasets."
+        log_fatal(msg)
+        stop(msg)
     }
     data_aggregated$nr_gene <- count.fields(
         textConnection(data_aggregated$Gene_Symbol),
