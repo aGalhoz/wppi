@@ -4,24 +4,25 @@
 \alias{functional_annot}
 \title{Functional similarity score based on ontology}
 \usage{
-functional_annot(data_aggregated, nr_genes, gene_i, gene_j)
+functional_annot(data_aggregated, gene_i, gene_j, nr_genes = NULL)
 }
 \arguments{
 \item{data_aggregated}{Data frame with gene symbols aggregated by
-annotation for GO/HPO databases.}
-
-\item{nr_genes}{Integer value with number of total unique genes in ontology
-database.}
+annotation for GO/HPO databases, as provided by
+\code{\link{aggregate_annot}}.}
 
 \item{gene_i}{String with the gene symbol in the row of the adjacency
 matrix.}
 
 \item{gene_j}{String with the gene symbol in the column of the adjacency
 matrix.}
+
+\item{nr_genes}{Integer: the total number of unique genes in the ontology
+database. If not provided the genes will be counted, however}
 }
 \value{
-Integer value with GO/HPO functional similarity between given pair
-    of proteins.
+Numeric value with GO/HPO functional similarity between given
+    pair of proteins.
 }
 \description{
 Functional similarity between two genes in ontology database (GO or HPO).
@@ -30,4 +31,14 @@ quantified the shared annotations between them using the Fisher's combined
 probability test (\url{https://doi.org/10.1007/978-1-4612-4380-9_6}). This
 is based on the number of genes annotated in each shared ontology term and
 the total amount of unique genes available in the ontology database.
+}
+\examples{
+hpo <- wppi_hpo_data()
+hpo_agg <- aggregate_annot(hpo)
+hpo_fa <- functional_annot(hpo_agg, 'AKT1', 'MTOR')
+# [1] 38978.09
+
+}
+\seealso{
+\code{\link{aggregate_annot}}
 }

@@ -222,77 +222,105 @@ common_neighbors <- function(graph_op) {
 #'     \code{\link{functional_annot}}.
 #' @param GO_data Data frame with GO annotations filtered and aggregated for
 #'     the proteins/genes available in the graph object.
-#' @param HPO_data Data frame with HPO annotations filtered and aggregated for
-#'     the proteins/genes available in the graph object.
-#' @param nr_GO Integer value with number of total unique genes in the GO
-#'     database.
-#' @param nr_HPO Integer value with number of total unique genes in the HPO
-#'     database.
+#' @param HPO_data Data frame with HPO annotations filtered and aggregated
+#'     for the proteins/genes available in the graph object.
 #'
 #' @return Weighted adjacency matrix based on network topology and functional
 #'     similarity between interacting proteins/genes based on ontology
 #'     databases.
 #'
+#' @examples
+#' db <- wppi_data()
+#' genes.interest <-
+#'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+#' graph_op <- graph_from_op(db$omnipath)
+#' graph_op_1 <- subgraph_op(graph_op, genes.interest, 1)
+#' neighbors_data <- common_neighbors(graph_op_1)
+#' GO_data <- filter_annot_with_network(db$go, graph_op_1)
+#' HPO_data <- filter_annot_with_network(db$hpo, graph_op_1)
+#' w_adj <- weighted_adj(
+#'     graph_op_1,
+#'     neighbors_data,
+#'     GO_data,
+#'     HPO_data
+#' )
+#'
 #' @importFrom igraph vertex_attr
+#' @importFrom progress progress_bar
+#' @importFrom purrr transpose map
+#' @importFrom magrittr %>%
 #' @export
 weighted_adj <- function(
     graph_op,
     neighbors_data,
     GO_data,
-    HPO_data,
-    nr_GO,
-    nr_HPO) {
+    HPO_data) {
 
     adj_data <- as.matrix(graph_to_adjacency(graph_op))
-    matrix_neighbors <- matrix_GO <- matrix_HPO <- 0 * adj_data
+    matrix_neighbors <- matrix_GO <- matrix_HPO <- 0L * adj_data
 
     if(nrow(neighbors_data)!=0){
         for (i in seq(nrow(neighbors_data))) {
-        x <- neighbors_data[i, ]
-        matrix_neighbors[[x[[1]], x[[2]]]] <- x[[4]]
+            x <- neighbors_data[i, ]
+            matrix_neighbors[[x[[1]], x[[2]]]] <- x[[4]]
         }
     }
 
     if(is.null(GO_data)){
         log_info('No weight of PPI based on Gene Ontology annotations.')
+        nr_GO <- 0
     } else {
-        GO_data_agg <- aggregate_annot(GO_data, "GO")
+        GO_data_agg <- aggregate_annot(GO_data)
+        nr_GO <- count_genes(GO_data)
     }
     if(is.null(HPO_data)){
         log_info(
             'No weight of PPI based on Human Phenotype Ontology annotations.'
         )
+        nr_HPO <- 0
     } else {
-        HPO_data_agg <- aggregate_annot(HPO_data, "HPO")
+        HPO_data_agg <- aggregate_annot(HPO_data)
+        nr_HPO <- count_genes(HPO_data)
     }
+
+    attr(GO_data_agg, 'nr_genes') <- nr_GO
+    attr(HPO_data_agg, 'nr_genes') <- nr_HPO
+
     # all the genes in the PPI
     genes_op <- vertex_attr(graph_op)$Gene_Symbol
 
     # loop to weight PPI based on annotation databases
-    for (i in seq(nrow(matrix_GO))) {
-        for (j in seq(ncol(matrix_GO))) {
-        if (adj_data[i, j] == 1) {
-            gene_i <- genes_op[i]
-            gene_j <- genes_op[j]
-            if (nr_GO != 0) {
-            matrix_GO[i, j] <- functional_annot(
-                GO_data_agg,
-                nr_GO,
-                gene_i,
-                gene_j
-            )
+    pb <- progress_bar$new(
+        total = sum(adj_data != 0L),
+        format = '  Weighted adjacency matrix [:bar] :percent eta: :eta'
+    )
+
+    similarity <-
+        which(adj_data != 0L) %>%
+        map(
+            function(ij){
+                pb$tick()
+                i <- ij %% nrow(adj_data)
+                j <- ij %/% nrow(adj_data) + 1
+                gene_i <- genes_op[i]
+                gene_j <- genes_op[j]
+                list(
+                    GO = `if`(
+                        nr_GO == 0L, 0L,
+                        functional_annot(GO_data_agg, gene_i, gene_j)
+                    ),
+                    HPO = `if`(
+                        nr_HPO == 0L, 0L,
+                        functional_annot(HPO_data_agg, gene_i, gene_j)
+                    )
+                )
             }
-            if (nr_HPO != 0) {
-            matrix_HPO[i, j] <- functional_annot(
-                HPO_data_agg,
-                nr_HPO,
-                gene_i,
-                gene_j
-            )
-            }
-        }
-        }
-    }
+        ) %>%
+        transpose %>%
+        map(unlist)
+
+    matrix_GO[which(adj_data != 0L)] <- similarity$GO
+    matrix_HPO[which(adj_data != 0L)] <- similarity$HPO
 
     weighted_matrix <- matrix_neighbors + matrix_GO + matrix_HPO
 

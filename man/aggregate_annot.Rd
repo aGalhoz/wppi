@@ -4,13 +4,11 @@
 \alias{aggregate_annot}
 \title{Processing of biological ontology databases}
 \usage{
-aggregate_annot(data_annot, type_annot)
+aggregate_annot(data_annot)
 }
 \arguments{
 \item{data_annot}{Data frame (tibble) of GO or HPO datasets from
 \code{\link{wppi_data}}.}
-
-\item{type_annot}{String "GO" or "HPO" depending on the ontology used.}
 }
 \value{
 Data frame with gene symbols aggregated for each annotation for
@@ -23,4 +21,16 @@ Ontology databases such as Gene Ontology (GO)
 related functional information of genes. These combined allow to build a
 connection between proteins/genes and phenotype/disease. This function
 aggregates information in the GO and HPO ontology datasets.
+}
+\examples{
+hpo <- wppi_hpo_data()
+hpo_agg <- aggregate_annot(hpo)
+
+}
+\seealso{
+\itemize{
+    \item{\code{\link{wppi_data}}}
+    \item{\code{\link{wppi_go_data}}}
+    \item{\code{\link{wppi_hpo_data}}}
+}
 }

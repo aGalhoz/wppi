@@ -37,7 +37,7 @@ wppi_data <- function(...){
     hpo <- wppi_hpo_data()
     go <- wppi_go_data()
     uniprot <- wppi_uniprot_data()
-    omnipah <- wppi_omnipath_data(...)
+    omnipath <- wppi_omnipath_data(...)
 
     list(
         hpo = hpo,
