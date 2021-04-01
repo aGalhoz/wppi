@@ -1,4 +1,4 @@
-#' Processing of biological ontology databases
+#' Processing of ontology annotations
 #'
 #' Ontology databases such as Gene Ontology (GO)
 #' (GO, \url{http://geneontology.org/}) and Human Phenotype Ontology
@@ -10,16 +10,17 @@
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
 #'     \code{\link{wppi_data}}.
 #'
-#' @return Data frame with gene symbols aggregated for each annotation for
-#'     GO/HPO databases.
+#' @return A list of three elements: 1) "term_size" a list which serves as a
+#'     lookup table for size (number of genes) for the terms; 2) "gene_term"
+#'     a list to look up terms by gene symbol; 3) "annot" the original
+#'     data frame (\code{data_annot}).
 #'
 #' @examples
-#' hpo <- wppi_hpo_data()
-#' hpo_agg <- aggregate_annot(hpo)
+#' hpo_raw <- wppi_hpo_data()
+#' hpo <- process_annot(hpo_raw)
 #'
 #' @importFrom magrittr %>%
-#' @importFrom dplyr group_by mutate ungroup
-#' @importFrom utils count.fields
+#' @importFrom dplyr group_by count summarize
 #' @importFrom logger log_fatal
 #' @export
 #' @seealso \itemize{
@@ -27,36 +28,33 @@
 #'     \item{\code{\link{wppi_go_data}}}
 #'     \item{\code{\link{wppi_hpo_data}}}
 #' }
-aggregate_annot <- function(data_annot) {
+process_annot <- function(data_annot) {
 
     # NSE vs. R CMD check workaround
-    GO_ID <- Gene_Symbol <- HPO_ID <- HPO_Name <- NULL
+    ID <- Gene_Symbol <- NULL
 
-    if ('GO_ID' %in% names(data_annot)) {
-        data_aggregated <- data_annot %>%
-            dplyr::group_by(GO_ID) %>%
-            dplyr::mutate(
-                Gene_Symbol = paste0(unique(Gene_Symbol), collapse = ",")
-            ) %>%
-            ungroup()
-    } else if ('HPO_ID' %in% names(data_annot)) {
-        data_aggregated <- data_annot %>%
-            dplyr::group_by(HPO_ID, HPO_Name) %>%
-            dplyr::mutate(
-                Gene_Symbol = paste0(unique(Gene_Symbol), collapse = ",")
-            ) %>%
-            ungroup()
-    } else {
-        msg <- 'Only possible to aggregate GO or HPO datasets.'
+    if(
+        !'ID' %in% names(data_annot) ||
+        !'Gene_Symbol' %in% names(data_annot)
+    ){
+        msg <- 'Annotations must have ID and Gene_Symbol columns.'
         log_fatal(msg)
         stop(msg)
     }
-    data_aggregated$nr_gene <- count.fields(
-        textConnection(data_aggregated$Gene_Symbol),
-        sep = ","
+
+    list(
+        term_size =
+            data_annot %>%
+            count(ID) %>%
+            {`names<-`(as.list(.$n), .$ID)},
+        gene_term =
+            data_annot %>%
+            group_by(Gene_Symbol) %>%
+            summarize(terms = list(ID)) %>%
+            {`names<-`(as.list(.$terms), .$Gene_Symbol)},
+        annot = data_annot
     )
 
-    return(data_aggregated)
 }
 
 

@@ -74,8 +74,8 @@ wppi_hpo_data <- function(){
     select(
         Gene_ID = entrez_gene_id,
         Gene_Symbol = entrez_gene_symbol,
-        HPO_ID = hpo_term_id,
-        HPO_Name = hpo_term_name
+        ID = hpo_term_id,
+        Name = hpo_term_name
     ) %>%
     distinct()
 
@@ -105,8 +105,8 @@ wppi_go_data <- function(){
     OmnipathR::go_annot_download() %>%
     select(
         Gene_Symbol = db_object_symbol,
-        GO_ID = go_id,
-        Type_GO = aspect
+        ID = go_id,
+        Aspect = aspect
     )
 
 }
