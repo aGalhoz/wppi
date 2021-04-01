@@ -10,10 +10,11 @@
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
 #'     \code{\link{wppi_data}}.
 #'
-#' @return A list of three elements: 1) "term_size" a list which serves as a
+#' @return A list of four elements: 1) "term_size" a list which serves as a
 #'     lookup table for size (number of genes) for the terms; 2) "gene_term"
 #'     a list to look up terms by gene symbol; 3) "annot" the original
-#'     data frame (\code{data_annot}).
+#'     data frame (\code{data_annot}); 4) "total_genes" the number of genes
+#'     in the annotation.
 #'
 #' @examples
 #' hpo_raw <- wppi_hpo_data()
@@ -52,7 +53,8 @@ process_annot <- function(data_annot) {
             group_by(Gene_Symbol) %>%
             summarize(terms = list(ID)) %>%
             {`names<-`(as.list(.$terms), .$Gene_Symbol)},
-        annot = data_annot
+        annot = data_annot,
+        total_genes = count_genes(data_annot)
     )
 
 }
@@ -82,8 +84,6 @@ count_genes <- function(data_annot) {
 
     data_annot %>%
     pull(Gene_Symbol) %>%
-    strsplit(',', fixed = TRUE) %>%
-    unlist %>%
     n_distinct
 
 }
