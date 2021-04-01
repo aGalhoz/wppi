@@ -348,20 +348,17 @@ weighted_adj <- function(
 #'     is the default value.
 #' @param threshold Positive value depicting the threshold parameter in the
 #'     RWR algorithm. When the error between probabilities is smaller than the
-#'     threshold defined, the algorithm stops. If not specified, 10^(-6) is
+#'     threshold defined, the algorithm stops. If not specified, 1e-5 is
 #'     the default value.
 #'
 #' @return Matrix of correlation/probabilities for the functional similarities
 #'     for all proteins/genes in the network.
 #'
 #' @export
-random_walk <- function(weighted_adj_matrix, restart_prob, threshold) {
-    if(is.null(restart_prob)){
-        restart_prob <- 0.4
-    }
-    if(is.null(threshold)){
-        threshold <- 10^(-6)
-    }
+random_walk <- function(
+    weighted_adj_matrix,
+    restart_prob = 0.4,
+    threshold = 1e-5) {
 
     matrix_rw <- 0 * weighted_adj_matrix
     nr_proteins <- ncol(matrix_rw)
