@@ -16,14 +16,18 @@
 #'
 #' @examples
 #' graph_op <- graph_from_op(wppi_data()$omnipath)
-#' edges_op <- E(graph_op)
-#' vertices_op <- V(graph_op)
+#' edges_op <- igraph::E(graph_op)
+#' vertices_op <- igraph::V(graph_op)
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select distinct
 #' @importFrom igraph graph_from_data_frame
 #' @export
 graph_from_op <- function(op_data) {
+
+    # NSE vs. R CMD check workaround
+    source_genesymbol <- target_genesymbol <- target <- source <- NULL
+
     edges <- op_data %>%
         dplyr::select(-c(source_genesymbol, target_genesymbol))
     node_source <- op_data %>%
@@ -393,6 +397,9 @@ prioritization_genes <- function(
     if(is.null(percentage_genes_ranked)){
         percentage_genes_ranked <- 100
     }
+
+    # NSE vs. R CMD check workaround
+    scores <- NULL
 
     genes_op <- vertex_attr(graph_op)$Gene_Symbol
     genes_bool <- genes_op %in% genes_interest

@@ -19,6 +19,10 @@
 #' @importFrom utils count.fields
 #' @export
 aggregate_annot <- function(data_annot, type_annot) {
+
+    # NSE vs. R CMD check workaround
+    GO_ID <- Gene_Symbol <- HPO_ID <- HPO_Name <- NULL
+
     if (type_annot == "GO") {
         data_aggregated <- data_annot %>%
             dplyr::group_by(GO_ID) %>%
@@ -84,6 +88,10 @@ nr_genes <- function(data_annot) {
 #' @importFrom dplyr filter distinct
 #' @export
 filter_annot_with_network <- function(data_annot, graph_op) {
+
+    # NSE vs. R CMD check workaround
+    Gene_Symbol <- NULL
+
     genes_op <- vertex_attr(graph_op)$Gene_Symbol
     data_annot_filter <- data_annot %>%
         filter(Gene_Symbol %in% genes_op) %>%

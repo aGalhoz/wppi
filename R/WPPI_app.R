@@ -49,8 +49,10 @@
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' # example HPO annotations set
 #' HPO.interest <-
-#'     filter(wppi_data()$hpo, grepl("Diabetes", HPO_Name)) %>%
-#'     dplyr::select(HPO_Name) %>% unique() %>% dplyr::pull(HPO_Name)
+#'     wppi_data()$hpo %>%
+#'     dplyr::filter(grepl("Diabetes", .data$HPO_Name)) %>%
+#'     dplyr::pull(.data$HPO_Name) %>%
+#'     unique
 #' # Score 1st-order candidate genes
 #' new_genes_diabetes <-
 #'     score_candidate_genes_from_PPI(
@@ -73,6 +75,10 @@ score_candidate_genes_from_PPI <- function(
     restart_prob_rw = NULL,
     threshold_rw = NULL
 ) {
+
+    # NSE vs. R CMD check workaround
+    HPO_Name <- NULL
+
     # import data object
     data_info <- wppi_data()
 
