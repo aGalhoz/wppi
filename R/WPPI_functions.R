@@ -83,19 +83,22 @@ isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
 }
 
 
-#' Subgraph from Omnipath graph object and genes of interest for given x-order
-#' degree neighbors.
+#' Extract PPI subgraph by genes of interest
+#'
+#' From the igraph object of a PPI network obtained from OmniPath extracts a
+#' subnetwork around the provided set of genes of interest. The size of the
+#'
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
 #'     \code{\link{graph_from_op}}.
-#' @param gene_set Character vector with known-disease specific genes from
-#'     which is built the functional weighted PPI.
+#' @param gene_set Character vector of gene symbols. These are the genes of
+#'     interest, for example known-disease specific genes.
 #' @param sub_level Positive integer bigger than 0 which defines the x-order
-#'     neighbors of the given genes of interest. If not specified, is used the
-#'     first-order neighbors.
+#'     neighbors of the given genes of interest. If not specified, is used
+#'     the first-order neighbors.
 #'
-#' @return Igraph graph object with PPI network of given genes of interest and
-#'     their x-order degree neighbors.
+#' @return Igraph graph object with PPI network of given genes of interest
+#'     and their x-order degree neighbors.
 #'
 #' @examples
 #' # Subgraphs of first and second order
@@ -107,12 +110,12 @@ isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
 #'
 #' @importFrom igraph vertex_attr induced_subgraph V ego
 #' @export
-subgraph_op <- function(graph_op, gene_set, sub_level) {
+subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 
   # sub_level indicates the neighbor-level of given genes
   idx_mapped <- which(vertex_attr(graph_op)$Gene_Symbol %in% gene_set)
   vertices_mapped <- V(graph_op)[idx_mapped]
-  if (sub_level == 0) {
+  if (sub_level == 0L) {
     op_subgraph <- induced_subgraph(graph_op, vertices_mapped)
   } else {
     new_nodes <- unlist(ego(graph_op,
@@ -123,6 +126,7 @@ subgraph_op <- function(graph_op, gene_set, sub_level) {
   }
 
   return(op_subgraph)
+
 }
 
 
