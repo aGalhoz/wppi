@@ -479,6 +479,7 @@ random_walk <- function(
 #' @importFrom dplyr arrange desc filter
 #' @importFrom tibble tibble
 #' @importFrom logger log_info
+#' @importFrom stats quantile
 #' @export
 #' @seealso \itemize{
 #'     \item{\code{\link{weighted_adj}}}

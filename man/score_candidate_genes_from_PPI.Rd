@@ -78,7 +78,7 @@ genes_interest <-
 # example HPO annotations set
 hpo <- wppi_hpo_data()
 HPO_interest <- unique(
-    dplyr::filter(hpo, grepl("Diabetes", .data$HPO_Name))$HPO_Name
+    dplyr::filter(hpo, grepl("Diabetes", .data$Name))$Name
 )
 # Score 1st-order candidate genes
 new_genes_diabetes <-

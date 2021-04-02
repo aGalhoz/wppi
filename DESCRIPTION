@@ -31,8 +31,8 @@ biocViews: GraphAndNetwork, Network, Pathways, Software, GeneSignaling,
 Encoding: UTF-8
 VignetteBuilder: knitr
 Depends: R(>= 4.1)
-Imports: dplyr, igraph, OmnipathR, rlang, RCurl, logger, tidyr, methods,
-    magrittr, Matrix, progress, purrr
+Imports: dplyr, igraph, logger, methods, magrittr, Matrix,
+    OmnipathR, progress, purrr, rlang, RCurl, stats, tibble, tidyr
 Suggests: knitr, testthat
 RoxygenNote: 7.1.1
 NeedsCompilation: no
