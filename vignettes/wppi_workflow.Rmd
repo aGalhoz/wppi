@@ -1,5 +1,5 @@
 ---
-title: "WPPI workflow"
+title: 'WPPI workflow'
 author:
   - name: Ana Galhoz
     affiliation: hmgu
@@ -8,7 +8,7 @@ author:
   - name: Denes Turei
     affiliation: unihd
 institute:
-  - hcm: Helmholtz Zentrum Muenchen
+  - hmgu: Helmholtz Zentrum Muenchen
   - unihd: Institute for Computational Biomedicine, Heidelberg University
 package: wppi
 output:
@@ -27,7 +27,23 @@ output:
       - '--lua-filter=scholarly-metadata.lua'
       - '--lua-filter=author-info-blocks.lua'
 abstract: |
-  Write a summary here
+  The `wppi` package calculates context specific scores for genes in
+  the network neighborhood of genes of interest. The context specificity
+  is ensured by the selection of the genes of interest and potentially by
+  using a more relevant subset of the ontology annotations, e.g. selecting
+  only the diabetes related categories. The PPI network and the functional
+  annotations are obtained automatically from public databases, though
+  it's possible to use custom databases. The network is limited to a
+  neighborhood of the genes of interest. The ontology annotations are also
+  filtered to the genes in this subnetwork. Then the adjacency matrix is
+  weighted according to the number of common neighbors and the similarity
+  in functional annotations of each pair of interacting proteins. On this
+  weighted adjacency matrix a random walk with returns is performed. The
+  final score for the genes in the neighborhood is the sum of their scores
+  (probabilities to be visited) in the random walk.
+  The method can be fine tuned by setting the neighborhood range, the
+  restart probability of the random walk and the threshold for the random
+  walk.
 vignette: |
   %\VignetteIndexEntry{WPPI workflow}
   %\VignetteEngine{knitr::rmarkdown}
@@ -36,73 +52,126 @@ fig_width: 9
 fig_height: 7
 ---
 
-# An example WPPI workflow
-
-Below we should make the comments text blocks and expand them a bit.
-
-## PPI creation
-
-```{r eval=FALSE}
-library(wppi)
-# example gene set
-genes.interest <- c("ERCC8","AKT3","NOL3","TTK","GFI1B","CDC25A","TPX2","SHE")
-
-# example HPO annotations set 
-HPO.interest <- filter(HPO.data,
-                       grepl("Diabetes",HPO_Name)) %>%
-  dplyr::select(HPO_Name) %>% unique() %>% pull(HPO_Name)
-
-# Application of the main function
-genes_ranked <- score_candidate_genes_from_PPI(genes_interest = genes.interest,
-                                               HPO_interest = HPO.interest,
-                                               percentage_output_genes = 10,
-                                               graph_order = 1)
+```{r suppress-progressbars, echo=FALSE}
+options(progress_enabled = FALSE, width = 80)
 ```
 
-Below we present all available tools and steps needed for the methodology.
+# Complete workflow in a single call
 
-```{r eval=FALSE}
+The `score_candidate_genes_from_PPI` function executes the full workflow.
+The only mandatory input is a set of genes of interest.
 
-# igraph PPI object
-graph_op <- graph_from_op(Omnipath.human.data)
-edges_op <- E(graph_op)
-vertices_op <- V(graph_op)
+```{r workflow, results='hide'}
+library(wppi)
+# example gene set
+genes_interest <- c(
+    'ERCC8', 'AKT3', 'NOL3', 'TTK',
+    'GFI1B', 'CDC25A', 'TPX2', 'SHE'
+)
 
-# genes mapped and not mapped in Omnipath 
-genes_mapped <- isgene_omnipath(graph_op,genes.interest,1)
-genes_notmapped <- isgene_omnipath(graph_op,genes.interest,0)
+scores <- score_candidate_genes_from_PPI(genes_interest)
+scores
+# # A tibble: 265 x 3
+#    score gene_symbol uniprot
+#    <dbl> <chr>       <chr>
+#  1 0.247 FOXA2       Q9Y261
+#  2 0.247 CLK2        P49760
+#  3 0.247 HTRA2       O43464
+#  4 0.247 SKI         P12755
+#  5 0.247 HNRNPA1     P09651
+# # . with 260 more rows
+```
 
-# Subgraphs
-graph_op_0 <- subgraph_op(graph_op,genes.interest,0)
-graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
+# Workflow step by step
 
-# Subnetworks 
-net_op_1 <- as_data_frame(graph_op_1)
+## Database knowledge
 
-# Adjacency Matrix
-adj_op_1 <- graph_to_adjacency(graph_op_1)
-saveRDS(adj_op_1, file = "WPPI_Data/Adjacency_Matrix.RDS")
+The database knowledge is provided by `wppi_data`. By default all directed
+protein-protein interactions are used from OmniPath. By passing various
+options the network can be customized. See more details in the documentation
+of the `OmnipathR` package, especially the
+`import_post_translational_interactions` function. For example, to use only
+the literature curated interactions one can use the `datasets = 'omnipath'`
+parameter:
 
-# Common neighbours
-shared_neighbors <- common_neighbors(graph_op_1)
+```{r database-knowledge-omnipath}
+omnipath_data <- wppi_omnipath_data(datasets = 'omnipath')
+```
 
-# Filter annotation datasets with graph object
-GO_data_op <- filter_annot_with_network(GO.data,graph_op_1)
-HPO.data.interest <- HPO.data %>% filter(HPO_Name %in% HPO.interest)
-HPO_data_op <- filter_annot_with_network(HPO.data.interest,graph_op_1)
+The `wppi_data` function retrieves all database data at once. Parameters to
+customize the network can be passed directly to this function.
 
-# Adjacency Matrix to Weighted Adjacency Matrix
-weighted_adj_op_1 <- weighted_adj(graph_op_1,
-                                  shared_neighbors,
-                                  GO_data_op,
-                                  HPO_data_op,
-                                  nr_genes(GO_data_op),
-                                  nr_genes(HPO_data_op))
-saveRDS(weighted_adj_op_1, file = "WPPI_Data/Weighted_Matrix.RDS")
+```{r database-knowledge, results='hide'}
+db <- wppi_data(datasets = c('omnipath', 'kinaseextra'))
+names(db)
+# [1] "hpo"      "go"       "omnipath" "uniprot"
+````
 
-# Random Walk on weighted matrix
-random_walk_op_1 <- random_walk(weighted_adj_op_1)
+Optionally, the Human Phenotype Ontology (HPO) annotations relevant in the
+context can be selected. For example, to select the annotations related to
+diabetes:
 
-# Prioritization of genes based on functional scores 
-genes_ranked <- prioritization_genes(graph_op_1,random_walk_op_1,genes.interest)
+```{r database-knowledge-hpo}
+# example HPO annotations set
+HPO_data <- wppi_hpo_data()
+HPO_interest <- unique(dplyr::filter(HPO_data, grepl('Diabetes', Name))$Name)
+```
+
+## Converting the interactions to an igraph graph object
+
+To work further with the interactions we first convert it to an `igraph`
+graph object:
+
+```{r omnipath-graph}
+graph_op <- graph_from_op(db$omnipath)
+```
+
+## Subgraph from the neighborhood of genes of interest
+
+Then we select a subgraph around the genes of interest. The size of the
+subgraph is determined by the range of this neighborhood (`sub_level`
+argument for the `subgraph_op` function).
+
+```{r neighborhood-subnetwork, results='hide'}
+graph_op_1 <- subgraph_op(graph_op, genes_interest)
+igraph::vcount(graph_op_1)
+# [1] 256
+```
+
+## Weighted adjacency matrix
+
+The next step is to assign weights to each interaction. The weights are
+calculated based on the number of common neighbors and the similarities of
+the annotations of the interacting partners.
+
+```{r weighted-adjacency-matrix}
+w_adj <- weighted_adj(graph_op_1, db$go, db$hpo)
+```
+
+## Random walk
+
+The random walk with restarts algorithm uses the edge weights to score the
+overall connections between pairs of genes. The result takes into accound
+also the indirect connections, integrating the information in the graph
+topology.
+
+```{r random-walk}
+w_rw <- random_walk(w_adj)
+```
+
+## Scoring proteins
+
+At the end we can summarize the scores for each protein, taking the sum of
+all adjacent connections. The resulted table provides us a list of proteins
+prioritized by their predicted importance in the context of interest
+(disease or condition).
+
+```{r scoring-proteins}
+scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
+```
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
 ```

@@ -333,7 +333,7 @@ weighted_adj <- function(
         }
     )
 
-    neighbors_data <- common_neighbors(op_graph)
+    neighbors_data <- common_neighbors(graph_op)
 
     if(nrow(neighbors_data) != 0L){
         for (i in seq(nrow(neighbors_data))) {
