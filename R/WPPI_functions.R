@@ -240,12 +240,7 @@ common_neighbors <- function(graph_op) {
 #' graph_op <- graph_from_op(db$omnipath)
 #' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
 #' neighbors_data <- common_neighbors(graph_op_1)
-#' w_adj <- weighted_adj(
-#'     graph_op_1,
-#'     neighbors_data,
-#'     GO_data,
-#'     HPO_data
-#' )
+#' w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
 #'
 #' @importFrom igraph vertex_attr
 #' @importFrom progress progress_bar
@@ -353,8 +348,18 @@ weighted_adj <- function(
 #'     threshold defined, the algorithm stops. If not specified, 1e-5 is
 #'     the default value.
 #'
-#' @return Matrix of correlation/probabilities for the functional similarities
-#'     for all proteins/genes in the network.
+#' @return Matrix of correlation/probabilities for the functional
+#'     similarities for all proteins/genes in the network.
+#'
+#' @examples
+#' db <- wppi_data()
+#' genes_interest <-
+#'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+#' graph_op <- graph_from_op(db$omnipath)
+#' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
+#' neighbors_data <- common_neighbors(graph_op_1)
+#' w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
+#' w_rw <- random_walk(w_adj)
 #'
 #' @export
 random_walk <- function(
@@ -362,27 +367,33 @@ random_walk <- function(
     restart_prob = 0.4,
     threshold = 1e-5) {
 
-    matrix_rw <- 0 * weighted_adj_matrix
+    matrix_rw <- 0L * weighted_adj_matrix
     nr_proteins <- ncol(matrix_rw)
     vector0 <- matrix(0, nr_proteins, 1)
     vector_prob0 <- matrix(1 / nr_proteins, nr_proteins, 1)
 
+    pb <- progress_bar$new(
+        total = nr_proteins,
+        format = '  Random walk [:bar] :percent eta: :eta'
+    )
+
     for (i in seq(nrow(matrix_rw))) {
+        pb$tick()
         start_vector <- vector0
         start_vector[i] <- 1
         q_previous <- vector_prob0
         q_next <-
-        (1 - restart_prob) *
-        (weighted_adj_matrix %*% q_previous) +
-        restart_prob * start_vector
-
-        while (any((q_next - q_previous)^2) > threshold) {
-        q_previous <- q_next
-        q_next <-
             (1 - restart_prob) *
             (weighted_adj_matrix %*% q_previous) +
-            restart_prob *
-            start_vector
+            restart_prob * start_vector
+
+        while (any((q_next - q_previous)^2 > threshold)) {
+            q_previous <- q_next
+            q_next <-
+                (1 - restart_prob) *
+                (weighted_adj_matrix %*% q_previous) +
+                restart_prob *
+                start_vector
         }
 
         matrix_rw[i, ] <- q_next
