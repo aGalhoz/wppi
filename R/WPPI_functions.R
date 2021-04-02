@@ -227,8 +227,6 @@ common_neighbors <- function(graph_op) {
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
 #'     \code{\link{graph_from_op}}.
-#' @param neighbors_data Data frame with the number of common neighbors
-#'     as produced by \code{\link{common_neighbors}}.
 #' @param GO_data Data frame with GO annotations as provided by
 #'     \code{\link{wppi_go_data}}.
 #' @param HPO_data Data frame with HPO annotations as provided by
@@ -244,8 +242,7 @@ common_neighbors <- function(graph_op) {
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' graph_op <- graph_from_op(db$omnipath)
 #' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
-#' neighbors_data <- common_neighbors(graph_op_1)
-#' w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
+#' w_adj <- weighted_adj(graph_op_1, db$go, db$hpo)
 #'
 #' @importFrom igraph vertex_attr vcount ecount
 #' @importFrom progress progress_bar
@@ -267,7 +264,6 @@ common_neighbors <- function(graph_op) {
 #' }
 weighted_adj <- function(
     graph_op,
-    neighbors_data,
     GO_data,
     HPO_data) {
 
@@ -337,6 +333,8 @@ weighted_adj <- function(
         }
     )
 
+    neighbors_data <- common_neighbors(op_graph)
+
     if(nrow(neighbors_data) != 0L){
         for (i in seq(nrow(neighbors_data))) {
             x <- neighbors_data[i, ]
@@ -386,8 +384,7 @@ weighted_adj <- function(
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' graph_op <- graph_from_op(db$omnipath)
 #' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
-#' neighbors_data <- common_neighbors(graph_op_1)
-#' w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
+#' w_adj <- weighted_adj(graph_op_1, db$go, db$hpo)
 #' w_rw <- random_walk(w_adj)
 #'
 #' @export
@@ -476,8 +473,7 @@ random_walk <- function(
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' graph_op <- graph_from_op(db$omnipath)
 #' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
-#' neighbors_data <- common_neighbors(graph_op_1)
-#' w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
+#' w_adj <- weighted_adj(graph_op_1, db$go, db$hpo)
 #' w_rw <- random_walk(w_adj)
 #' scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
 #'

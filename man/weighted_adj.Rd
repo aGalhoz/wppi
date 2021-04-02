@@ -4,14 +4,11 @@
 \alias{weighted_adj}
 \title{Weighted adjacency matrix}
 \usage{
-weighted_adj(graph_op, neighbors_data, GO_data, HPO_data)
+weighted_adj(graph_op, GO_data, HPO_data)
 }
 \arguments{
 \item{graph_op}{Igraph object based on Omnipath PPI interactions from
 \code{\link{graph_from_op}}.}
-
-\item{neighbors_data}{Data frame with the number of common neighbors
-as produced by \code{\link{common_neighbors}}.}
 
 \item{GO_data}{Data frame with GO annotations as provided by
 \code{\link{wppi_go_data}}.}
@@ -38,8 +35,7 @@ genes_interest <-
     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 graph_op <- graph_from_op(db$omnipath)
 graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
-neighbors_data <- common_neighbors(graph_op_1)
-w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
+w_adj <- weighted_adj(graph_op_1, db$go, db$hpo)
 
 }
 \seealso{

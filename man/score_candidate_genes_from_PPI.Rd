@@ -89,6 +89,16 @@ new_genes_diabetes <-
         HPO_interest = HPO_interest,
         percentage_output_genes = 10,
         graph_order = 1)
+new_genes_diabetes
+# # A tibble: 265 x 3
+#    score gene_symbol uniprot
+#    <dbl> <chr>       <chr>
+#  1 0.247 FOXA2       Q9Y261
+#  2 0.247 CLK2        P49760
+#  3 0.247 HTRA2       O43464
+#  4 0.247 SKI         P12755
+#  5 0.247 HNRNPA1     P09651
+# # . with 260 more rows
 
 }
 \seealso{

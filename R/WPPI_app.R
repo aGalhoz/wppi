@@ -62,6 +62,16 @@
 #'         HPO_interest = HPO_interest,
 #'         percentage_output_genes = 10,
 #'         graph_order = 1)
+#' new_genes_diabetes
+#' # # A tibble: 265 x 3
+#' #    score gene_symbol uniprot
+#' #    <dbl> <chr>       <chr>
+#' #  1 0.247 FOXA2       Q9Y261
+#' #  2 0.247 CLK2        P49760
+#' #  3 0.247 HTRA2       O43464
+#' #  4 0.247 SKI         P12755
+#' #  5 0.247 HNRNPA1     P09651
+#' # # . with 260 more rows
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr filter
@@ -146,12 +156,8 @@ score_candidate_genes_from_PPI <- function(
         NULL
     )
 
-    # compute shared neighbors between proteins in PPI
-    neighbors_sub <- common_neighbors(graph_op = sub_graph)
-
     # weight PPI based on annotations
     weighted_adj_sub <- weighted_adj(graph_op = sub_graph,
-                                     neighbors_data = neighbors_sub,
                                      GO_data = GO_data_sub,
                                      HPO_data = HPO_data_sub)
 
