@@ -405,17 +405,17 @@ random_walk <- function(
 
 #' Candidate genes prioritization
 #'
-#' Rank of candidate genes based on correlation with the given seed
+#' Ranks candidate genes based on correlation with the given seed
 #' genes of interest. For this, the source proteins/genes (i.e. starting
 #' nodes) are reduced to the candidate genes and the target proteins/genes
-#' (i.e. end nodes) to the given genes of interest. Each candidate gene score
-#' is defined by the sum of its correlations towards the known disease-related
-#' genes.
+#' (i.e. end nodes) to the given genes of interest. Each candidate gene
+#' score is defined by the sum of its correlations towards the known
+#' disease-related genes.
 #'
-#' @param graph_op Igraph object based on Omnipath PPI interactions from
+#' @param graph_op Igraph object based on OmniPath PPI interactions from
 #'     \code{\link{graph_from_op}}.
-#' @param prob_matrix Matrix object with correlations/probabilities of the all
-#'     nodes in the network from \code{\link{random_walk}}.
+#' @param prob_matrix Matrix object with correlations/probabilities of the
+#'     all nodes in the network from \code{\link{random_walk}}.
 #' @param genes_interest Character vector with known-disease specific genes.
 #' @param percentage_genes_ranked Positive integer (range between 0 and 100)
 #'     specifying the percentage (%) of the total candidate genes in the
@@ -426,21 +426,32 @@ random_walk <- function(
 #'     score inferred from given ontology terms, PPI and Random Walk with
 #'     Restart parameters.
 #'
+#' @examples
+#' db <- wppi_data()
+#' genes_interest <-
+#'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+#' graph_op <- graph_from_op(db$omnipath)
+#' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
+#' neighbors_data <- common_neighbors(graph_op_1)
+#' w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
+#' w_rw <- random_walk(w_adj)
+#' scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
+#'
 #' @importFrom igraph vertex_attr
-#' @importFrom magrittr %>%
-#' @importFrom dplyr arrange desc
+#' @importFrom magrittr %>% %<>%
+#' @importFrom dplyr arrange desc filter
+#' @importFrom tibble tibble
 #' @export
 prioritization_genes <- function(
     graph_op,
     prob_matrix,
     genes_interest,
-    percentage_genes_ranked) {
-    if(is.null(percentage_genes_ranked)){
-        percentage_genes_ranked <- 100
-    }
+    percentage_genes_ranked = 100) {
 
     # NSE vs. R CMD check workaround
     scores <- NULL
+
+    percentage_genes_ranked %<>% `/`(100) %>% min(1)
 
     genes_op <- vertex_attr(graph_op)$Gene_Symbol
     genes_bool <- genes_op %in% genes_interest
@@ -452,20 +463,17 @@ prioritization_genes <- function(
     # get score for each row gene by summing all probabilities of the row
     genes_candidate <- genes_op[!genes_bool]
     proteins_candidate <- vertex_attr(graph_op)$name[!genes_bool]
-    scores_candidates <- data.frame(
-        scores = apply(prob_matrix_reduced, 1, sum),
-        gene = genes_candidate,
-        protein = proteins_candidate
+
+    tibble(
+        score = apply(prob_matrix_reduced, 1, sum),
+        gene_symbol = genes_candidate,
+        uniprot = proteins_candidate
+    ) %>%
+    arrange(desc(score)) %>%
+    filter(
+        # it's not okay to remove and keep genes with identical scores
+        # that's why I changed this to quantile
+        score >= quantile(score, 1 - percentage_genes_ranked)
     )
-    scores_candidates <-
-        scores_candidates %>%
-        arrange(desc(scores))
 
-    final_scores_candidates <-
-        scores_candidates[
-        1:
-            ceiling(nrow(scores_candidates) * percentage_genes_ranked / 100),
-        ]
-
-    return(final_scores_candidates)
 }

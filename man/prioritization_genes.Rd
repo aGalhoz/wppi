@@ -8,15 +8,15 @@ prioritization_genes(
   graph_op,
   prob_matrix,
   genes_interest,
-  percentage_genes_ranked
+  percentage_genes_ranked = 100
 )
 }
 \arguments{
-\item{graph_op}{Igraph object based on Omnipath PPI interactions from
+\item{graph_op}{Igraph object based on OmniPath PPI interactions from
 \code{\link{graph_from_op}}.}
 
-\item{prob_matrix}{Matrix object with correlations/probabilities of the all
-nodes in the network from \code{\link{random_walk}}.}
+\item{prob_matrix}{Matrix object with correlations/probabilities of the
+all nodes in the network from \code{\link{random_walk}}.}
 
 \item{genes_interest}{Character vector with known-disease specific genes.}
 
@@ -31,10 +31,22 @@ Data frame with the ranked candidate genes based on the functional
     Restart parameters.
 }
 \description{
-Rank of candidate genes based on correlation with the given seed
+Ranks candidate genes based on correlation with the given seed
 genes of interest. For this, the source proteins/genes (i.e. starting
 nodes) are reduced to the candidate genes and the target proteins/genes
-(i.e. end nodes) to the given genes of interest. Each candidate gene score
-is defined by the sum of its correlations towards the known disease-related
-genes.
+(i.e. end nodes) to the given genes of interest. Each candidate gene
+score is defined by the sum of its correlations towards the known
+disease-related genes.
+}
+\examples{
+db <- wppi_data()
+genes_interest <-
+    c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+graph_op <- graph_from_op(db$omnipath)
+graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
+neighbors_data <- common_neighbors(graph_op_1)
+w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
+w_rw <- random_walk(w_adj)
+scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
+
 }
