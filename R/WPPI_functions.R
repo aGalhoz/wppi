@@ -235,13 +235,11 @@ common_neighbors <- function(graph_op) {
 #'
 #' @examples
 #' db <- wppi_data()
-#' genes.interest <-
+#' genes_interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' graph_op <- graph_from_op(db$omnipath)
-#' graph_op_1 <- subgraph_op(graph_op, genes.interest, 1)
+#' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
 #' neighbors_data <- common_neighbors(graph_op_1)
-#' GO_data <- filter_annot_with_network(db$go, graph_op_1)
-#' HPO_data <- filter_annot_with_network(db$hpo, graph_op_1)
 #' w_adj <- weighted_adj(
 #'     graph_op_1,
 #'     neighbors_data,
@@ -251,8 +249,11 @@ common_neighbors <- function(graph_op) {
 #'
 #' @importFrom igraph vertex_attr
 #' @importFrom progress progress_bar
-#' @importFrom purrr map_dbl
-#' @importFrom magrittr %>%
+#' @importFrom purrr walk2
+#' @importFrom magrittr %>% %<>%
+#' @importFrom Matrix .__C__dgTMatrix colSums
+#' @importFrom methods as
+#' @importFrom tidyr replace_na
 #' @export
 weighted_adj <- function(
     graph_op,
@@ -260,35 +261,27 @@ weighted_adj <- function(
     GO_data,
     HPO_data) {
 
-    adj_data <- as.matrix(graph_to_adjacency(graph_op))
-    matrix_neighbors <- matrix_sim <- 0L * adj_data
+    adj_data <-
+        graph_op %>%
+        as_adjacency_matrix(sparse = TRUE) %>%
+        as('dgTMatrix')
 
-    if(nrow(neighbors_data) != 0L){
-        for (i in seq(nrow(neighbors_data))) {
-            x <- neighbors_data[i, ]
-            matrix_neighbors[[x[[1]], x[[2]]]] <- x[[4]]
-        }
-    }
+    matrix_neighbors <- matrix_weights <- 0L * adj_data
 
     if(is.null(GO_data)){
         log_info('No weight of PPI based on Gene Ontology annotations.')
-        nr_GO <- 0
     } else {
-        GO_data_agg <- aggregate_annot(GO_data)
-        nr_GO <- count_genes(GO_data)
+        GO_data <- filter_annot_with_network(GO_data, graph_op)
+        GO_data <- process_annot(GO_data)
     }
     if(is.null(HPO_data)){
         log_info(
             'No weight of PPI based on Human Phenotype Ontology annotations.'
         )
-        nr_HPO <- 0
     } else {
-        HPO_data_agg <- aggregate_annot(HPO_data)
-        nr_HPO <- count_genes(HPO_data)
+        HPO_data <- filter_annot_with_network(HPO_data, graph_op)
+        HPO_data <- process_annot(HPO_data)
     }
-
-    attr(GO_data_agg, 'nr_genes') <- nr_GO
-    attr(HPO_data_agg, 'nr_genes') <- nr_HPO
 
     # all the genes in the PPI
     genes_op <- vertex_attr(graph_op)$Gene_Symbol
@@ -299,40 +292,45 @@ weighted_adj <- function(
         format = '  Weighted adjacency matrix [:bar] :percent eta: :eta'
     )
 
-    similarity <-
-        which(adj_data != 0L) %>%
-        map_dbl(
-            function(ij){
-                pb$tick()
-                i <- ij %% nrow(adj_data)
-                j <- ij %/% nrow(adj_data) + 1
-                gene_i <- genes_op[i]
-                gene_j <- genes_op[j]
+    walk2(
+        adj_data@i + 1,
+        adj_data@j + 1,
+        function(i, j){
+            pb$tick()
 
+            gene_i <- genes_op[i]
+            gene_j <- genes_op[j]
+
+            matrix_weights[i, j] <-
                 `if`(
-                    nr_GO == 0L, 0L,
-                    functional_annot(GO_data_agg, gene_i, gene_j)
+                    is.null(GO_data),
+                    0L,
+                    functional_annot(GO_data, gene_i, gene_j)
                 ) +
                 `if`(
-                    nr_HPO == 0L, 0L,
-                    functional_annot(HPO_data_agg, gene_i, gene_j)
+                    is.null(HPO_data),
+                    0L,
+                    functional_annot(HPO_data, gene_i, gene_j)
                 )
-            }
-        )
+        }
+    )
 
-    matrix_sim[which(adj_data != 0L)] <- similarity
-
-    weighted_matrix <- matrix_neighbors + matrix_sim
+    if(nrow(neighbors_data) != 0L){
+        for (i in seq(nrow(neighbors_data))) {
+            x <- neighbors_data[i, ]
+            matrix_neighbors[x[[1]], x[[2]]] <- x[[4]]
+        }
+    }
 
     # normalization by column
-    norm_weighted_matrix <- sweep(
-        weighted_matrix, 2, colSums(weighted_matrix),
-        FUN = "/"
-    )
-    # for zero divisions
-    norm_weighted_matrix[is.nan(norm_weighted_matrix)] <- 0
+    matrix_weights %<>%
+    `+`(matrix_neighbors) %>%
+    sweep(2, colSums(.), FUN = "/")
 
-    return(norm_weighted_matrix)
+    # for zero divisions
+    matrix_weights@x %<>% replace_na(0)
+
+    return(matrix_weights)
 }
 
 

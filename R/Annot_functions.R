@@ -172,7 +172,10 @@ functional_annot <- function(annot, gene_i, gene_j) {
     `if`(
         length(shared_terms) == 0L,
         0,
-        sum(-2 * log(annot$term_size[shared_terms] / annot$total_genes))
+        sum(-2 * log(
+            unlist(annot$term_size[shared_terms]) /
+            annot$total_genes
+        ))
     )
 
 }
