@@ -30,9 +30,9 @@ biocViews: GraphAndNetwork, Network, Pathways, Software, GeneSignaling,
     SystemsBiology, Transcriptomics, Annotation
 Encoding: UTF-8
 VignetteBuilder: knitr
-Depends: R(>= 4.1), magrittr
+Depends: R(>= 4.1)
 Imports: dplyr, igraph, OmnipathR, rlang, RCurl, logger, tidyr, methods,
-    Matrix, progress, purrr
+    magrittr, Matrix, progress, purrr
 Suggests: knitr, testthat
 RoxygenNote: 7.1.1
 NeedsCompilation: no

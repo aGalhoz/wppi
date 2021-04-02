@@ -1,4 +1,4 @@
-#' Application of WPPI networks using GO and HPO annotations
+#' The full WPPI workflow
 #'
 #' The wppi package is a functional prioritization of new disease specific
 #' genes based on a given set of known disease-related genes and annotation
@@ -38,6 +38,7 @@
 #'     Random Walk with Restart algorithm. When the error between
 #'     probabilities is smaller than the threshold defined, the algorithm
 #'     stops. If not specified, 10^(-6) is the default value.
+#' @param databases Database knowledge as produced by \code{\link{wppi_data}}.
 #'
 #' @return Data frame with the ranked candidate genes based on the functional
 #'     score inferred from given ontology terms, PPI and Random Walk with
@@ -45,71 +46,74 @@
 #'
 #' @examples
 #' # example gene set
-#' genes.interest <-
+#' genes_interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' # example HPO annotations set
-#' HPO.interest <-
-#'     wppi_data()$hpo %>%
-#'     dplyr::filter(grepl("Diabetes", .data$HPO_Name)) %>%
-#'     dplyr::pull(.data$HPO_Name) %>%
-#'     unique
+#' hpo <- wppi_hpo_data()
+#' HPO_interest <- unique(
+#'     dplyr::filter(hpo, grepl("Diabetes", .data$HPO_Name))$HPO_Name
+#' )
 #' # Score 1st-order candidate genes
 #' new_genes_diabetes <-
 #'     score_candidate_genes_from_PPI(
-#'         genes_interest = genes.interest,
-#'         HPO_interest = HPO.interest,
+#'         genes_interest = genes_interest,
+#'         HPO_interest = HPO_interest,
 #'         percentage_output_genes = 10,
 #'         graph_order = 1)
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr filter
 #' @importFrom igraph vertex_attr E V
-#' @importFrom logger log_fatal log_info
+#' @importFrom logger log_fatal log_info log_success
+#' @importFrom rlang %||%
 #' @export
+#' @seealso \itemize{
+#'     \item{\code{\link{wppi_data}}}
+#'     \item{\code{\link{weighted_adj}}}
+#'     \item{\code{\link{random_walk}}}
+#'     \item{\code{\link{prioritization_genes}}}
+#' }
 score_candidate_genes_from_PPI <- function(
-    genes_interest = NULL,
+    genes_interest,
     HPO_interest = NULL,
-    percentage_output_genes = NULL,
-    graph_order = NULL,
+    percentage_output_genes = 100,
+    graph_order = 1,
     GO_annot = TRUE,
     HPO_annot = TRUE,
-    restart_prob_rw = NULL,
-    threshold_rw = NULL
+    restart_prob_rw = 0.4,
+    threshold_rw = 1e-5,
+    databases = NULL
 ) {
 
     # NSE vs. R CMD check workaround
     HPO_Name <- NULL
 
-    # import data object
-    data_info <- wppi_data()
-
-    if (is.null(genes_interest)) {
-        msg <- 'A vector of genes needs to be provided.'
-        log_fatal(msg)
-        stop(msg)
-    } else if(!is.vector(genes_interest)) {
-        msg <- 'only vector of genes are acceptable.'
+    if(!is.vector(genes_interest) || !is.character(genes_interest)) {
+        msg <- '`genes_interest` must be a character vector.'
         log_fatal(msg)
         stop(msg)
     }
+
+    if (is.null(graph_order)) {
+        # set as default to use the first order neighbors of the graph
+        graph_order <- 1
+        log_info('Using first order degree neighbors PPI network.')
+    } else if(graph_order <= 0){
+        msg <- 'A graph order bigger than zero needs to be provided.'
+        log_fatal(msg)
+        stop(msg)
+    }
+
+    log_info('Executing WPPI workflow.')
+
+    # import data object
+    data_info <- databases %||% wppi_data()
 
     if (!is.null(HPO_interest)) {
         HPO_data <- data_info$hpo %>% filter(HPO_Name %in% HPO_interest)
     } else {
         HPO_data <- data_info$hpo
         log_info('Using all HPO annotations available.')
-    }
-    if (is.null(percentage_output_genes)) {
-        percentage_output_genes <- 100 # default value
-    }
-    if (is.null(graph_order)) {
-        # set as default to use the first order neighbors of the graph
-        graph_order <- 1
-        log_info('Using first order degree neighbors PPI network.')
-    } else if(graph_order == 0){
-        msg <- 'A graph order bigger than zero needs to be provided.'
-        log_fatal(msg)
-        stop(msg)
     }
 
     # graph object from PPI data
@@ -121,24 +125,24 @@ score_candidate_genes_from_PPI <- function(
                              sub_level = graph_order)
 
     # subset GO info based on PPI
-    if (GO_annot){
-        GO_data_sub <- filter_annot_with_network(data_annot = data_info$go,
-                                                 graph_op = sub_graph)
-        nr_genes_GO <- nr_genes(data_annot = GO_data_sub)
-    } else{
-        GO_data_sub <- NULL
-        nr_genes_GO <- 0
-    }
+    GO_data_sub <- `if`(
+        GO_annot,
+        filter_annot_with_network(
+            data_annot = data_info$go,
+            graph_op = sub_graph
+        ),
+        NULL
+    )
 
     # subset HPO info based on PPI
-    if (HPO_annot){
-        HPO_data_sub <- filter_annot_with_network(data_annot = HPO_data,
-                                                  graph_op = sub_graph)
-        nr_genes_HPO <- nr_genes(data_annot = HPO_data_sub)
-    } else{
-        HPO_data_sub <- NULL
-        nr_genes_HPO <- 0
-    }
+    HPO_data_sub <- `if`(
+        HPO_annot,
+        filter_annot_with_network(
+            data_annot = HPO_data,
+            graph_op = sub_graph
+        ),
+        NULL
+    )
 
     # compute shared neighbors between proteins in PPI
     neighbors_sub <- common_neighbors(graph_op = sub_graph)
@@ -147,9 +151,7 @@ score_candidate_genes_from_PPI <- function(
     weighted_adj_sub <- weighted_adj(graph_op = sub_graph,
                                      neighbors_data = neighbors_sub,
                                      GO_data = GO_data_sub,
-                                     HPO_data = HPO_data_sub,
-                                     nr_GO = nr_genes_GO,
-                                     nr_HPO = nr_genes_HPO)
+                                     HPO_data = HPO_data_sub)
 
     # random walk algorithm on weighted PPI
     random_walk_sub <- random_walk(weighted_adj_matrix = weighted_adj_sub,
@@ -164,5 +166,8 @@ score_candidate_genes_from_PPI <- function(
         percentage_genes_ranked = percentage_output_genes
     )
 
+    log_success('WPPI workflow completed.')
+
     return(genes_ranked_sub)
+
 }

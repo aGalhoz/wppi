@@ -242,7 +242,7 @@ common_neighbors <- function(graph_op) {
 #' neighbors_data <- common_neighbors(graph_op_1)
 #' w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
 #'
-#' @importFrom igraph vertex_attr
+#' @importFrom igraph vertex_attr vcount ecount
 #' @importFrom progress progress_bar
 #' @importFrom purrr walk2
 #' @importFrom magrittr %>% %<>%
@@ -256,6 +256,9 @@ weighted_adj <- function(
     GO_data,
     HPO_data) {
 
+    log_info('Calculating weighted adjacency matrix.')
+
+    # creating the adjacency matrix and the weight matrices
     adj_data <-
         graph_op %>%
         as_adjacency_matrix(sparse = TRUE) %>%
@@ -263,20 +266,29 @@ weighted_adj <- function(
 
     matrix_neighbors <- matrix_weights <- 0L * adj_data
 
+    # checking and preprocessing annotation databases
     if(is.null(GO_data)){
-        log_info('No weight of PPI based on Gene Ontology annotations.')
+        go_msg <- 'not using GO'
     } else {
         GO_data <- filter_annot_with_network(GO_data, graph_op)
         GO_data <- process_annot(GO_data)
+        go_msg <- annot_summary_msg(GO_data)
     }
     if(is.null(HPO_data)){
-        log_info(
-            'No weight of PPI based on Human Phenotype Ontology annotations.'
-        )
+        hpo_msg <- 'not using HPO'
     } else {
         HPO_data <- filter_annot_with_network(HPO_data, graph_op)
         HPO_data <- process_annot(HPO_data)
+        hpo_msg <- annot_summary_msg(HPO_data)
     }
+
+    log_info(
+        'Graph size: %d nodes and %d edges; %s; %s.',
+        vcount(graph_op),
+        ecount(graph_op),
+        go_msg,
+        hpo_msg
+    )
 
     # all the genes in the PPI
     genes_op <- vertex_attr(graph_op)$Gene_Symbol
@@ -325,6 +337,8 @@ weighted_adj <- function(
     # for zero divisions
     matrix_weights@x %<>% replace_na(0)
 
+    log_info('Finished calculating weighted adjacency matrix.')
+
     return(matrix_weights)
 }
 
@@ -366,6 +380,16 @@ random_walk <- function(
     weighted_adj_matrix,
     restart_prob = 0.4,
     threshold = 1e-5) {
+
+    log_info(
+        paste0(
+            'Performing random walk with restart ',
+            '(restart probablilty: %g, threshold: %g, number of genes: %d).'
+        ),
+        restart_prob,
+        threshold,
+        ncol(weighted_adj_matrix)
+    )
 
     matrix_rw <- 0L * weighted_adj_matrix
     nr_proteins <- ncol(matrix_rw)
@@ -437,16 +461,26 @@ random_walk <- function(
 #' w_rw <- random_walk(w_adj)
 #' scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
 #'
-#' @importFrom igraph vertex_attr
+#' @importFrom igraph vertex_attr vcount
 #' @importFrom magrittr %>% %<>%
 #' @importFrom dplyr arrange desc filter
 #' @importFrom tibble tibble
+#' @importFrom logger log_info
 #' @export
 prioritization_genes <- function(
     graph_op,
     prob_matrix,
     genes_interest,
     percentage_genes_ranked = 100) {
+
+    log_info(
+        paste0(
+            'Calculating WPPI gene scores ',
+            '(genes of interest: %d, genes in network: %d).'
+        ),
+        length(genes_interest),
+        vcount(graph_op)
+    )
 
     # NSE vs. R CMD check workaround
     scores <- NULL

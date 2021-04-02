@@ -22,7 +22,7 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr group_by count summarize
-#' @importFrom logger log_fatal
+#' @importFrom logger log_fatal log_info
 #' @export
 #' @seealso \itemize{
 #'     \item{\code{\link{wppi_data}}}
@@ -43,6 +43,11 @@ process_annot <- function(data_annot) {
         stop(msg)
     }
 
+    log_info(
+        'Preprocessing annotations (%s).',
+        which_ontology_database(data_annot)
+    )
+
     list(
         term_size =
             data_annot %>%
@@ -55,6 +60,49 @@ process_annot <- function(data_annot) {
             {`names<-`(as.list(.$terms), .$Gene_Symbol)},
         annot = data_annot,
         total_genes = count_genes(data_annot)
+    )
+
+}
+
+
+#' For an ontology annotation table tells the name of the ontology database
+#'
+#' @param db Ontology annotation table. Must have a column called `ID`.
+#' @param long Logical: return the full name or the abbreviation.
+#'
+#' @return Character: the name of the ontology database. "Unknown" if the
+#'     database is not GO neither HPO.
+#'
+#' @importFrom dplyr case_when
+#' @noRd
+which_ontology_database <- function(db, long = TRUE){
+
+    x <- substr(db$ID[1], 1, 2)
+    case_when(
+        x == 'GO' &  long ~ 'Gene Ontology',
+        x == 'GO' & !long ~ 'GO',
+        x == 'HP' &  long ~ 'Human Phenotype Ontology',
+        x == 'HP' & !long ~ 'HPO',
+        TRUE              ~ 'Unknown'
+    )
+
+}
+
+
+#' A summary message with key numbers about an annotation database
+#'
+#' @param db A preprocessed annotation database as produced by
+#'     \code{\link{process_annot}}.
+#'
+#' @noRd
+annot_summary_msg <- function(db){
+
+    sprintf(
+        '%s: %d terms, %d genes, %d annotations',
+        which_ontology_database(db$annot, long = FALSE),
+        length(db$term_size),
+        db$total_genes,
+        nrow(db$annot)
     )
 
 }

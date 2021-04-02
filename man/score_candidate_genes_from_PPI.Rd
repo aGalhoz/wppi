@@ -2,17 +2,18 @@
 % Please edit documentation in R/WPPI_app.R
 \name{score_candidate_genes_from_PPI}
 \alias{score_candidate_genes_from_PPI}
-\title{Application of WPPI networks using GO and HPO annotations}
+\title{The full WPPI workflow}
 \usage{
 score_candidate_genes_from_PPI(
-  genes_interest = NULL,
+  genes_interest,
   HPO_interest = NULL,
-  percentage_output_genes = NULL,
-  graph_order = NULL,
+  percentage_output_genes = 100,
+  graph_order = 1,
   GO_annot = TRUE,
   HPO_annot = TRUE,
-  restart_prob_rw = NULL,
-  threshold_rw = NULL
+  restart_prob_rw = 0.4,
+  threshold_rw = 1e-05,
+  databases = NULL
 )
 }
 \arguments{
@@ -51,6 +52,8 @@ If not specified, 0.4 is the default value.}
 Random Walk with Restart algorithm. When the error between
 probabilities is smaller than the threshold defined, the algorithm
 stops. If not specified, 10^(-6) is the default value.}
+
+\item{databases}{Database knowledge as produced by \code{\link{wppi_data}}.}
 }
 \value{
 Data frame with the ranked candidate genes based on the functional
@@ -70,20 +73,27 @@ network.
 }
 \examples{
 # example gene set
-genes.interest <-
+genes_interest <-
     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 # example HPO annotations set
-HPO.interest <-
-    wppi_data()$hpo \%>\%
-    dplyr::filter(grepl("Diabetes", .data$HPO_Name)) \%>\%
-    dplyr::pull(.data$HPO_Name) \%>\%
-    unique
+hpo <- wppi_hpo_data()
+HPO_interest <- unique(
+    dplyr::filter(hpo, grepl("Diabetes", .data$HPO_Name))$HPO_Name
+)
 # Score 1st-order candidate genes
 new_genes_diabetes <-
     score_candidate_genes_from_PPI(
-        genes_interest = genes.interest,
-        HPO_interest = HPO.interest,
+        genes_interest = genes_interest,
+        HPO_interest = HPO_interest,
         percentage_output_genes = 10,
         graph_order = 1)
 
+}
+\seealso{
+\itemize{
+    \item{\code{\link{wppi_data}}}
+    \item{\code{\link{weighted_adj}}}
+    \item{\code{\link{random_walk}}}
+    \item{\code{\link{prioritization_genes}}}
+}
 }

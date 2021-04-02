@@ -24,6 +24,7 @@
 #' # GO
 #' GO_data <- data_wppi$go
 #'
+#' @importFrom logger log_info
 #' @export
 #' @seealso \itemize{
 #'     \item{\code{\link{wppi_go_data}}}
@@ -33,11 +34,15 @@
 #' }
 wppi_data <- function(...){
 
+    log_info('Collecting database knowledge.')
+
     ### Collect database data
     hpo <- wppi_hpo_data()
     go <- wppi_go_data()
     uniprot <- wppi_uniprot_data()
     omnipath <- wppi_omnipath_data(...)
+
+    log_info('Finished collecting database knowledge.')
 
     list(
         hpo = hpo,
