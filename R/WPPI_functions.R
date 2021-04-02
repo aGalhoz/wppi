@@ -132,6 +132,11 @@ subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 
 #' Convert network graph into adjacency matrix
 #'
+#' This method uses igraph's \code{as_adjacency_matrix} and converts the
+#' returned sparse matrix to a plain matrix. Therefore be careful about
+#' the size of the network you pass, such a matrix can easily occupy GBs
+#' of memory.
+#'
 #' @param graph_op Igraph object based on OmniPath PPI interactions from
 #'     \code{\link{graph_from_op}}.
 #'
@@ -139,7 +144,10 @@ subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 #'
 #' @examples
 #' graph_op <- graph_from_op(wppi_omnipath_data())
-#' adj_op <- graph_to_adjacency(graph_op)
+#' genes_interest <-
+#'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+#' graph_op_1 <- subgraph_op(graph_op, genes_interest)
+#' adj_op <- graph_to_adjacency(graph_op_1)
 #'
 #' @importFrom igraph as_adjacency_matrix
 #' @export
@@ -154,64 +162,52 @@ graph_to_adjacency <- function(graph_op) {
 }
 
 
-#' Shared neighbors between proteins
+#' Shared neighbors of connected vertices
 #'
 #' For each interacting pair of proteins in the PPI network, store the nodes
-#' of the common neighbors.
+#' of the common neighbors. This function works for any igraph graph.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
 #'     \code{\link{graph_from_op}}.
 #'
-#' @return Data table with all connected pairs of source and target PPI
-#'     network nodes, and respective common neighbor nodes.
+#' @return Data frame (tibble) with igraph vertex IDs of connected pairs of
+#'     vertices (source and target), a list column with the IDs of their
+#'     common neighbors, and a column with the number of neighbors.
 #'
 #' @examples
 #' graph_op <- graph_from_op(wppi_omnipath_data())
-#' genes.interest <-
+#' genes_interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
-#' graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
+#' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
 #' shared_neighbors <- common_neighbors(graph_op_1)
 #'
-#' @importFrom data.table data.table
-#' @importFrom igraph get.adjacency neighbors
-#' @importFrom utils count.fields
-#' @importFrom methods as
-#' @importFrom Matrix .__C__dgTMatrix
+#' @importFrom igraph get.edgelist neighbors
+#' @importFrom tibble as_tibble
+#' @importFrom purrr map2 map_int
+#' @importFrom dplyr mutate filter
+#' @importFrom magrittr %>%
 #' @export
 common_neighbors <- function(graph_op) {
-    adj_matrix <- as(get.adjacency(graph_op), "dgTMatrix")
-    adj_matrix_table <- data.table(
-        source = adj_matrix@i + 1,
-        target = adj_matrix@j + 1
-    )
 
-    if(nrow(adj_matrix_table)!=0){
-        adj_matrix_table$neighbors <- apply(
-        adj_matrix_table,
-        1,
-        function(x) {
-            paste(
-            intersect(
-                neighbors(graph_op, x[1]),
-                neighbors(graph_op, x[2])
-            ),
-            collapse = ","
-            )
-        }
-        )
-        table_neighbors <- adj_matrix_table[
-            !adj_matrix_table$neighbors == "",
-        ]
-        table_neighbors$nr_neighbors <- count.fields(
-        textConnection(table_neighbors$neighbors),
-        sep = ","
-        )
-    }
-    else{
-        table_neighbors <- adj_matrix_table
-    }
+    graph_op %>%
+    get.edgelist(names = FALSE) %>%
+    `colnames<-`(c('source', 'target')) %>%
+    as_tibble %>%
+    mutate(
+        neighbors = map2(
+            .$source,
+            .$target,
+            function(i, j){
+                intersect(
+                    neighbors(graph_op, i),
+                    neighbors(graph_op, j)
+                )
+            }
+        ),
+        nr_neighbors = map_int(neighbors, length)
+    ) %>%
+    filter(nr_neighbors != 0L)
 
-    return(table_neighbors)
 }
 
 
