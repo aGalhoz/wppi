@@ -132,7 +132,7 @@ subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 
 #' Convert network graph into adjacency matrix
 #'
-#' @param graph_op Igraph object based on Omnipath PPI interactions from
+#' @param graph_op Igraph object based on OmniPath PPI interactions from
 #'     \code{\link{graph_from_op}}.
 #'
 #' @return Adjacency matrix of the graph object.
@@ -143,6 +143,10 @@ subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 #'
 #' @importFrom igraph as_adjacency_matrix
 #' @export
+#' @seealso \itemize{
+#'     \item{\code{\link{graph_from_op}}}
+#'     \item{\code{\link{wppi_omnipath_data}}}
+#' }
 graph_to_adjacency <- function(graph_op) {
   adj_data <- as.matrix(as_adjacency_matrix(graph_op))
 
