@@ -36,7 +36,6 @@ Imports: dplyr, igraph, logger, methods, magrittr, Matrix,
 Suggests: knitr, testthat
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2021-03-18 17:53:04 UTC; denes
 Author: Ana Galhoz [cre, aut] (<https://orcid.org/0000-0001-7402-5292>),
     Denes Turei [aut] (<https://orcid.org/0000-0002-7249-9379>)
 Maintainer: Ana Galhoz <ana.galhoz@helmholtz-muenchen.de>
