@@ -51,7 +51,7 @@
 #' # example HPO annotations set
 #' hpo <- wppi_hpo_data()
 #' HPO_interest <- unique(
-#'     dplyr::filter(hpo, grepl("Diabetes", .data$HPO_Name))$HPO_Name
+#'     dplyr::filter(hpo, grepl("Diabetes", .data$Name))$Name
 #' )
 #' # Score 1st-order candidate genes
 #' new_genes_diabetes <-
@@ -86,7 +86,7 @@ score_candidate_genes_from_PPI <- function(
 ) {
 
     # NSE vs. R CMD check workaround
-    HPO_Name <- NULL
+    Name <- NULL
 
     if(!is.vector(genes_interest) || !is.character(genes_interest)) {
         msg <- '`genes_interest` must be a character vector.'
@@ -110,7 +110,7 @@ score_candidate_genes_from_PPI <- function(
     data_info <- databases %||% wppi_data()
 
     if (!is.null(HPO_interest)) {
-        HPO_data <- data_info$hpo %>% filter(HPO_Name %in% HPO_interest)
+        HPO_data <- data_info$hpo %>% filter(Name %in% HPO_interest)
     } else {
         HPO_data <- data_info$hpo
         log_info('Using all HPO annotations available.')
