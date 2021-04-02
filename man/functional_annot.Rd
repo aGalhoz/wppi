@@ -32,9 +32,12 @@ the total amount of unique genes available in the ontology database.
 hpo <- wppi_hpo_data()
 hpo <- process_annot(hpo)
 hpo_score <- functional_annot(hpo, 'AKT1', 'MTOR')
-# [1] 38978.09
+# [1] 106.9376
 
 }
 \seealso{
-\code{\link{aggregate_annot}}
+\itemize{
+    \item{\code{\link{process_annot}}}
+    \item{\code{\link{weighted_adj}}}
+}
 }

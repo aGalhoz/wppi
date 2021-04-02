@@ -42,3 +42,10 @@ neighbors_data <- common_neighbors(graph_op_1)
 w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
 
 }
+\seealso{
+\itemize{
+    \item{\code{\link{random_walk}}}
+    \item{\code{\link{prioritization_genes}}}
+    \item{\code{\link{score_candidate_genes_from_PPI}}}
+}
+}

@@ -151,10 +151,10 @@ count_genes <- function(data_annot) {
 #' # Get GO database
 #' GO_data <- wppi_go_data()
 #' # Create igraph object based on genes of interest and first neighbors
-#' genes.interest <-
+#' genes_interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' graph_op <- graph_from_op(wppi_omnipath_data())
-#' graph_op_1 <- subgraph_op(graph_op, genes.interest, 1)
+#' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
 #' # Filter GO data
 #' GO_data_filtered <- filter_annot_with_network(GO_data, graph_op_1)
 #'
@@ -168,11 +168,13 @@ filter_annot_with_network <- function(data_annot, graph_op) {
     Gene_Symbol <- NULL
 
     genes_op <- vertex_attr(graph_op)$Gene_Symbol
-    data_annot_filter <- data_annot %>%
-        filter(Gene_Symbol %in% genes_op) %>%
-        distinct()
 
-    return(data_annot_filter)
+    data_annot %>%
+    filter(Gene_Symbol %in% genes_op) %>%
+    # should not be necessary
+    # gene-annotation pairs are supposed to be unique
+    distinct()
+
 }
 
 
@@ -199,10 +201,13 @@ filter_annot_with_network <- function(data_annot, graph_op) {
 #' hpo <- wppi_hpo_data()
 #' hpo <- process_annot(hpo)
 #' hpo_score <- functional_annot(hpo, 'AKT1', 'MTOR')
-#' # [1] 38978.09
+#' # [1] 106.9376
 #'
 #' @export
-#' @seealso \code{\link{aggregate_annot}}
+#' @seealso \itemize{
+#'     \item{\code{\link{process_annot}}}
+#'     \item{\code{\link{weighted_adj}}}
+#' }
 functional_annot <- function(annot, gene_i, gene_j) {
 
     if (

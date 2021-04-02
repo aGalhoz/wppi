@@ -47,25 +47,24 @@ graph_from_op <- function(op_data) {
 }
 
 
-#' Check which genes of interest are or not in Omnipath
+#' Check which genes of interest are or not in OmniPath
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
 #'     \code{\link{graph_from_op}}.
 #' @param gene_set Character vector with known-disease specific genes from
 #'     which is built the functional weighted PPI.
-#' @param exist_bol Boolean parameter declaring if the query is to check
-#'     (\code{TRUE}) or not (\code{FALSE}) which genes of interest are in
-#'     OmniPath.
+#' @param in_network Logical: whether to return the genes in the network or
+#'     the missing ones.
 #'
 #' @return Character vector with genes corresponding to the query.
 #'
 #' @examples
 #' # genes mapped and not mapped in Omnipath
 #' graph_op <- graph_from_op(wppi_omnipath_data())
-#' genes.interest <-
+#' genes_interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
-#' genes_mapped <- isgene_omnipath(graph_op,genes.interest,1)
-#' genes_notmapped <- isgene_omnipath(graph_op,genes.interest,0)
+#' genes_mapped <- in_omnipath(graph_op, genes_interest, 1)
+#' genes_notmapped <- in_omnipath(graph_op, genes_interest, 0)
 #'
 #' @importFrom igraph vertex_attr
 #' @export
@@ -73,9 +72,9 @@ graph_from_op <- function(op_data) {
 #'     \item{\code{\link{wppi_omnipath_data}}}
 #'     \item{\code{\link{graph_from_op}}}
 #' }
-isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
+in_omnipath <- function(graph_op, gene_set, in_network = TRUE) {
     idx_vertex_bool <- gene_set %in% vertex_attr(graph_op)$Gene_Symbol
-    if (exist_bol) {
+    if (in_network) {
         gene_set[idx_vertex_bool]
     } else {
         gene_set[!idx_vertex_bool]
@@ -86,16 +85,16 @@ isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
 #' Extract PPI subgraph by genes of interest
 #'
 #' From the igraph object of a PPI network obtained from OmniPath extracts a
-#' subnetwork around the provided set of genes of interest. The size of the
+#' subnetwork around the provided genes of interest. The size of the
 #'
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
 #'     \code{\link{graph_from_op}}.
 #' @param gene_set Character vector of gene symbols. These are the genes of
-#'     interest, for example known-disease specific genes.
-#' @param sub_level Positive integer bigger than 0 which defines the x-order
-#'     neighbors of the given genes of interest. If not specified, is used
-#'     the first-order neighbors.
+#'     interest, for example known disease specific genes.
+#' @param sub_level Integer larger than 0 defining the order of neighborhood
+#'     (number of steps) from the genes of interest. If not specified, the
+#'     first-order neighbors are used.
 #'
 #' @return Igraph graph object with PPI network of given genes of interest
 #'     and their x-order degree neighbors.
@@ -103,10 +102,10 @@ isgene_omnipath <- function(graph_op, gene_set, exist_bol) {
 #' @examples
 #' # Subgraphs of first and second order
 #' graph_op <- graph_from_op(wppi_omnipath_data())
-#' genes.interest <-
+#' genes_interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
-#' graph_op_1 <- subgraph_op(graph_op,genes.interest,1)
-#' graph_op_1 <- subgraph_op(graph_op,genes.interest,2)
+#' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
+#' graph_op_1 <- subgraph_op(graph_op, genes_interest, 2)
 #'
 #' @importFrom igraph vertex_attr induced_subgraph V ego
 #' @export
@@ -129,6 +128,10 @@ subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 
 }
 
+
+# Here I don't understand why we don't use the sparse matrix.
+# Also we don't use this function in the package (because I
+# removed it's only usage :P), maybe we should remove it.
 
 #' Convert network graph into adjacency matrix
 #'
@@ -250,6 +253,11 @@ common_neighbors <- function(graph_op) {
 #' @importFrom methods as
 #' @importFrom tidyr replace_na
 #' @export
+#' @seealso \itemize{
+#'     \item{\code{\link{random_walk}}}
+#'     \item{\code{\link{prioritization_genes}}}
+#'     \item{\code{\link{score_candidate_genes_from_PPI}}}
+#' }
 weighted_adj <- function(
     graph_op,
     neighbors_data,
@@ -376,6 +384,11 @@ weighted_adj <- function(
 #' w_rw <- random_walk(w_adj)
 #'
 #' @export
+#' @seealso \itemize{
+#'     \item{\code{\link{weighted_adj}}}
+#'     \item{\code{\link{prioritization_genes}}}
+#'     \item{\code{\link{score_candidate_genes_from_PPI}}}
+#' }
 random_walk <- function(
     weighted_adj_matrix,
     restart_prob = 0.4,
@@ -467,6 +480,11 @@ random_walk <- function(
 #' @importFrom tibble tibble
 #' @importFrom logger log_info
 #' @export
+#' @seealso \itemize{
+#'     \item{\code{\link{weighted_adj}}}
+#'     \item{\code{\link{random_walk}}}
+#'     \item{\code{\link{score_candidate_genes_from_PPI}}}
+#' }
 prioritization_genes <- function(
     graph_op,
     prob_matrix,

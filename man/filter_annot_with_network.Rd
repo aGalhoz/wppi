@@ -24,10 +24,10 @@ Filter ontology datasets using PPI network object
 # Get GO database
 GO_data <- wppi_go_data()
 # Create igraph object based on genes of interest and first neighbors
-genes.interest <-
+genes_interest <-
     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 graph_op <- graph_from_op(wppi_omnipath_data())
-graph_op_1 <- subgraph_op(graph_op, genes.interest, 1)
+graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
 # Filter GO data
 GO_data_filtered <- filter_annot_with_network(GO_data, graph_op_1)
 
