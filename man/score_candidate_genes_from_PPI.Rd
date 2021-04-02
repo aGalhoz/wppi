@@ -17,41 +17,40 @@ score_candidate_genes_from_PPI(
 )
 }
 \arguments{
-\item{genes_interest}{Character vector with known-disease specific genes.}
+\item{genes_interest}{Character vector of gene symbols with genes known
+to be related to the investigated disease or condition.}
 
 \item{HPO_interest}{Character vector with Human Phenotype Ontology (HPO)
 annotations of interest from which to construct the functionality (for
-a list of available annotations call \code{\link{wppi_data}}). If not
-specified, all the annotations available in the HPO database will be
-used.}
+a list of available annotations see the `Name` column in the data
+frame provided by \code{\link{wppi_hpo_data}}). If not specified, all
+the annotations available in the HPO database will be used.}
 
 \item{percentage_output_genes}{Positive integer (range between 0 and 100)
-specifying the percentage (%) of the total candidate genes in the
+specifying the percentage (\%) of the total candidate genes in the
 network returned in the output. If not specified, the score of all the
 candidate genes is delivered.}
 
-\item{graph_order}{Positive integer bigger than 0 which defines the x-order
-neighbors of the given genes of interest. These new genes, also called
+\item{graph_order}{Integer larger than zero: the neighborhood range
+counted as steps from the genes of interest. These genes, also called
 candidate genes, together with the given genes of interest define the
 Protein-Protein Interaction (PPI) network used in the analysis. If not
-specified, is used the first-order neighbors.}
+specified, the first order neighbors are used.}
 
-\item{GO_annot}{Boolean parameter declaring to use or not the Gene Ontology
-(GO) annotation database to weight the PPI network. The default setting
-is to use it (GO_annot = TRUE).}
+\item{GO_annot}{Logical: use the Gene Ontology (GO) annotation database
+to weight the PPI network. The default is to use it.}
 
-\item{HPO_annot}{Boolean parameter declaring to use or not the Human
-Phenotype Ontology (HPO) annotation database to weight the PPI network.
-The default setting is to use it (HPO_annot = TRUE).}
+\item{HPO_annot}{Logical: use the Human Phenotype Ontology (HPO)
+annotation database to weight the PPI network. The default is to use
+it.}
 
-\item{restart_prob_rw}{Positive value between 0 and 1 defining the restart
+\item{restart_prob_rw}{Numeric: between 0 and 1, defines the restart
 probability parameter used in the Random Walk with Restart algorithm.
-If not specified, 0.4 is the default value.}
+The default value is 0.4.}
 
-\item{threshold_rw}{Positive value depicting the threshold parameter in the
-Random Walk with Restart algorithm. When the error between
-probabilities is smaller than the threshold defined, the algorithm
-stops. If not specified, 10^(-6) is the default value.}
+\item{threshold_rw}{Numeric: the threshold parameter in the Random Walk
+with Restart algorithm. When the error between probabilities is
+smaller than the threshold, the algorithm stops. The default is 1e-5.}
 
 \item{databases}{Database knowledge as produced by \code{\link{wppi_data}}.}
 }
@@ -61,15 +60,18 @@ Data frame with the ranked candidate genes based on the functional
    Restart parameters.
 }
 \description{
-The wppi package is a functional prioritization of new disease specific
-genes based on a given set of known disease-related genes and annotation
-Weighted Protein-Protein Interactions (WPPI). The PPI networks are obtained
-using the Omnipath (\url{https://omnipathdb.org/}) resource and
-functionality is deduced using the Gene Ontology (GO,
-\url{http://geneontology.org/}) and Human Phenotype Ontology (HPO,
-\url{https://hpo.jax.org/app/}) ontology databases. To score the candidate
-genes, a Random Walk with Restart algorithm is applied on the weighted
-network.
+The wppi package implements a prioritization of genes according to their
+potential relevance in a disease or other experimental or physiological
+condition. For this it uses a PPI network and functional annotations. A
+protein-protein interactions (PPI) in the neighborhood of the genes of
+interest are weighted according to the number of common neighbors of
+interacting partners and the similarity of their functional annotations.
+The PPI networks are obtained using the Omnipath
+(\url{https://omnipathdb.org/}) resource and functionality is deduced
+using the Gene Ontology (GO, \url{http://geneontology.org/}) and Human
+Phenotype Ontology (HPO, \url{https://hpo.jax.org/app/}) ontology
+databases. To score the candidate genes, a Random Walk with Restart
+algorithm is applied on the weighted network.
 }
 \examples{
 # example gene set

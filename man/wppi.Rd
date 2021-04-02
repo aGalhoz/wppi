@@ -41,6 +41,6 @@ scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
 
 }
 \author{
-Ana Galhoz <\email{ana.galhoz@helmholtz-muenchen.de}> and
-Denes Turei <\email{turei.denes@gmail.com}>
+Ana Galhoz \email{ana.galhoz@helmholtz-muenchen.de} and
+Denes Turei \email{turei.denes@gmail.com}
 }

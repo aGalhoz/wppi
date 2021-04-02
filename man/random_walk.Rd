@@ -2,7 +2,7 @@
 % Please edit documentation in R/WPPI_functions.R
 \name{random_walk}
 \alias{random_walk}
-\title{Random Walk with Restart (RWR) algorithm}
+\title{Random Walk with Restart (RWR)}
 \usage{
 random_walk(weighted_adj_matrix, restart_prob = 0.4, threshold = 1e-05)
 }
@@ -28,7 +28,7 @@ RWR on the normalized weighted adjacency matrix.
 The RWR algorithm estimates each protein/gene relevance based on the
 functional similarity of genes and disease/phenotype, and the topology
 of the network. This similarity score between nodes measures how closely
-two proteins/genes are correlated in a network. Thus, enabling to identify
+two proteins/genes are related in a network. Thus, enabling to identify
 which candidate genes are more related to our given genes of interest.
 }
 \examples{

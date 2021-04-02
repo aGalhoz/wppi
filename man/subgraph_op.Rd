@@ -23,7 +23,9 @@ Igraph graph object with PPI network of given genes of interest
 }
 \description{
 From the igraph object of a PPI network obtained from OmniPath extracts a
-subnetwork around the provided genes of interest. The size of the
+subnetwork around the provided genes of interest. The size of the graph
+is determined by the \code{sub_level} parameter, i.e. the maximum number
+of steps from the genes of interest.
 }
 \examples{
 # Subgraphs of first and second order
@@ -31,6 +33,6 @@ graph_op <- graph_from_op(wppi_omnipath_data())
 genes_interest <-
     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
-graph_op_1 <- subgraph_op(graph_op, genes_interest, 2)
+graph_op_2 <- subgraph_op(graph_op, genes_interest, 2)
 
 }

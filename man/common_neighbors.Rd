@@ -27,3 +27,6 @@ graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
 shared_neighbors <- common_neighbors(graph_op_1)
 
 }
+\seealso{
+\code{\link{graph_from_op}}
+}

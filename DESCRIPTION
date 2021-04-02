@@ -1,6 +1,6 @@
 Package: wppi
 Type: Package
-Title: Weighting protein interaction
+Title: Weighting protein-protein interactions
 Version: 0.99.0
 Authors@R: c(
     person(

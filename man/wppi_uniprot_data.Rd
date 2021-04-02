@@ -2,7 +2,7 @@
 % Please edit documentation in R/WPPI_data.R
 \name{wppi_uniprot_data}
 \alias{wppi_uniprot_data}
-\title{Retrieve data from Gene Ontology (HPO)}
+\title{Retrieve data from UniProt}
 \usage{
 wppi_uniprot_data()
 }

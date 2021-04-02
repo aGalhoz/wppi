@@ -87,7 +87,7 @@ wppi_hpo_data <- function(){
 }
 
 
-#' Retrieves data from Gene Ontology (HPO)
+#' Retrieves data from Gene Ontology (GO)
 #'
 #' Gene Ontology (\url{http://geneontology.org/}), GO) annotates genes
 #' by their function, localization and biological processes.
@@ -117,7 +117,7 @@ wppi_go_data <- function(){
 }
 
 
-#' Retrieve data from Gene Ontology (HPO)
+#' Retrieve data from UniProt
 #'
 #' UniProt (\url{https://uniprot.org/}) serves as a reference database for
 #' the human proteome and provides the primary identifier for proteins used

@@ -10,14 +10,14 @@ weighted_adj(graph_op, neighbors_data, GO_data, HPO_data)
 \item{graph_op}{Igraph object based on Omnipath PPI interactions from
 \code{\link{graph_from_op}}.}
 
-\item{neighbors_data}{Data table output from
-\code{\link{functional_annot}}.}
+\item{neighbors_data}{Data frame with the number of common neighbors
+as produced by \code{\link{common_neighbors}}.}
 
-\item{GO_data}{Data frame with GO annotations filtered and aggregated for
-the proteins/genes available in the graph object.}
+\item{GO_data}{Data frame with GO annotations as provided by
+\code{\link{wppi_go_data}}.}
 
-\item{HPO_data}{Data frame with HPO annotations filtered and aggregated
-for the proteins/genes available in the graph object.}
+\item{HPO_data}{Data frame with HPO annotations as provided by
+\code{\link{wppi_hpo_data}}.}
 }
 \value{
 Weighted adjacency matrix based on network topology and functional
@@ -46,6 +46,11 @@ w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
 \itemize{
     \item{\code{\link{random_walk}}}
     \item{\code{\link{prioritization_genes}}}
+    \item{\code{\link{common_neighbors}}}
+    \item{\code{\link{graph_from_op}}}
+    \item{\code{\link{subgraph_op}}}
     \item{\code{\link{score_candidate_genes_from_PPI}}}
+    \item{\code{\link{wppi_go_data}}}
+    \item{\code{\link{wppi_hpo_data}}}
 }
 }

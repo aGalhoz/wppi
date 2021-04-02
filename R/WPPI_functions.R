@@ -85,8 +85,9 @@ in_omnipath <- function(graph_op, gene_set, in_network = TRUE) {
 #' Extract PPI subgraph by genes of interest
 #'
 #' From the igraph object of a PPI network obtained from OmniPath extracts a
-#' subnetwork around the provided genes of interest. The size of the
-#'
+#' subnetwork around the provided genes of interest. The size of the graph
+#' is determined by the \code{sub_level} parameter, i.e. the maximum number
+#' of steps from the genes of interest.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
 #'     \code{\link{graph_from_op}}.
@@ -105,7 +106,7 @@ in_omnipath <- function(graph_op, gene_set, in_network = TRUE) {
 #' genes_interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
-#' graph_op_1 <- subgraph_op(graph_op, genes_interest, 2)
+#' graph_op_2 <- subgraph_op(graph_op, genes_interest, 2)
 #'
 #' @importFrom igraph vertex_attr induced_subgraph V ego
 #' @export
@@ -190,6 +191,7 @@ graph_to_adjacency <- function(graph_op) {
 #' @importFrom dplyr mutate filter
 #' @importFrom magrittr %>%
 #' @export
+#' @seealso \code{\link{graph_from_op}}
 common_neighbors <- function(graph_op) {
 
     graph_op %>%
@@ -225,12 +227,12 @@ common_neighbors <- function(graph_op) {
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
 #'     \code{\link{graph_from_op}}.
-#' @param neighbors_data Data table output from
-#'     \code{\link{functional_annot}}.
-#' @param GO_data Data frame with GO annotations filtered and aggregated for
-#'     the proteins/genes available in the graph object.
-#' @param HPO_data Data frame with HPO annotations filtered and aggregated
-#'     for the proteins/genes available in the graph object.
+#' @param neighbors_data Data frame with the number of common neighbors
+#'     as produced by \code{\link{common_neighbors}}.
+#' @param GO_data Data frame with GO annotations as provided by
+#'     \code{\link{wppi_go_data}}.
+#' @param HPO_data Data frame with HPO annotations as provided by
+#'     \code{\link{wppi_hpo_data}}.
 #'
 #' @return Weighted adjacency matrix based on network topology and functional
 #'     similarity between interacting proteins/genes based on ontology
@@ -256,7 +258,12 @@ common_neighbors <- function(graph_op) {
 #' @seealso \itemize{
 #'     \item{\code{\link{random_walk}}}
 #'     \item{\code{\link{prioritization_genes}}}
+#'     \item{\code{\link{common_neighbors}}}
+#'     \item{\code{\link{graph_from_op}}}
+#'     \item{\code{\link{subgraph_op}}}
 #'     \item{\code{\link{score_candidate_genes_from_PPI}}}
+#'     \item{\code{\link{wppi_go_data}}}
+#'     \item{\code{\link{wppi_hpo_data}}}
 #' }
 weighted_adj <- function(
     graph_op,
@@ -351,13 +358,13 @@ weighted_adj <- function(
 }
 
 
-#' Random Walk with Restart (RWR) algorithm
+#' Random Walk with Restart (RWR)
 #'
 #' RWR on the normalized weighted adjacency matrix.
 #' The RWR algorithm estimates each protein/gene relevance based on the
 #' functional similarity of genes and disease/phenotype, and the topology
 #' of the network. This similarity score between nodes measures how closely
-#' two proteins/genes are correlated in a network. Thus, enabling to identify
+#' two proteins/genes are related in a network. Thus, enabling to identify
 #' which candidate genes are more related to our given genes of interest.
 #'
 #' @param weighted_adj_matrix Matrix object corresponding to the weighted
@@ -482,6 +489,7 @@ random_walk <- function(
 #' @importFrom stats quantile
 #' @export
 #' @seealso \itemize{
+#'     \item{\code{\link{graph_from_op}}}
 #'     \item{\code{\link{weighted_adj}}}
 #'     \item{\code{\link{random_walk}}}
 #'     \item{\code{\link{score_candidate_genes_from_PPI}}}

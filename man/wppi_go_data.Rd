@@ -2,7 +2,7 @@
 % Please edit documentation in R/WPPI_data.R
 \name{wppi_go_data}
 \alias{wppi_go_data}
-\title{Retrieves data from Gene Ontology (HPO)}
+\title{Retrieves data from Gene Ontology (GO)}
 \usage{
 wppi_go_data()
 }

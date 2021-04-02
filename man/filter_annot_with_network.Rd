@@ -8,7 +8,7 @@ filter_annot_with_network(data_annot, graph_op)
 }
 \arguments{
 \item{data_annot}{Data frame (tibble) of GO or HPO datasets from
-\code{\link{wppi_data}}.}
+\code{\link{wppi_go_data}} or \code{\link{wppi_hpo_data}}.}
 
 \item{graph_op}{Igraph graph object obtained from built Omnipath PPI of
 genes of interest and x-degree neighbors.}
@@ -31,4 +31,11 @@ graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
 # Filter GO data
 GO_data_filtered <- filter_annot_with_network(GO_data, graph_op_1)
 
+}
+\seealso{
+\itemize{
+    \item{\code{\link{wppi_go_data}}}
+    \item{\code{\link{wppi_hpo_data}}}
+    \item{\code{\link{graph_from_op}}}
+}
 }

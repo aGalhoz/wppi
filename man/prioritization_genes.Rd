@@ -52,6 +52,7 @@ scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
 }
 \seealso{
 \itemize{
+    \item{\code{\link{graph_from_op}}}
     \item{\code{\link{weighted_adj}}}
     \item{\code{\link{random_walk}}}
     \item{\code{\link{score_candidate_genes_from_PPI}}}

@@ -35,8 +35,8 @@
 #' w_rw <- random_walk(w_adj)
 #' scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
 #'
-#' @author Ana Galhoz <\email{ana.galhoz@@helmholtz-muenchen.de}> and
-#' Denes Turei <\email{turei.denes@@gmail.com}>
+#' @author Ana Galhoz \email{ana.galhoz@@helmholtz-muenchen.de} and
+#' Denes Turei \email{turei.denes@@gmail.com}
 #'
 #' @docType package
 #' @name wppi

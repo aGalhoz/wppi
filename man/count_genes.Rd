@@ -8,7 +8,7 @@ count_genes(data_annot)
 }
 \arguments{
 \item{data_annot}{Data frame (tibble) of GO or HPO datasets from
-\code{\link{wppi_data}}.}
+\code{\link{wppi_go_data}} or \code{\link{wppi_hpo_data}}.}
 }
 \value{
 Number of total unique genes in each ontology database.
@@ -24,7 +24,6 @@ count_genes(go)
 }
 \seealso{
 \itemize{
-    \item{\code{\link{wppi_data}}}
     \item{\code{\link{wppi_go_data}}}
     \item{\code{\link{wppi_hpo_data}}}
 }

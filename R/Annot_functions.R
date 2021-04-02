@@ -1,6 +1,6 @@
 #' Processing of ontology annotations
 #'
-#' Ontology databases such as Gene Ontology (GO)
+#' Ontology databases such as Gene Ontology
 #' (GO, \url{http://geneontology.org/}) and Human Phenotype Ontology
 #' (HPO, \url{https://hpo.jax.org/app/}) provide important genome and disease
 #' related functional information of genes. These combined allow to build a
@@ -111,7 +111,7 @@ annot_summary_msg <- function(db){
 #' Number of total genes in an ontology database
 #'
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
-#'     \code{\link{wppi_data}}.
+#'     \code{\link{wppi_go_data}} or \code{\link{wppi_hpo_data}}.
 #'
 #' @return Number of total unique genes in each ontology database.
 #'
@@ -124,7 +124,6 @@ annot_summary_msg <- function(db){
 #' @importFrom dplyr pull n_distinct
 #' @export
 #' @seealso \itemize{
-#'     \item{\code{\link{wppi_data}}}
 #'     \item{\code{\link{wppi_go_data}}}
 #'     \item{\code{\link{wppi_hpo_data}}}
 #' }
@@ -140,7 +139,7 @@ count_genes <- function(data_annot) {
 #' Filter ontology datasets using PPI network object
 #'
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
-#'     \code{\link{wppi_data}}.
+#'     \code{\link{wppi_go_data}} or \code{\link{wppi_hpo_data}}.
 #' @param graph_op Igraph graph object obtained from built Omnipath PPI of
 #'     genes of interest and x-degree neighbors.
 #'
@@ -162,6 +161,11 @@ count_genes <- function(data_annot) {
 #' @importFrom magrittr %>%
 #' @importFrom dplyr filter distinct
 #' @export
+#' @seealso \itemize{
+#'     \item{\code{\link{wppi_go_data}}}
+#'     \item{\code{\link{wppi_hpo_data}}}
+#'     \item{\code{\link{graph_from_op}}}
+#' }
 filter_annot_with_network <- function(data_annot, graph_op) {
 
     # NSE vs. R CMD check workaround
