@@ -38,12 +38,12 @@ genes.interest <-
     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 graph_op <- graph_from_op(db$omnipath)
 graph_op_1 <- subgraph_op(graph_op, genes.interest, 1)
-shared_neighbors <- common_neighbors(graph_op_1)
+neighbors_data <- common_neighbors(graph_op_1)
 GO_data <- filter_annot_with_network(db$go, graph_op_1)
 HPO_data <- filter_annot_with_network(db$hpo, graph_op_1)
 w_adj <- weighted_adj(
-    graph_op,
-    shared_neighbors,
+    graph_op_1,
+    neighbors_data,
     GO_data,
     HPO_data
 )

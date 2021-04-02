@@ -29,6 +29,6 @@ genes.interest <-
 graph_op <- graph_from_op(wppi_omnipath_data())
 graph_op_1 <- subgraph_op(graph_op, genes.interest, 1)
 # Filter GO data
-GO_data_filter <- filter_annot_with_network(GO_data, graph_op_1)
+GO_data_filtered <- filter_annot_with_network(GO_data, graph_op_1)
 
 }

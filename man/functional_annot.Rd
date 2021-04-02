@@ -4,21 +4,17 @@
 \alias{functional_annot}
 \title{Functional similarity score based on ontology}
 \usage{
-functional_annot(data_aggregated, gene_i, gene_j, nr_genes = NULL)
+functional_annot(annot, gene_i, gene_j)
 }
 \arguments{
-\item{data_aggregated}{Data frame with gene symbols aggregated by
-annotation for GO/HPO databases, as provided by
-\code{\link{aggregate_annot}}.}
+\item{annot}{Processed annotation data as provided by
+\code{\link{process_annot}}.}
 
 \item{gene_i}{String with the gene symbol in the row of the adjacency
 matrix.}
 
 \item{gene_j}{String with the gene symbol in the column of the adjacency
 matrix.}
-
-\item{nr_genes}{Integer: the total number of unique genes in the ontology
-database. If not provided the genes will be counted, however}
 }
 \value{
 Numeric value with GO/HPO functional similarity between given
@@ -34,8 +30,8 @@ the total amount of unique genes available in the ontology database.
 }
 \examples{
 hpo <- wppi_hpo_data()
-hpo_agg <- aggregate_annot(hpo)
-hpo_fa <- functional_annot(hpo_agg, 'AKT1', 'MTOR')
+hpo <- process_annot(hpo)
+hpo_score <- functional_annot(hpo, 'AKT1', 'MTOR')
 # [1] 38978.09
 
 }

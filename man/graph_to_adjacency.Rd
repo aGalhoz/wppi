@@ -7,17 +7,29 @@
 graph_to_adjacency(graph_op)
 }
 \arguments{
-\item{graph_op}{Igraph object based on Omnipath PPI interactions from
+\item{graph_op}{Igraph object based on OmniPath PPI interactions from
 \code{\link{graph_from_op}}.}
 }
 \value{
 Adjacency matrix of the graph object.
 }
 \description{
-Convert network graph into adjacency matrix
+This method uses igraph's \code{as_adjacency_matrix} and converts the
+returned sparse matrix to a plain matrix. Therefore be careful about
+the size of the network you pass, such a matrix can easily occupy GBs
+of memory.
 }
 \examples{
 graph_op <- graph_from_op(wppi_omnipath_data())
-adj_op <- graph_to_adjacency(graph_op)
+genes_interest <-
+    c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+graph_op_1 <- subgraph_op(graph_op, genes_interest)
+adj_op <- graph_to_adjacency(graph_op_1)
 
+}
+\seealso{
+\itemize{
+    \item{\code{\link{graph_from_op}}}
+    \item{\code{\link{wppi_omnipath_data}}}
+}
 }
