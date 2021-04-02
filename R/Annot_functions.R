@@ -108,7 +108,7 @@ count_genes <- function(data_annot) {
 #' graph_op <- graph_from_op(wppi_omnipath_data())
 #' graph_op_1 <- subgraph_op(graph_op, genes.interest, 1)
 #' # Filter GO data
-#' GO_data_filter <- filter_annot_with_network(GO_data, graph_op_1)
+#' GO_data_filtered <- filter_annot_with_network(GO_data, graph_op_1)
 #'
 #' @importFrom igraph vertex_attr
 #' @importFrom magrittr %>%
@@ -137,49 +137,42 @@ filter_annot_with_network <- function(data_annot, graph_op) {
 #' is based on the number of genes annotated in each shared ontology term and
 #' the total amount of unique genes available in the ontology database.
 #'
-#' @param data_aggregated Data frame with gene symbols aggregated by
-#'     annotation for GO/HPO databases, as provided by
-#'     \code{\link{aggregate_annot}}.
+#' @param annot Processed annotation data as provided by
+#'     \code{\link{process_annot}}.
 #' @param gene_i String with the gene symbol in the row of the adjacency
 #'     matrix.
 #' @param gene_j String with the gene symbol in the column of the adjacency
 #'     matrix.
-#' @param nr_genes Integer: the total number of unique genes in the ontology
-#'     database. If not provided the genes will be counted, however repeated
-#'     call of this function is much faster if the genes are already counted.
 #'
 #' @return Numeric value with GO/HPO functional similarity between given
 #'     pair of proteins.
 #'
 #' @examples
 #' hpo <- wppi_hpo_data()
-#' hpo_agg <- aggregate_annot(hpo)
-#' hpo_fa <- functional_annot(hpo_agg, 'AKT1', 'MTOR')
+#' hpo <- process_annot(hpo)
+#' hpo_score <- functional_annot(hpo, 'AKT1', 'MTOR')
 #' # [1] 38978.09
 #'
-#' @importFrom rlang %||%
 #' @export
 #' @seealso \code{\link{aggregate_annot}}
-functional_annot <- function(
-    data_aggregated,
-    gene_i,
-    gene_j,
-    nr_genes = NULL
-) {
+functional_annot <- function(annot, gene_i, gene_j) {
 
-    nr_genes <- (
-        nr_genes %||%
-        attr(data_aggregated, 'nr_genes') %||%
-        count_genes(data_aggregated)
-    )
-    idx_i <- grepl(gene_i, data_aggregated$Gene_Symbol)
-    idx_j <- grepl(gene_j, data_aggregated$Gene_Symbol)
-    data_i_j <- data_aggregated[idx_i & idx_j, ]$nr_gene
-    functional_i_j <- ifelse(
-        length(data_i_j) != 0,
-        sum(-2 * log(data_i_j / nr_genes)),
-        0
+    if (
+        !gene_i %in% names(annot$gene_term) ||
+        !gene_j %in% names(annot$gene_term)
+    ){
+        return(0)
+    }
+
+    shared_terms <- intersect(
+        annot$gene_term[[gene_i]],
+        annot$gene_term[[gene_j]]
     )
 
-    return(functional_i_j)
+    `if`(
+        length(shared_terms) == 0L,
+        0,
+        sum(-2 * log(annot$term_size[shared_terms] / annot$total_genes))
+    )
+
 }
