@@ -132,9 +132,11 @@ score_candidate_genes_from_PPI <- function(
     graph_op <- graph_from_op(op_data = data_info$omnipath)
 
     # build ith-order graph based on genes of interest
-    sub_graph <- subgraph_op(graph_op = graph_op,
-                             gene_set = genes_interest,
-                             sub_level = graph_order)
+    sub_graph <- subgraph_op(
+        graph_op = graph_op,
+        gene_set = genes_interest,
+        sub_level = graph_order
+    )
 
     # subset GO info based on PPI
     GO_data_sub <- `if`(
@@ -157,14 +159,18 @@ score_candidate_genes_from_PPI <- function(
     )
 
     # weight PPI based on annotations
-    weighted_adj_sub <- weighted_adj(graph_op = sub_graph,
-                                     GO_data = GO_data_sub,
-                                     HPO_data = HPO_data_sub)
+    weighted_adj_sub <- weighted_adj(
+        graph_op = sub_graph,
+        GO_data = GO_data_sub,
+        HPO_data = HPO_data_sub
+    )
 
     # random walk algorithm on weighted PPI
-    random_walk_sub <- random_walk(weighted_adj_matrix = weighted_adj_sub,
-                                   restart_prob = restart_prob_rw,
-                                   threshold = threshold_rw)
+    random_walk_sub <- random_walk(
+        weighted_adj_matrix = weighted_adj_sub,
+        restart_prob = restart_prob_rw,
+        threshold = threshold_rw
+    )
 
     # compute and rank scores of candidate genes based on given genes
     genes_ranked_sub <- prioritization_genes(
