@@ -129,6 +129,9 @@ annot_summary_msg <- function(db){
 #' }
 count_genes <- function(data_annot) {
 
+    # NSE vs. R CMD check workaround
+    Gene_Symbol <- NULL
+
     data_annot %>%
     pull(Gene_Symbol) %>%
     n_distinct

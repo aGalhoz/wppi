@@ -194,6 +194,9 @@ graph_to_adjacency <- function(graph_op) {
 #' @seealso \code{\link{graph_from_op}}
 common_neighbors <- function(graph_op) {
 
+    # NSE vs. R CMD check workaround
+    nr_neighbors <- NULL
+
     graph_op %>%
     get.edgelist(names = FALSE) %>%
     `colnames<-`(c('source', 'target')) %>%
@@ -506,7 +509,7 @@ prioritization_genes <- function(
     )
 
     # NSE vs. R CMD check workaround
-    scores <- NULL
+    score <- NULL
 
     percentage_genes_ranked %<>% `/`(100) %>% min(1)
 
