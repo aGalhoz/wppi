@@ -30,8 +30,7 @@
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
 #' graph_op <- graph_from_op(db$omnipath)
 #' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
-#' neighbors_data <- common_neighbors(graph_op_1)
-#' w_adj <- weighted_adj(graph_op_1, neighbors_data, db$go, db$hpo)
+#' w_adj <- weighted_adj(graph_op_1, db$go, db$hpo)
 #' w_rw <- random_walk(w_adj)
 #' scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
 #'
