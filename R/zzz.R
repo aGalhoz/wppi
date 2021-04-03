@@ -36,8 +36,4 @@ wppi_log_setup <- function(pkgname = 'wppi', threshold = logger::INFO){
 
     wppi_log_setup()
 
-    ### Create directories
-    dir.create(file.path(getwd(), 'WPPI_Data'), showWarnings = FALSE)
-    dir.create(file.path(getwd(), 'WPPI_Plots'), showWarnings = FALSE)
-
 }
