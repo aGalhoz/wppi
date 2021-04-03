@@ -112,20 +112,25 @@ in_omnipath <- function(graph_op, gene_set, in_network = TRUE) {
 #' @export
 subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 
-  # sub_level indicates the neighbor-level of given genes
-  idx_mapped <- which(vertex_attr(graph_op)$Gene_Symbol %in% gene_set)
-  vertices_mapped <- V(graph_op)[idx_mapped]
-  if (sub_level == 0L) {
-    op_subgraph <- induced_subgraph(graph_op, vertices_mapped)
-  } else {
-    new_nodes <- unlist(ego(graph_op,
-                            order = sub_level,
-                            nodes = idx_mapped, mode = "all", mindist = 0
-    ))
-    op_subgraph <- induced_subgraph(graph_op, new_nodes)
-  }
+    # sub_level indicates the neighbor-level of given genes
+    idx_mapped <- which(vertex_attr(graph_op)$Gene_Symbol %in% gene_set)
+    vertices_mapped <- V(graph_op)[idx_mapped]
+    if (sub_level == 0L) {
+        op_subgraph <- induced_subgraph(graph_op, vertices_mapped)
+    } else {
+        new_nodes <- unlist(
+            ego(
+                graph_op,
+                order = sub_level,
+                nodes = idx_mapped,
+                mode = "all",
+                mindist = 0
+            )
+        )
+        op_subgraph <- induced_subgraph(graph_op, new_nodes)
+    }
 
-  return(op_subgraph)
+    return(op_subgraph)
 
 }
 
