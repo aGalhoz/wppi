@@ -27,7 +27,7 @@ License: MIT + file LICENSE
 URL: https://github.com/AnaGalhoz37/W_Annot_PPI
 BugReports: https://github.com/AnaGalhoz37/W_Annot_PPI/issues
 biocViews: GraphAndNetwork, Network, Pathways, Software, GeneSignaling,
-    SystemsBiology, Transcriptomics, Annotation
+    GeneTarget, SystemsBiology, Transcriptomics, Annotation
 Encoding: UTF-8
 VignetteBuilder: knitr
 Depends: R(>= 4.1)
