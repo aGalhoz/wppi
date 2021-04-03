@@ -165,9 +165,9 @@ subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 #'     \item{\code{\link{wppi_omnipath_data}}}
 #' }
 graph_to_adjacency <- function(graph_op) {
-  adj_data <- as.matrix(as_adjacency_matrix(graph_op))
+    adj_data <- as.matrix(as_adjacency_matrix(graph_op))
 
-  return(adj_data)
+    return(adj_data)
 }
 
 
