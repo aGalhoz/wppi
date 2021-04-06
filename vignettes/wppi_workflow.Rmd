@@ -1,31 +1,35 @@
 ---
-title: 'WPPI workflow'
+title: "WPPI workflow"
 author:
-  - name: Ana Galhoz
-    affiliation: hmgu
-    email: ana.galhoz@helmholtz-muenchen.de
-    correspondance: true
-  - name: Denes Turei
-    affiliation: unihd
+- name: Ana Galhoz
+  affiliation: hmgu
+  email: ana.galhoz@helmholtz-muenchen.de
+  correspondance: yes
+- name: Denes Turei
+  affiliation: unihd
 institute:
-  - hmgu: Helmholtz Zentrum Muenchen
-  - unihd: Institute for Computational Biomedicine, Heidelberg University
-package: wppi
+- hmgu: Helmholtz Zentrum Muenchen
+- unihd: Institute for Computational Biomedicine, Heidelberg University
 output:
+  html_document:
+    toc: yes
+    toc_depth: '4'
+    df_print: paged
   BiocStyle::html_document:
     number_sections: yes
     toc: yes
     toc_depth: 4
     pandoc_args:
-      - '--lua-filter=scholarly-metadata.lua'
-      - '--lua-filter=author-info-blocks.lua'
+    - --lua-filter=scholarly-metadata.lua
+    - --lua-filter=author-info-blocks.lua
   pdf_document:
     number_sections: yes
     toc: yes
     toc_depth: 4
     pandoc_args:
-      - '--lua-filter=scholarly-metadata.lua'
-      - '--lua-filter=author-info-blocks.lua'
+    - --lua-filter=scholarly-metadata.lua
+    - --lua-filter=author-info-blocks.lua
+package: wppi
 abstract: |
   The `wppi` package calculates context specific scores for genes in
   the network neighborhood of genes of interest. The context specificity
@@ -46,8 +50,8 @@ abstract: |
   walk.
 vignette: |
   %\VignetteIndexEntry{WPPI workflow}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 fig_width: 9
 fig_height: 7
 ---
