@@ -3,7 +3,7 @@
 #' Ontology databases such as Gene Ontology
 #' (GO, \url{http://geneontology.org/}) and Human Phenotype Ontology
 #' (HPO, \url{https://hpo.jax.org/app/}) provide important genome and disease
-#' related functional information of genes. These combined allow to build a
+#' functional annotations of genes. These combined allow to build a
 #' connection between proteins/genes and phenotype/disease. This function
 #' aggregates information in the GO and HPO ontology datasets.
 #'
@@ -188,8 +188,8 @@ filter_annot_with_network <- function(data_annot, graph_op) {
 
 #' Functional similarity score based on ontology
 #'
-#' Functional similarity between two genes in ontology database (GO or HPO).
-#' For each pair of interacting proteins in the PPI graph network, is
+#' Functional similarity between two genes in ontology databases (GO or HPO).
+#' Each pair of interacting proteins in the PPI graph network, is
 #' quantified the shared annotations between them using the Fisher's combined
 #' probability test (\url{https://doi.org/10.1007/978-1-4612-4380-9_6}). This
 #' is based on the number of genes annotated in each shared ontology term and
