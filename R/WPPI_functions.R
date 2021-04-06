@@ -4,7 +4,7 @@
 
 #' Igraph object from OmniPath network
 #'
-#' Creates of igraph object from PPI Omnipath database with information
+#' Creation of igraph object from PPI Omnipath database with information
 #' regarding proteins and gene symbols.
 #'
 #' @param op_data Data frame (tibble) of Omnipath PPI interactions from
@@ -87,7 +87,7 @@ in_omnipath <- function(graph_op, gene_set, in_network = TRUE) {
 #' From the igraph object of a PPI network obtained from OmniPath extracts a
 #' subnetwork around the provided genes of interest. The size of the graph
 #' is determined by the \code{sub_level} parameter, i.e. the maximum number
-#' of steps from the genes of interest.
+#' of steps (order) from the genes of interest.
 #'
 #' @param graph_op Igraph object based on Omnipath PPI interactions from
 #'     \code{\link{graph_from_op}}.
@@ -132,42 +132,6 @@ subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 
     return(op_subgraph)
 
-}
-
-
-# Here I don't understand why we don't use the sparse matrix.
-# Also we don't use this function in the package (because I
-# removed it's only usage :P), maybe we should remove it.
-
-#' Convert network graph into adjacency matrix
-#'
-#' This method uses igraph's \code{as_adjacency_matrix} and converts the
-#' returned sparse matrix to a plain matrix. Therefore be careful about
-#' the size of the network you pass, such a matrix can easily occupy GBs
-#' of memory.
-#'
-#' @param graph_op Igraph object based on OmniPath PPI interactions from
-#'     \code{\link{graph_from_op}}.
-#'
-#' @return Adjacency matrix of the graph object.
-#'
-#' @examples
-#' graph_op <- graph_from_op(wppi_omnipath_data())
-#' genes_interest <-
-#'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
-#' graph_op_1 <- subgraph_op(graph_op, genes_interest)
-#' adj_op <- graph_to_adjacency(graph_op_1)
-#'
-#' @importFrom igraph as_adjacency_matrix
-#' @export
-#' @seealso \itemize{
-#'     \item{\code{\link{graph_from_op}}}
-#'     \item{\code{\link{wppi_omnipath_data}}}
-#' }
-graph_to_adjacency <- function(graph_op) {
-    adj_data <- as.matrix(as_adjacency_matrix(graph_op))
-
-    return(adj_data)
 }
 
 
