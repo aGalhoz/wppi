@@ -71,15 +71,20 @@ genes_interest <- c(
 
 scores <- score_candidate_genes_from_PPI(genes_interest)
 scores
-# # A tibble: 265 x 3
+# # A tibble: 295 x 3
 #    score gene_symbol uniprot
-#    <dbl> <chr>       <chr>
-#  1 0.247 FOXA2       Q9Y261
-#  2 0.247 CLK2        P49760
-#  3 0.247 HTRA2       O43464
-#  4 0.247 SKI         P12755
-#  5 0.247 HNRNPA1     P09651
-# # . with 260 more rows
+#    <dbl> <chr>       <chr>  
+#  1 0.247 KNL1        Q8NG31 
+#  2 0.247 HTRA2       O43464 
+#  3 0.247 KAT6A       Q92794 
+#  4 0.247 BABAM1      Q9NWV8 
+#  5 0.247 SKI         P12755 
+#  6 0.247 FOXA2       Q9Y261 
+#  7 0.247 CLK2        P49760 
+#  8 0.247 HNRNPA1     P09651 
+#  9 0.247 HK1         P19367 
+# 10 0.180 SH3RF1      Q7Z6J0 
+# # … with 285 more rows
 ```
 
 # Workflow step by step
