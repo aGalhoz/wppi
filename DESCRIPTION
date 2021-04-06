@@ -26,8 +26,8 @@ Description: Protein-protein interaction data is essential for omics data
     prioritizes genes based on network topology, functional scores and a path 
     search algorithm. 
 License: MIT + file LICENSE
-URL: https://github.com/AnaGalhoz37/W_Annot_PPI
-BugReports: https://github.com/AnaGalhoz37/W_Annot_PPI/issues
+URL: https://github.com/AnaGalhoz37/wppi
+BugReports: https://github.com/AnaGalhoz37/wppi/issues
 biocViews: GraphAndNetwork, Network, Pathways, Software, GeneSignaling,
     GeneTarget, SystemsBiology, Transcriptomics, Annotation
 Encoding: UTF-8
