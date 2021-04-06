@@ -68,7 +68,6 @@ genes_interest <- c(
     'ERCC8', 'AKT3', 'NOL3', 'TTK',
     'GFI1B', 'CDC25A', 'TPX2', 'SHE'
 )
-
 scores <- score_candidate_genes_from_PPI(genes_interest)
 scores
 # # A tibble: 295 x 3
