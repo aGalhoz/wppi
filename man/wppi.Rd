@@ -16,7 +16,7 @@ neighborhood of the genes of interest. The ontology annotations are also
 filtered to the genes in this subnetwork. Then the adjacency matrix is
 weighted according to the number of common neighbors and the similarity
 in functional annotations of each pair of interacting proteins. On this
-weighted adjacency matrix a random walk with returns is performed. The
+weighted adjacency matrix a random walk with restart is performed. The
 final score for the genes in the neighborhood is the sum of their scores
 (probabilities to be visited) in the random walk.
 The method can be fine tuned by setting the neighborhood range, the
