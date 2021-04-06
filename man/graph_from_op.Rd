@@ -16,7 +16,7 @@ Igraph PPI graph object with vertices defined by UniProt ID and
     Omnipath.
 }
 \description{
-Creates of igraph object from PPI Omnipath database with information
+Creation of igraph object from PPI Omnipath database with information
 regarding proteins and gene symbols.
 }
 \examples{

@@ -20,7 +20,7 @@ databases. The databases used here are the Human Phenotype Ontology (HPO,
 \url{https://hpo.jax.org/app/}), Gene Ontology (GO,
 \url{http://geneontology.org/}), OmniPath (\url{https://omnipathdb.org/})
 and UniProt (\url{https://uniprot.org/}). The downloads carried out by
-the OmnipathR package and data required by wppi is extracted from each
+the OmnipathR package and data required by wppi are extracted from each
 table.
 }
 \examples{

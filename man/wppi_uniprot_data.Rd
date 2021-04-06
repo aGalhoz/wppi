@@ -7,7 +7,7 @@
 wppi_uniprot_data()
 }
 \value{
-A data frame (tibble) with GO data.
+A data frame (tibble) with UniProt data.
 }
 \description{
 UniProt (\url{https://uniprot.org/}) serves as a reference database for

@@ -90,15 +90,15 @@ new_genes_diabetes <-
         percentage_output_genes = 10,
         graph_order = 1)
 new_genes_diabetes
-# # A tibble: 265 x 3
+# # A tibble: 30 x 3
 #    score gene_symbol uniprot
 #    <dbl> <chr>       <chr>
-#  1 0.247 FOXA2       Q9Y261
-#  2 0.247 CLK2        P49760
-#  3 0.247 HTRA2       O43464
-#  4 0.247 SKI         P12755
-#  5 0.247 HNRNPA1     P09651
-# # . with 260 more rows
+#  1 0.247 KNL1        Q8NG31
+#  2 0.247 HTRA2       O43464
+#  3 0.247 KAT6A       Q92794
+#  4 0.247 BABAM1      Q9NWV8
+#  5 0.247 SKI         P12755
+# # … with 25 more rows
 
 }
 \seealso{

@@ -25,7 +25,7 @@ Igraph graph object with PPI network of given genes of interest
 From the igraph object of a PPI network obtained from OmniPath extracts a
 subnetwork around the provided genes of interest. The size of the graph
 is determined by the \code{sub_level} parameter, i.e. the maximum number
-of steps from the genes of interest.
+of steps (order) from the genes of interest.
 }
 \examples{
 # Subgraphs of first and second order
