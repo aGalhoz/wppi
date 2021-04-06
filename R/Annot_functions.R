@@ -8,13 +8,14 @@
 #' aggregates information in the GO and HPO ontology datasets.
 #'
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
-#'     \code{\link{wppi_data}}.
+#'     \code{\link{wppi_data}}, \code{\link{wppi_go_data}} or 
+#'     \code{\link{wppi_hpo_data}}.
 #'
 #' @return A list of four elements: 1) "term_size" a list which serves as a
-#'     lookup table for size (number of genes) for the terms; 2) "gene_term"
-#'     a list to look up terms by gene symbol; 3) "annot" the original
-#'     data frame (\code{data_annot}); 4) "total_genes" the number of genes
-#'     in the annotation.
+#'     lookup table for size (number of genes) for each ontology term; 2) 
+#'     "gene_term" a list to look up terms by gene symbol; 3) "annot" the 
+#'     original data frame (\code{data_annot}); 4) "total_genes" the number of 
+#'     genes annotated in the ontology dataset.
 #'
 #' @examples
 #' hpo_raw <- wppi_hpo_data()
