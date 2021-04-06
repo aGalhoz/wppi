@@ -148,9 +148,9 @@ wppi_uniprot_data <- function(){
 #' Protein-protein interaction data from OmniPath
 #'
 #' OmniPath (\url{https://omnipathdb.org/}) integrates protein-protein
-#' interactions from more than 30 resources. The network is highly
-#' customizable by passing parameters to
-#' \code{OmnipathR::import_post_translational_interactions}.
+#' interactions (PPI) from more than 30 resources. The network created is 
+#' highly customizable by passing parameters 
+#' to \code{OmnipathR::import_post_translational_interactions}.
 #'
 #' @param ... Passed to
 #'     \code{OmnipathR::import_post_translational_interactions}.
