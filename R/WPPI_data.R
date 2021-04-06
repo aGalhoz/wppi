@@ -5,7 +5,7 @@
 #' \url{https://hpo.jax.org/app/}), Gene Ontology (GO,
 #' \url{http://geneontology.org/}), OmniPath (\url{https://omnipathdb.org/})
 #' and UniProt (\url{https://uniprot.org/}). The downloads carried out by
-#' the OmnipathR package and data required by wppi is extracted from each
+#' the OmnipathR package and data required by wppi are extracted from each
 #' table.
 #'
 #' @param ... Passed to
@@ -123,7 +123,7 @@ wppi_go_data <- function(){
 #' the human proteome and provides the primary identifier for proteins used
 #' in this package.
 #'
-#' @return A data frame (tibble) with GO data.
+#' @return A data frame (tibble) with UniProt data.
 #'
 #' @examples
 #' uniprot <- wppi_uniprot_data()
