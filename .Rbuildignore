@@ -5,5 +5,3 @@
 ^.*Rcheck.*$
 ^vignettes/.*pdf$
 ^vignettes/.*html$
-^WPPI_Data.*$
-^WPPI_Plots.*$
