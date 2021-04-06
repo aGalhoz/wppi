@@ -22,7 +22,9 @@ Description: Protein-protein interaction data is essential for omics data
     annotations such as Gene Ontology and Human Phenotype Ontology might help
     to evaluate the relevance of interactions. This package predicts
     functional relevance of protein-protein interactions based on functional
-    annotations such as Human Protein Ontology and Gene Ontology.
+    annotations such as Human Protein Ontology and Gene Ontology, and 
+    prioritizes genes based on network topology, functional scores and a path 
+    search algorithm. 
 License: MIT + file LICENSE
 URL: https://github.com/AnaGalhoz37/W_Annot_PPI
 BugReports: https://github.com/AnaGalhoz37/W_Annot_PPI/issues
