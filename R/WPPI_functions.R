@@ -209,8 +209,6 @@ common_neighbors <- function(graph_op) {
 #'     databases.
 #'
 #' @examples
-#' # Get data using \code{\link{wppi_hpo_data}}, \code{\link{wppi_go_data}} or 
-#' \code{\link{wppi_data}}
 #' db <- wppi_data()
 #' GO_data <- db$go
 #' HPO_data <- db$hpo
@@ -361,8 +359,6 @@ weighted_adj <- function(
 #'     similarities for all proteins/genes in the network.
 #'
 #' @examples
-#' # Get data using \code{\link{wppi_hpo_data}}, \code{\link{wppi_go_data}} or 
-#' \code{\link{wppi_data}}
 #' db <- wppi_data()
 #' GO_data <- db$go
 #' HPO_data <- db$hpo
@@ -461,8 +457,6 @@ random_walk <- function(
 #'     Restart parameters.
 #'
 #' @examples
-#' # Get data using \code{\link{wppi_hpo_data}}, \code{\link{wppi_go_data}} or 
-#' \code{\link{wppi_data}}
 #' db <- wppi_data()
 #' GO_data <- db$go
 #' HPO_data <- db$hpo

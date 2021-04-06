@@ -32,8 +32,6 @@ two proteins/genes are related in a network. Thus, enabling to identify
 which candidate genes are more related to our given genes of interest.
 }
 \examples{
-# Get data using \code{\link{wppi_hpo_data}}, \code{\link{wppi_go_data}} or 
-\code{\link{wppi_data}}
 db <- wppi_data()
 GO_data <- db$go
 HPO_data <- db$hpo

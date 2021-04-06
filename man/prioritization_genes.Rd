@@ -39,8 +39,6 @@ score is defined by the sum of its correlations towards the known
 disease-related genes.
 }
 \examples{
-# Get data using \code{\link{wppi_hpo_data}}, \code{\link{wppi_go_data}} or 
-\code{\link{wppi_data}}
 db <- wppi_data()
 GO_data <- db$go
 HPO_data <- db$hpo
