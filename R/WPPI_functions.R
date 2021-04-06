@@ -461,13 +461,25 @@ random_walk <- function(
 #'     Restart parameters.
 #'
 #' @examples
+#' # Get data using \code{\link{wppi_hpo_data}}, \code{\link{wppi_go_data}} or 
+#' \code{\link{wppi_data}}
 #' db <- wppi_data()
+#' GO_data <- db$go
+#' HPO_data <- db$hpo
+#' # Genes of interest
 #' genes_interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
+#' # Graph object with PPI 
 #' graph_op <- graph_from_op(db$omnipath)
 #' graph_op_1 <- subgraph_op(graph_op, genes_interest, 1)
-#' w_adj <- weighted_adj(graph_op_1, db$go, db$hpo)
+#' # Filter ontology data
+#' GO_data_filtered <- filter_annot_with_network(GO_data, graph_op_1)
+#' HPO_data_filtered <- filter_annot_with_network(HPO_data, graph_op_1)
+#' # Weighted adjacency
+#' w_adj <- weighted_adj(graph_op_1, GO_data_filtered, HPO_data_filtered)
+#' # Random Walk with Restart
 #' w_rw <- random_walk(w_adj)
+#' # Ranked candidate genes
 #' scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
 #'
 #' @importFrom igraph vertex_attr vcount
@@ -521,8 +533,6 @@ prioritization_genes <- function(
     ) %>%
     arrange(desc(score)) %>%
     filter(
-        # it's not okay to remove and keep genes with identical scores
-        # that's why I changed this to quantile
         score >= quantile(score, 1 - percentage_genes_ranked)
     )
 
