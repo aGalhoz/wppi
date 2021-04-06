@@ -3,4 +3,4 @@
 + The workflow calculates Protein-Protein Interaction weights and scores genes
 + Database knowledge is automatically fetched from
   OmniPath, Gene Ontology and Human Phenotype Ontology
-+ Submitted to Biocondictor
++ Submitted to Bioconductor
