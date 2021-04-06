@@ -254,7 +254,7 @@ weighted_adj <- function(
     # creating the adjacency matrix and the weight matrices
     adj_data <-
         graph_op %>%
-        as_adjacency_matrix(sparse = TRUE) %>%
+        igraph::as_adjacency_matrix(sparse = TRUE) %>%
         as('dgTMatrix')
 
     matrix_neighbors <- matrix_weights <- 0L * adj_data
