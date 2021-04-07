@@ -31,6 +31,14 @@
 #'     specified, the first order neighbors are used.
 #' @param GO_annot Logical: use the Gene Ontology (GO) annotation database
 #'     to weight the PPI network. The default is to use it.
+#' @param GO_slim Character: use a GO subset (slim). If \code{NULL}, the
+#'     full GO is used. The most often used slim is called "generic". For
+#'     a list of available slims see \code{OmnipathR::go_annot_slim}.
+#' @param GO_aspects Character vector with the single letter codes of the
+#'     gene ontology aspects to use. By default all three aspects are used.
+#'     The aspects are "C": cellular component, "F": molecular function and
+#'     "P" biological process.
+#' @param GO_organism Character: name of the organism for GO annotations.
 #' @param HPO_annot Logical: use the Human Phenotype Ontology (HPO)
 #'     annotation database to weight the PPI network. The default is to use
 #'     it.
@@ -38,13 +46,25 @@
 #'     probability parameter used in the Random Walk with Restart algorithm.
 #'     The default value is 0.4.
 #' @param threshold_rw Numeric: the threshold parameter in the Random Walk
-#'      with Restart algorithm. When the error between probabilities is
-#'      smaller than the threshold, the algorithm stops. The default is 1e-5.
+#'     with Restart algorithm. When the error between probabilities is
+#'     smaller than the threshold, the algorithm stops. The default is 1e-5.
 #' @param databases Database knowledge as produced by \code{\link{wppi_data}}.
+#' @param ... Passed to
+#'     \code{OmnipathR::import_post_translational_interactions}. With these
+#'     options you can customize the network retrieved from OmniPath.
 #'
 #' @return Data frame with the ranked candidate genes based on the functional
 #'     score inferred from given ontology terms, PPI and Random Walk with
 #'    Restart parameters.
+#'
+#' @details
+#' If you use a GO subset (slim), building it at the first time might take
+#' around 20 minutes. The result is saved into the cache so next time loading
+#' the data from there is really quick.
+#' Gene Ontology annotations are available for a few other organisms apart
+#' from human. The currently supported organisms are "chicken", "cow", "dog",
+#' "human", "pig" and "uniprot_all". If you disable \code{HPO_annot} you can
+#' use \code{wppi} to score PPI networks other than human.
 #'
 #' @examples
 #' # example gene set
@@ -91,10 +111,14 @@ score_candidate_genes_from_PPI <- function(
     percentage_output_genes = 100,
     graph_order = 1,
     GO_annot = TRUE,
+    GO_slim = NULL,
+    GO_aspects = c('C', 'F', 'P'),
+    GO_organism = 'human',
     HPO_annot = TRUE,
     restart_prob_rw = 0.4,
     threshold_rw = 1e-5,
-    databases = NULL
+    databases = NULL,
+    ...
 ) {
 
     # NSE vs. R CMD check workaround
@@ -119,7 +143,14 @@ score_candidate_genes_from_PPI <- function(
     log_info('Executing WPPI workflow.')
 
     # import data object
-    data_info <- databases %||% wppi_data()
+    data_info <-
+        databases %||%
+        wppi_data(
+            GO_slim = GO_slim,
+            GO_aspects = GO_aspects,
+            GO_organism = GO_organism,
+            ...
+        )
 
     if (!is.null(HPO_interest)) {
         HPO_data <- data_info$hpo %>% filter(Name %in% HPO_interest)

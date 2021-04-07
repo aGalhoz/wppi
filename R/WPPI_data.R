@@ -8,11 +8,29 @@
 #' the OmnipathR package and data required by wppi are extracted from each
 #' table.
 #'
+#' @param GO_slim Character: use a GO subset (slim). If \code{NULL}, the
+#'     full GO is used. The most often used slim is called "generic". For
+#'     a list of available slims see \code{OmnipathR::go_annot_slim}.
+#' @param GO_aspects Character vector with the single letter codes of the
+#'     gene ontology aspects to use. By default all three aspects are used.
+#'     The aspects are "C": cellular component, "F": molecular function and
+#'     "P" biological process.
+#' @param GO_organism Character: name of the organism for GO annotations.
 #' @param ... Passed to
-#'     \code{OmnipathR::import_post_translational_interactions}.
+#'     \code{OmnipathR::import_post_translational_interactions}. With these
+#'     options you can customize the network retrieved from OmniPath.
 #'
 #' @return A list of data frames (tibbles) with database knowledge from HPO,
 #'     GO, OmniPath and UniProt.
+#'
+#' @details
+#' If you use a GO subset (slim), building it at the first time might take
+#' around 20 minutes. The result is saved into the cache so next time loading
+#' the data from there is really quick.
+#' Gene Ontology annotations are available for a few other organisms apart
+#' from human. The currently supported organisms are "chicken", "cow", "dog",
+#' "human", "pig" and "uniprot_all". If you disable \code{HPO_annot} you can
+#' use \code{wppi} to score PPI networks other than human.
 #'
 #' @examples
 #' # Download all data
@@ -32,13 +50,18 @@
 #'     \item{\code{\link{wppi_omnipath_data}}}
 #'     \item{\code{\link{wppi_uniprot_data}}}
 #' }
-wppi_data <- function(...){
+wppi_data <- function(
+    GO_slim = NULL,
+    GO_aspects = c('C', 'F', 'P'),
+    GO_organism = 'human',
+    ...
+){
 
     log_info('Collecting database knowledge.')
 
     ### Collect database data
     hpo <- wppi_hpo_data()
-    go <- wppi_go_data()
+    go <- wppi_go_data(GO_slim, GGO_aspects, GO_organism)
     uniprot <- wppi_uniprot_data()
     omnipath <- wppi_omnipath_data(...)
 
@@ -92,7 +115,25 @@ wppi_hpo_data <- function(){
 #' Gene Ontology (\url{http://geneontology.org/}), GO) annotates genes
 #' by their function, localization and biological processes.
 #'
-#' @return A data frame (tibble) with GO data.
+#' @param slim Character: use a GO subset (slim). If \code{NULL}, the
+#'     full GO is used. The most often used slim is called "generic". For
+#'     a list of available slims see \code{OmnipathR::go_annot_slim}.
+#' @param aspects Character vector with the single letter codes of the
+#'     gene ontology aspects to use. By default all three aspects are used.
+#'     The aspects are "C": cellular component, "F": molecular function and
+#'     "P" biological process.
+#' @param organism Character: name of the organism for GO annotations.
+#'
+#' @return A data frame (tibble) with GO annotation data.
+#'
+#' @details
+#' If you use a GO subset (slim), building it at the first time might take
+#' around 20 minutes. The result is saved into the cache so next time loading
+#' the data from there is really quick.
+#' Gene Ontology annotations are available for a few other organisms apart
+#' from human. The currently supported organisms are "chicken", "cow", "dog",
+#' "human", "pig" and "uniprot_all". If you disable \code{HPO_annot} you can
+#' use \code{wppi} to score PPI networks other than human.
 #'
 #' @examples
 #' go <- wppi_go_data()
@@ -102,12 +143,20 @@ wppi_hpo_data <- function(){
 #' @importFrom dplyr select
 #' @export
 #' @seealso \code{\link{wppi_data}}
-wppi_go_data <- function(){
+wppi_go_data <- function(
+    slim = NULL,
+    aspects = c('C', 'F', 'P'),
+    organism = 'human'
+){
 
     # NSE vs. R CMD check workaround
     db_object_symbol <- go_id <- aspect <- NULL
 
-    OmnipathR::go_annot_download() %>%
+    OmnipathR::go_annot_download(
+        slim = slim,
+        aspects = aspects,
+        organism = organism
+    ) %>%
     select(
         Gene_Symbol = db_object_symbol,
         ID = go_id,
