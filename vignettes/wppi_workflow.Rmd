@@ -1,5 +1,6 @@
 ---
-title: "WPPI workflow"
+title: >-
+  Context specific functional scores for protein-protein interaction networks
 author:
 - name: Ana Galhoz
   affiliation: hmgu
