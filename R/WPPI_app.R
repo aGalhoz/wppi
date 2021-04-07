@@ -71,7 +71,7 @@
 #' #  3 0.247 KAT6A       Q92794
 #' #  4 0.247 BABAM1      Q9NWV8
 #' #  5 0.247 SKI         P12755
-#' # # … with 25 more rows
+#' # # . with 25 more rows
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr filter
