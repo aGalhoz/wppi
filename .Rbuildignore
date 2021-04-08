@@ -3,5 +3,3 @@
 ^vignettes/.*html$
 ^.*tar\.gz$
 ^.*Rcheck.*$
-^vignettes/.*pdf$
-^vignettes/.*html$
