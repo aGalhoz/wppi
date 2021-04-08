@@ -63,11 +63,12 @@ options(progress_enabled = FALSE, width = 80)
 
 # Dependencies
 
-The `wppi` package depends on the `OmnipathR` package. Since several 
-developments were made since version 2, an update of the git version is 
-recommended:
+The `wppi` package depends on the `OmnipathR` package. Since it relies on
+features more recent than the latest Bioconductor version (OmnipathR 2.0.0
+in Bioconductor 3.12), until the release of Bioconductor 3.13, it is
+recommended to install OmnipathR from git:
 
-```{omnipath, results='hide'}
+```{omnipath, results='hide', eval=FALSE}
 require(devtools)
 install_github('saezlab/OmnipathR')
 library(OmnipathR)
