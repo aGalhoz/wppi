@@ -60,6 +60,18 @@ fig_height: 7
 options(progress_enabled = FALSE, width = 80)
 ```
 
+# Dependencies
+
+The `wppi` package depends on the `OmnipathR` package. Since several 
+developments were made since version 2, an update of the git version is 
+recommended:
+
+```{omnipath, results='hide'}
+require(devtools)
+install_github('saezlab/OmnipathR')
+library(OmnipathR)
+```
+
 # Complete workflow in a single call
 
 The `score_candidate_genes_from_PPI` function executes the full workflow.
