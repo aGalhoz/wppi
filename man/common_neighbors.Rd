@@ -7,7 +7,7 @@
 common_neighbors(graph_op)
 }
 \arguments{
-\item{graph_op}{Igraph object based on Omnipath PPI interactions from
+\item{graph_op}{Igraph object based on OmniPath PPI interactions from
 \code{\link{graph_from_op}}.}
 }
 \value{

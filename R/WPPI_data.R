@@ -35,7 +35,7 @@
 #' @examples
 #' # Download all data
 #' data_wppi <- wppi_data()
-#' # Omnipath
+#' # OmniPath
 #' omnipath_data <- data_wppi$omnipath
 #' # HPO
 #' HPO_data <- data_wppi$hpo
@@ -61,7 +61,7 @@ wppi_data <- function(
 
     ### Collect database data
     hpo <- wppi_hpo_data()
-    go <- wppi_go_data(GO_slim, GGO_aspects, GO_organism)
+    go <- wppi_go_data(GO_slim, GO_aspects, GO_organism)
     uniprot <- wppi_uniprot_data()
     omnipath <- wppi_omnipath_data(...)
 

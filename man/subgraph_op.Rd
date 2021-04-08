@@ -7,7 +7,7 @@
 subgraph_op(graph_op, gene_set, sub_level = 1L)
 }
 \arguments{
-\item{graph_op}{Igraph object based on Omnipath PPI interactions from
+\item{graph_op}{Igraph object based on OmniPath PPI interactions from
 \code{\link{graph_from_op}}.}
 
 \item{gene_set}{Character vector of gene symbols. These are the genes of

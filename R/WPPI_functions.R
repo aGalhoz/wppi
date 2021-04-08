@@ -4,15 +4,15 @@
 
 #' Igraph object from OmniPath network
 #'
-#' Creation of igraph object from PPI Omnipath database with information
+#' Creation of igraph object from PPI OmniPath database with information
 #' regarding proteins and gene symbols.
 #'
-#' @param op_data Data frame (tibble) of Omnipath PPI interactions from
+#' @param op_data Data frame (tibble) of OmniPath PPI interactions from
 #'     \code{\link{wppi_omnipath_data}}.
 #'
 #' @return Igraph PPI graph object with vertices defined by UniProt ID and
 #'     Gene Symbol, and edges based on interactions, for all connections in
-#'     Omnipath.
+#'     OmniPath.
 #'
 #' @examples
 #' graph_op <- graph_from_op(wppi_omnipath_data())
@@ -49,7 +49,7 @@ graph_from_op <- function(op_data) {
 
 #' Check which genes of interest are or not in OmniPath
 #'
-#' @param graph_op Igraph object based on Omnipath PPI interactions from
+#' @param graph_op Igraph object based on OmniPath PPI interactions from
 #'     \code{\link{graph_from_op}}.
 #' @param gene_set Character vector with known-disease specific genes from
 #'     which is built the functional weighted PPI.
@@ -59,7 +59,7 @@ graph_from_op <- function(op_data) {
 #' @return Character vector with genes corresponding to the query.
 #'
 #' @examples
-#' # genes mapped and not mapped in Omnipath
+#' # genes mapped and not mapped in OmniPath
 #' graph_op <- graph_from_op(wppi_omnipath_data())
 #' genes_interest <-
 #'     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")
@@ -89,7 +89,7 @@ in_omnipath <- function(graph_op, gene_set, in_network = TRUE) {
 #' is determined by the \code{sub_level} parameter, i.e. the maximum number
 #' of steps (order) from the genes of interest.
 #'
-#' @param graph_op Igraph object based on Omnipath PPI interactions from
+#' @param graph_op Igraph object based on OmniPath PPI interactions from
 #'     \code{\link{graph_from_op}}.
 #' @param gene_set Character vector of gene symbols. These are the genes of
 #'     interest, for example known disease specific genes.
@@ -140,7 +140,7 @@ subgraph_op <- function(graph_op, gene_set, sub_level = 1L) {
 #' For each interacting pair of proteins in the PPI network, store the nodes
 #' of the common neighbors. This function works for any igraph graph.
 #'
-#' @param graph_op Igraph object based on Omnipath PPI interactions from
+#' @param graph_op Igraph object based on OmniPath PPI interactions from
 #'     \code{\link{graph_from_op}}.
 #'
 #' @return Data frame (tibble) with igraph vertex IDs of connected pairs of
@@ -197,7 +197,7 @@ common_neighbors <- function(graph_op) {
 #' \code{\link{functional_annot}}). At the end, the weighted adjacency
 #' matrix is normalized by column.
 #'
-#' @param graph_op Igraph object based on Omnipath PPI interactions from
+#' @param graph_op Igraph object based on OmniPath PPI interactions from
 #'     \code{\link{graph_from_op}}.
 #' @param GO_data Data frame with GO annotations as provided by
 #'     \code{\link{wppi_go_data}}.

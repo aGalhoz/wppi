@@ -144,7 +144,7 @@ count_genes <- function(data_annot) {
 #'
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
 #'     \code{\link{wppi_go_data}} or \code{\link{wppi_hpo_data}}.
-#' @param graph_op Igraph graph object obtained from built Omnipath PPI of
+#' @param graph_op Igraph graph object obtained from built OmniPath PPI of
 #'     genes of interest and x-degree neighbors.
 #'
 #' @return Data frame (tibble) of GO or HPO datasets filtered based on

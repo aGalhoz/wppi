@@ -6,7 +6,7 @@
 #' protein-protein interactions (PPI) in the neighborhood of the genes of
 #' interest are weighted according to the number of common neighbors of
 #' interacting partners and the similarity of their functional annotations.
-#' The PPI networks are obtained using the Omnipath
+#' The PPI networks are obtained using the OmniPath
 #' (\url{https://omnipathdb.org/}) resource and functionality is deduced
 #' using the Gene Ontology (GO, \url{http://geneontology.org/}) and Human
 #' Phenotype Ontology (HPO, \url{https://hpo.jax.org/app/}) ontology

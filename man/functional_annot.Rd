@@ -21,8 +21,8 @@ Numeric value with GO/HPO functional similarity between given
     pair of proteins.
 }
 \description{
-Functional similarity between two genes in ontology database (GO or HPO).
-For each pair of interacting proteins in the PPI graph network, is
+Functional similarity between two genes in ontology databases (GO or HPO).
+Each pair of interacting proteins in the PPI graph network, is
 quantified the shared annotations between them using the Fisher's combined
 probability test (\url{https://doi.org/10.1007/978-1-4612-4380-9_6}). This
 is based on the number of genes annotated in each shared ontology term and

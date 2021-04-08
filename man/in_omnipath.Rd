@@ -7,7 +7,7 @@
 in_omnipath(graph_op, gene_set, in_network = TRUE)
 }
 \arguments{
-\item{graph_op}{Igraph object based on Omnipath PPI interactions from
+\item{graph_op}{Igraph object based on OmniPath PPI interactions from
 \code{\link{graph_from_op}}.}
 
 \item{gene_set}{Character vector with known-disease specific genes from
@@ -23,7 +23,7 @@ Character vector with genes corresponding to the query.
 Check which genes of interest are or not in OmniPath
 }
 \examples{
-# genes mapped and not mapped in Omnipath
+# genes mapped and not mapped in OmniPath
 graph_op <- graph_from_op(wppi_omnipath_data())
 genes_interest <-
     c("ERCC8", "AKT3", "NOL3", "GFI1B", "CDC25A", "TPX2", "SHE")

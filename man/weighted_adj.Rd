@@ -7,7 +7,7 @@
 weighted_adj(graph_op, GO_data, HPO_data)
 }
 \arguments{
-\item{graph_op}{Igraph object based on Omnipath PPI interactions from
+\item{graph_op}{Igraph object based on OmniPath PPI interactions from
 \code{\link{graph_from_op}}.}
 
 \item{GO_data}{Data frame with GO annotations as provided by

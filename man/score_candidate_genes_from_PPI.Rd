@@ -10,10 +10,14 @@ score_candidate_genes_from_PPI(
   percentage_output_genes = 100,
   graph_order = 1,
   GO_annot = TRUE,
+  GO_slim = NULL,
+  GO_aspects = c("C", "F", "P"),
+  GO_organism = "human",
   HPO_annot = TRUE,
   restart_prob_rw = 0.4,
   threshold_rw = 1e-05,
-  databases = NULL
+  databases = NULL,
+  ...
 )
 }
 \arguments{
@@ -40,6 +44,17 @@ specified, the first order neighbors are used.}
 \item{GO_annot}{Logical: use the Gene Ontology (GO) annotation database
 to weight the PPI network. The default is to use it.}
 
+\item{GO_slim}{Character: use a GO subset (slim). If \code{NULL}, the
+full GO is used. The most often used slim is called "generic". For
+a list of available slims see \code{OmnipathR::go_annot_slim}.}
+
+\item{GO_aspects}{Character vector with the single letter codes of the
+gene ontology aspects to use. By default all three aspects are used.
+The aspects are "C": cellular component, "F": molecular function and
+"P" biological process.}
+
+\item{GO_organism}{Character: name of the organism for GO annotations.}
+
 \item{HPO_annot}{Logical: use the Human Phenotype Ontology (HPO)
 annotation database to weight the PPI network. The default is to use
 it.}
@@ -53,6 +68,10 @@ with Restart algorithm. When the error between probabilities is
 smaller than the threshold, the algorithm stops. The default is 1e-5.}
 
 \item{databases}{Database knowledge as produced by \code{\link{wppi_data}}.}
+
+\item{...}{Passed to
+\code{OmnipathR::import_post_translational_interactions}. With these
+options you can customize the network retrieved from OmniPath.}
 }
 \value{
 Data frame with the ranked candidate genes based on the functional
@@ -66,12 +85,21 @@ condition. For this it uses a PPI network and functional annotations. A
 protein-protein interactions (PPI) in the neighborhood of the genes of
 interest are weighted according to the number of common neighbors of
 interacting partners and the similarity of their functional annotations.
-The PPI networks are obtained using the Omnipath
+The PPI networks are obtained using the OmniPath
 (\url{https://omnipathdb.org/}) resource and functionality is deduced
 using the Gene Ontology (GO, \url{http://geneontology.org/}) and Human
 Phenotype Ontology (HPO, \url{https://hpo.jax.org/app/}) ontology
 databases. To score the candidate genes, a Random Walk with Restart
 algorithm is applied on the weighted network.
+}
+\details{
+If you use a GO subset (slim), building it at the first time might take
+around 20 minutes. The result is saved into the cache so next time loading
+the data from there is really quick.
+Gene Ontology annotations are available for a few other organisms apart
+from human. The currently supported organisms are "chicken", "cow", "dog",
+"human", "pig" and "uniprot_all". If you disable \code{HPO_annot} you can
+use \code{wppi} to score PPI networks other than human.
 }
 \examples{
 # example gene set
@@ -98,7 +126,7 @@ new_genes_diabetes
 #  3 0.247 KAT6A       Q92794
 #  4 0.247 BABAM1      Q9NWV8
 #  5 0.247 SKI         P12755
-# # … with 25 more rows
+# # . with 25 more rows
 
 }
 \seealso{

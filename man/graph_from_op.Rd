@@ -7,16 +7,16 @@
 graph_from_op(op_data)
 }
 \arguments{
-\item{op_data}{Data frame (tibble) of Omnipath PPI interactions from
+\item{op_data}{Data frame (tibble) of OmniPath PPI interactions from
 \code{\link{wppi_omnipath_data}}.}
 }
 \value{
 Igraph PPI graph object with vertices defined by UniProt ID and
     Gene Symbol, and edges based on interactions, for all connections in
-    Omnipath.
+    OmniPath.
 }
 \description{
-Creation of igraph object from PPI Omnipath database with information
+Creation of igraph object from PPI OmniPath database with information
 regarding proteins and gene symbols.
 }
 \examples{

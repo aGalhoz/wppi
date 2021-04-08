@@ -22,7 +22,7 @@ A list of four elements: 1) "term_size" a list which serves as a
 Ontology databases such as Gene Ontology
 (GO, \url{http://geneontology.org/}) and Human Phenotype Ontology
 (HPO, \url{https://hpo.jax.org/app/}) provide important genome and disease
-related functional information of genes. These combined allow to build a
+functional annotations of genes. These combined allow to build a
 connection between proteins/genes and phenotype/disease. This function
 aggregates information in the GO and HPO ontology datasets.
 }

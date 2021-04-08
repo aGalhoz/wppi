@@ -4,11 +4,28 @@
 \alias{wppi_data}
 \title{Database knowledge for wppi}
 \usage{
-wppi_data(...)
+wppi_data(
+  GO_slim = NULL,
+  GO_aspects = c("C", "F", "P"),
+  GO_organism = "human",
+  ...
+)
 }
 \arguments{
+\item{GO_slim}{Character: use a GO subset (slim). If \code{NULL}, the
+full GO is used. The most often used slim is called "generic". For
+a list of available slims see \code{OmnipathR::go_annot_slim}.}
+
+\item{GO_aspects}{Character vector with the single letter codes of the
+gene ontology aspects to use. By default all three aspects are used.
+The aspects are "C": cellular component, "F": molecular function and
+"P" biological process.}
+
+\item{GO_organism}{Character: name of the organism for GO annotations.}
+
 \item{...}{Passed to
-\code{OmnipathR::import_post_translational_interactions}.}
+\code{OmnipathR::import_post_translational_interactions}. With these
+options you can customize the network retrieved from OmniPath.}
 }
 \value{
 A list of data frames (tibbles) with database knowledge from HPO,
@@ -23,10 +40,19 @@ and UniProt (\url{https://uniprot.org/}). The downloads carried out by
 the OmnipathR package and data required by wppi are extracted from each
 table.
 }
+\details{
+If you use a GO subset (slim), building it at the first time might take
+around 20 minutes. The result is saved into the cache so next time loading
+the data from there is really quick.
+Gene Ontology annotations are available for a few other organisms apart
+from human. The currently supported organisms are "chicken", "cow", "dog",
+"human", "pig" and "uniprot_all". If you disable \code{HPO_annot} you can
+use \code{wppi} to score PPI networks other than human.
+}
 \examples{
 # Download all data
 data_wppi <- wppi_data()
-# Omnipath
+# OmniPath
 omnipath_data <- data_wppi$omnipath
 # HPO
 HPO_data <- data_wppi$hpo
