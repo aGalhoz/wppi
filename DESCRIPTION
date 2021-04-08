@@ -1,7 +1,7 @@
 Package: wppi
 Type: Package
 Title: Weighting protein-protein interactions
-Version: 0.99.0
+Version: 0.99.1
 Authors@R: c(
     person(
         given = "Ana",
@@ -22,9 +22,9 @@ Description: Protein-protein interaction data is essential for omics data
     annotations such as Gene Ontology and Human Phenotype Ontology might help
     to evaluate the relevance of interactions. This package predicts
     functional relevance of protein-protein interactions based on functional
-    annotations such as Human Protein Ontology and Gene Ontology, and 
-    prioritizes genes based on network topology, functional scores and a path 
-    search algorithm. 
+    annotations such as Human Protein Ontology and Gene Ontology, and
+    prioritizes genes based on network topology, functional scores and a path
+    search algorithm.
 License: MIT + file LICENSE
 URL: https://github.com/AnaGalhoz37/wppi
 BugReports: https://github.com/AnaGalhoz37/wppi/issues
@@ -34,7 +34,7 @@ Encoding: UTF-8
 VignetteBuilder: knitr
 Depends: R(>= 4.1)
 Imports: dplyr, igraph, logger, methods, magrittr, Matrix,
-    OmnipathR, progress, purrr, rlang, RCurl, stats, tibble, tidyr
+    OmnipathR(>= 2.99.8), progress, purrr, rlang, RCurl, stats, tibble, tidyr
 Suggests: knitr, testthat
 RoxygenNote: 7.1.1
 NeedsCompilation: no
