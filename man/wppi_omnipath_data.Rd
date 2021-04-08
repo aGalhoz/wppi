@@ -17,8 +17,8 @@ A data frame (tibble) with protein-protein interaction data from
 \description{
 OmniPath (\url{https://omnipathdb.org/}) integrates protein-protein
 interactions (PPI) from more than 30 resources. The network created is 
-highly customizable by passing parameters to
-\code{OmnipathR::import_post_translational_interactions}.
+highly customizable by passing parameters 
+to \code{OmnipathR::import_post_translational_interactions}.
 }
 \examples{
 omnipath <- wppi_omnipath_data()
