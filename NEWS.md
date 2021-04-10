@@ -1,4 +1,4 @@
-## wppi v0.99.3 (2021-04-10)
+## wppi v0.99.4 (2021-04-10)
 
 + The workflow calculates Protein-Protein Interaction weights and scores genes
 + Database knowledge is automatically fetched from
