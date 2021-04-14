@@ -14,7 +14,7 @@ In this repository it is provided the relevant functions to run and customize th
 
 ## Installation
 
-(fill later)
+(fill later with installation procedures. not forget to mention Omnipath dependency)
 
 ## Getting started and user cases
 
