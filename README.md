@@ -18,7 +18,43 @@ In this repository it is provided the relevant functions to run and customize th
 
 ## Getting started and user cases
 
-First, we recomment to read our [vignette]() with examples of how to query using the **wppi** package.
+We recomment to read our vignette and manual with examples of how to query functions using the **wppi** package.
+
+The **wppi** pipeline can be leveraged for the following cases:
+
+1. The user has a list of known disease related genes, and wants to discover new genes in a PPI proximity based on all available GO and HPO ontology terms.
+
+```{r workflow 1, results='hide'}
+# example gene set
+genes_interest <- c(
+    'ERCC8', 'AKT3', 'NOL3', 'TTK',
+    'GFI1B', 'CDC25A', 'TPX2', 'SHE'
+)
+scores <- score_candidate_genes_from_PPI(genes_interest)
+scores
+# # A tibble: 295 x 3
+#    score gene_symbol uniprot
+#    <dbl> <chr>       <chr>
+#  1 0.247 KNL1        Q8NG31
+#  2 0.247 HTRA2       O43464
+#  3 0.247 KAT6A       Q92794
+#  4 0.247 BABAM1      Q9NWV8
+#  5 0.247 SKI         P12755
+#  6 0.247 FOXA2       Q9Y261
+#  7 0.247 CLK2        P49760
+#  8 0.247 HNRNPA1     P09651
+#  9 0.247 HK1         P19367
+# 10 0.180 SH3RF1      Q7Z6J0
+# # . with 285 more rows
+```
+
+2. In addition to a set of genes, the user wants to customize the whole pipeline for a specific phenotype. For example, if interested in diabetes related annotations:
+
+```{r workflow 2, results = 'hide'}
+HPO_data <- wppi_hpo_data()
+HPO_interest <- unique(dplyr::filter(HPO_data, grepl('Diabetes', Name))$Name)
+scores_diabetes <- score_candidate_genes_from_PPI(genes_interest,HPO_interest)
+```
 
 
 
