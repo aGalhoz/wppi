@@ -58,7 +58,9 @@ scores_diabetes <- score_candidate_genes_from_PPI(genes_interest,HPO_interest)
 
 All previous use cases can be altered to consider different subsets and aspects of GO (e.g., only Biological Processes), or different parameters used for the creation of the weighted PPI and the Random Walk with Restart algorithm.
 
+## Package feedback
 
+To report bugs, ask questions or any feedback, please use the [Github issue page](https://github.com/AnaGalhoz37/wppi/issues). 
 
 
 
