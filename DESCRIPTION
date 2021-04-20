@@ -1,7 +1,7 @@
 Package: wppi
 Type: Package
 Title: Weighting protein-protein interactions
-Version: 0.99.5
+Version: 0.99.6
 Authors@R: c(
     person(
         given = "Ana",
@@ -15,10 +15,11 @@ Authors@R: c(
         role = "aut",
         email = "turei.denes@gmail.com",
         comment = c(ORCID = "0000-0002-7249-9379")),
-# Copyright holders
-  person("Albert", "Krewinkel", role = c("ctb", "cph"), 
+    #
+    # Copyright holders
+    person("Albert", "Krewinkel", role = c("ctb", "cph"), 
          comment = "pagebreak Lua filter")
-  )
+    )
 Description: Protein-protein interaction data is essential for omics data
     analysis and modeling. Database knowledge is general, not specific for
     cell type, physiological condition or any other context determining which
