@@ -38,7 +38,7 @@ abstract: |
   using a more relevant subset of the ontology annotations, e.g. selecting
   only the diabetes related categories. The PPI network and the functional
   annotations are obtained automatically from public databases, though
-  it's possible to use custom databases. The network is limited to a
+  it's possible to use custom databases. The network is limited to a user defined
   neighborhood of the genes of interest. The ontology annotations are also
   filtered to the genes in this subnetwork. Then the adjacency matrix is
   weighted according to the number of common neighbors and the similarity
@@ -76,8 +76,11 @@ library(OmnipathR)
 
 # Complete workflow in a single call
 
-The `score_candidate_genes_from_PPI` function executes the full workflow.
-The only mandatory input is a set of genes of interest.
+The `score_candidate_genes_from_PPI` function executes the full wppi workflow.
+The only mandatory input is a set of genes of interest. As a return, an ordered
+table with the similarity scores of the new genes within the neighbourhood of 
+the genes of interest is provided. A higher score stands for a higher 
+functional similarity between this new gene and the given ones. 
 
 ```{r workflow, results='hide'}
 library(wppi)
