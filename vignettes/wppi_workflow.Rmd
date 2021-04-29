@@ -68,7 +68,7 @@ features more recent than the latest Bioconductor version (OmnipathR 2.0.0
 in Bioconductor 3.12), until the release of Bioconductor 3.13, it is
 recommended to install OmnipathR from git:
 
-```{omnipath, results='hide', eval=FALSE}
+```{r install-omnipath, results='hide', eval=FALSE}
 require(devtools)
 install_github('saezlab/OmnipathR')
 library(OmnipathR)
