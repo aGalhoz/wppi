@@ -29,14 +29,14 @@ options you can customize the network retrieved from OmniPath.}
 }
 \value{
 A list of data frames (tibbles) with database knowledge from HPO,
-    GO, OmniPath and UniProt.
+    GO and OmniPath.
 }
 \description{
 Retrieves the database knowledge necessary for WPPI directly from the
 databases. The databases used here are the Human Phenotype Ontology (HPO,
 \url{https://hpo.jax.org/app/}), Gene Ontology (GO,
-\url{http://geneontology.org/}), OmniPath (\url{https://omnipathdb.org/})
-and UniProt (\url{https://uniprot.org/}). The downloads carried out by
+\url{http://geneontology.org/}) and OmniPath
+(\url{https://omnipathdb.org/}). The downloads carried out by
 the OmnipathR package and data required by wppi are extracted from each
 table.
 }
@@ -65,6 +65,5 @@ GO_data <- data_wppi$go
     \item{\code{\link{wppi_go_data}}}
     \item{\code{\link{wppi_hpo_data}}}
     \item{\code{\link{wppi_omnipath_data}}}
-    \item{\code{\link{wppi_uniprot_data}}}
 }
 }

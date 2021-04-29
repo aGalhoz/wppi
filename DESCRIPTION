@@ -1,7 +1,7 @@
 Package: wppi
 Type: Package
 Title: Weighting protein-protein interactions
-Version: 0.99.6
+Version: 0.99.7
 Authors@R: c(
     person(
         given = "Ana",

@@ -3,8 +3,8 @@
 #' Retrieves the database knowledge necessary for WPPI directly from the
 #' databases. The databases used here are the Human Phenotype Ontology (HPO,
 #' \url{https://hpo.jax.org/app/}), Gene Ontology (GO,
-#' \url{http://geneontology.org/}), OmniPath (\url{https://omnipathdb.org/})
-#' and UniProt (\url{https://uniprot.org/}). The downloads carried out by
+#' \url{http://geneontology.org/}) and OmniPath
+#' (\url{https://omnipathdb.org/}). The downloads carried out by
 #' the OmnipathR package and data required by wppi are extracted from each
 #' table.
 #'
@@ -21,7 +21,7 @@
 #'     options you can customize the network retrieved from OmniPath.
 #'
 #' @return A list of data frames (tibbles) with database knowledge from HPO,
-#'     GO, OmniPath and UniProt.
+#'     GO and OmniPath.
 #'
 #' @details
 #' If you use a GO subset (slim), building it at the first time might take
@@ -48,7 +48,6 @@
 #'     \item{\code{\link{wppi_go_data}}}
 #'     \item{\code{\link{wppi_hpo_data}}}
 #'     \item{\code{\link{wppi_omnipath_data}}}
-#'     \item{\code{\link{wppi_uniprot_data}}}
 #' }
 wppi_data <- function(
     GO_slim = NULL,
@@ -62,7 +61,6 @@ wppi_data <- function(
     ### Collect database data
     hpo <- wppi_hpo_data()
     go <- wppi_go_data(GO_slim, GO_aspects, GO_organism)
-    uniprot <- wppi_uniprot_data()
     omnipath <- wppi_omnipath_data(...)
 
     log_info('Finished collecting database knowledge.')
@@ -70,8 +68,7 @@ wppi_data <- function(
     list(
         hpo = hpo,
         go = go,
-        omnipath = omnipath,
-        uniprot = uniprot
+        omnipath = omnipath
     )
 
 }
@@ -162,34 +159,6 @@ wppi_go_data <- function(
         ID = go_id,
         Aspect = aspect
     )
-
-}
-
-
-#' Retrieve data from UniProt
-#'
-#' UniProt (\url{https://uniprot.org/}) serves as a reference database for
-#' the human proteome and provides the primary identifier for proteins used
-#' in this package.
-#'
-#' @return A data frame (tibble) with UniProt data.
-#'
-#' @examples
-#' uniprot <- wppi_uniprot_data()
-#'
-#' @importFrom OmnipathR all_uniprots
-#' @importFrom magrittr %>%
-#' @importFrom dplyr select distinct
-#' @export
-#' @seealso \code{\link{wppi_data}}
-wppi_uniprot_data <- function(){
-
-    # NSE vs. R CMD check workaround
-    Entry <- NULL
-
-    OmnipathR::all_uniprots() %>%
-    select(UniProt_ID = Entry) %>%
-    distinct()
 
 }
 
