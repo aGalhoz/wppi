@@ -70,7 +70,7 @@ scores
 # 10 0.180 SH3RF1      Q7Z6J0 
 # # … with 285 more rows
 ```
-![fig2](https://user-images.githubusercontent.com/63655559/117475212-0fb05b00-af5c-11eb-8d23-33d269d8a565.png)
+![Untitled 7](https://user-images.githubusercontent.com/63655559/117475389-45554400-af5c-11eb-82c3-a47f3a98998e.png)
 
 
 All previous use cases can be altered to consider different subsets and aspects of GO (e.g., only Biological Processes), or different parameters used for the creation of the weighted PPI and the Random Walk with Restart algorithm.
