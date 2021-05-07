@@ -55,7 +55,7 @@ HPO_data <- wppi_hpo_data()
 HPO_interest <- unique(dplyr::filter(HPO_data, grepl('Diabetes', Name))$Name)
 scores_diabetes <- score_candidate_genes_from_PPI(genes_interest,HPO_interest)
 ```
-
+![fig1](https://user-images.githubusercontent.com/63655559/117473987-d0cdd580-af5a-11eb-9219-0812ad2a8d62.png)
 
 All previous use cases can be altered to consider different subsets and aspects of GO (e.g., only Biological Processes), or different parameters used for the creation of the weighted PPI and the Random Walk with Restart algorithm.
 
