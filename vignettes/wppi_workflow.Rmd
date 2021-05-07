@@ -209,7 +209,7 @@ scores
 The top genes in the first order neighborhood of the genes of interest can be 
 visualized in the PPI network:
 
-```{r fig1,dpi = 300, echo=FALSE, eval = FALSE, fig.cap="PPI network 
+```{r fig1,dpi = 300, echo=TRUE, eval = FALSE, fig.cap="PPI network 
 visualization of genes of interest (blue nodes) and their first neighbor with 
 similarity scores (green nodes). "}
 idx_neighbors <- which(!V(graph_op_1)$Gene_Symbol %in% genes_interest)
@@ -223,6 +223,7 @@ plot(graph_op_1,vertex.label = ifelse(scores.vertex>=1,V(graph_op_1)$Gene_Symbol
 layout = layout.fruchterman.reingold,vertex.color=cols,
 vertex.size = 7*scores.vertex,edge.width = 0.5,edge.arrow.mode=0,
 vertex.label.font = 1, vertex.label.cex = 0.45)
+## or just call the image in the folder
 library(knitr)
 knitr::include_graphics("../figures/fig1.png")
 ```
