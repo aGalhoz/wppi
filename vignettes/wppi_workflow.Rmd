@@ -187,7 +187,47 @@ prioritized by their predicted importance in the context of interest
 
 ```{r scoring-proteins}
 scores <- prioritization_genes(graph_op_1, w_rw, genes_interest)
+scores
+# # A tibble: 249 x 3
+#    score gene_symbol uniprot
+#    <dbl> <chr>       <chr>
+#  1 0.251 HTRA2       O43464 
+#  2 0.251 KAT6A       Q92794 
+#  3 0.251 BABAM1      Q9NWV8 
+#  4 0.251 SKI         P12755 
+#  5 0.251 CLK2        P49760 
+#  6 0.248 TUBB        P07437 
+#  7 0.248 KNL1        Q8NG31 
+#  8 0.189 SH3RF1      Q7Z6J0 
+#  9 0.189 SRPK2       P78362 
+# 10 0.150 CSNK1D      P48730 
+# # . with 239 more rows
 ```
+
+## Network visualization 
+
+The top genes in the first order neighborhood of the genes of interest can be 
+visualized in the PPI network:
+
+```{r fig1,dpi = 300, echo=FALSE, eval = FALSE, fig.cap="PPI network 
+visualization of genes of interest (blue nodes) and their first neighbor with 
+similarity scores (green nodes). "}
+idx_neighbors <- which(!V(graph_op_1)$Gene_Symbol %in% genes_interest)
+cols <- rep("lightsteelblue2",vcount(graph_op_1))
+cols[idx_neighbors] <- "#57da83"
+scores.vertex <- rep(1,vcount(graph_op_1))
+scores.vertex[idx_neighbors] <- 
+8*scores[na.omit(match(V(graph_op_1)$Gene_Symbol,scores$gene_symbol)),]$score
+par(mar=c(0.1,0.1,0.1,0.1))
+plot(graph_op_1,vertex.label = ifelse(scores.vertex>=1,V(graph_op_1)$Gene_Symbol,NA),  
+layout = layout.fruchterman.reingold,vertex.color=cols,
+vertex.size = 7*scores.vertex,edge.width = 0.5,edge.arrow.mode=0,
+vertex.label.font = 1, vertex.label.cex = 0.45)
+library(knitr)
+knitr::include_graphics("../figures/fig1.png")
+```
+
+
 
 # Session info {.unnumbered}
 
