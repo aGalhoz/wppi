@@ -14,7 +14,27 @@ In this repository it is provided the relevant functions to run and customize th
 
 ## Installation
 
-(fill later with installation procedures. not forget to mention Omnipath dependency)
+### From Bioconductor
+```{r bioconductor installation, results='hide'}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+    
+BiocManager::install("wppi")
+
+## Development version with the lastest updates
+BiocManager::install('wppi', version = 'devel')
+```
+
+### Dependencies 
+The `wppi` package depends on the `OmnipathR` package. Since it relies on
+features more recent than the latest Bioconductor version (OmnipathR 2.0.0
+in Bioconductor 3.12), until the release of Bioconductor 3.13, it is
+recommended to install OmnipathR from git.
+
+```{r bioconductor Omnipath, results='hide'}
+require(devtools)
+install_github('saezlab/OmnipathR')
+```
 
 ## Getting started and user cases
 
