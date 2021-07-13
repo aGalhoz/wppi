@@ -40,6 +40,6 @@ VignetteBuilder: knitr
 Depends: R(>= 4.1)
 Imports: dplyr, igraph, logger, methods, magrittr, Matrix,
     OmnipathR(>= 2.99.8), progress, purrr, rlang, RCurl, stats, tibble, tidyr
-Suggests: knitr, testthat
+Suggests: knitr, testthat, rmarkdown
 RoxygenNote: 7.1.1
 NeedsCompilation: no
