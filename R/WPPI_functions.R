@@ -521,7 +521,9 @@ prioritization_genes <- function(
     proteins_candidate <- vertex_attr(graph_op)$name[!genes_bool]
 
     tibble(
-        score = apply(prob_matrix_reduced, 1, sum),
+        score = ifelse(is.null(dim(prob_matrix_reduced)),
+                   sapply(prob_matrix_reduced, sum),
+                   apply(prob_matrix_reduced, 1, sum)),
         gene_symbol = genes_candidate,
         uniprot = proteins_candidate
     ) %>%
