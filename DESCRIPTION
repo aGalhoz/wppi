@@ -1,7 +1,7 @@
 Package: wppi
 Type: Package
 Title: Weighting protein-protein interactions
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: c(
     person(
         given = "Ana",
@@ -15,6 +15,12 @@ Authors@R: c(
         role = "aut",
         email = "turei.denes@gmail.com",
         comment = c(ORCID = "0000-0002-7249-9379")),
+    person(
+        given = "Michael",
+        family = "P. Menden",
+        role = "aut",
+        email = "michael.menden@helmholtz-muenchen.de",
+        comment = c(ORCID = "0000-0003-0267-5792")),
     #
     # Copyright holders
     person("Albert", "Krewinkel", role = c("ctb", "cph"), 
