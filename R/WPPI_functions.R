@@ -203,6 +203,8 @@ common_neighbors <- function(graph_op) {
 #'     \code{\link{wppi_go_data}}.
 #' @param HPO_data Data frame with HPO annotations as provided by
 #'     \code{\link{wppi_hpo_data}}.
+#' @param shinyProgress An optional \code{shiny::Progress} object ID to display
+#'     progress in a shiny application
 #'
 #' @return Weighted adjacency matrix based on network topology and functional
 #'     similarity between interacting proteins/genes based on ontology
@@ -231,6 +233,7 @@ common_neighbors <- function(graph_op) {
 #' @importFrom Matrix .__C__dgTMatrix colSums
 #' @importFrom methods as
 #' @importFrom tidyr replace_na
+#' @importFrom shiny Progress
 #' @export
 #' @seealso \itemize{
 #'     \item{\code{\link{random_walk}}}
@@ -245,18 +248,23 @@ common_neighbors <- function(graph_op) {
 weighted_adj <- function(
     graph_op,
     GO_data,
-    HPO_data) {
-
-    log_info('Calculating weighted adjacency matrix.')
-
+    HPO_data,
+    shinyProgress = NULL) {
+    
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(message = 'Calculating weighted adjacency matrix.')
+    } else {
+        log_info('Calculating weighted adjacency matrix.')
+    }
+    
     # creating the adjacency matrix and the weight matrices
     adj_data <-
         graph_op %>%
         igraph::as_adjacency_matrix(sparse = TRUE) %>%
         as('dgTMatrix')
-
+    
     matrix_neighbors <- matrix_weights <- 0L * adj_data
-
+    
     # checking and preprocessing annotation databases
     if(is.null(GO_data)){
         go_msg <- 'not using GO'
@@ -272,33 +280,53 @@ weighted_adj <- function(
         HPO_data <- process_annot(HPO_data)
         hpo_msg <- annot_summary_msg(HPO_data)
     }
-
-    log_info(
-        'Graph size: %d nodes and %d edges; %s; %s.',
-        vcount(graph_op),
-        ecount(graph_op),
-        go_msg,
-        hpo_msg
-    )
-
+    
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(
+            message = sprintf(
+                'Graph size: %d nodes and %d edges; %s; %s.',
+                vcount(graph_op),
+                ecount(graph_op),
+                go_msg,
+                hpo_msg
+            )
+        )
+    } else {
+        log_info(
+            'Graph size: %d nodes and %d edges; %s; %s.',
+            vcount(graph_op),
+            ecount(graph_op),
+            go_msg,
+            hpo_msg
+        )
+    }
+    
     # all the genes in the PPI
     genes_op <- vertex_attr(graph_op)$Gene_Symbol
-
+    
     # loop to weight PPI based on annotation databases
-    pb <- progress_bar$new(
-        total = sum(adj_data != 0L),
-        format = '  Weighted adjacency matrix [:bar] :percent eta: :eta'
-    )
-
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(message = 'Weighted adjacency matrix', value = 0)
+    } else {
+        pb <- progress_bar$new(
+            total = sum(adj_data != 0L),
+            format = '  Weighted adjacency matrix [:bar] :percent eta: :eta'
+        )
+    }
+    
     walk2(
         adj_data@i + 1,
         adj_data@j + 1,
         function(i, j){
-            pb$tick()
-
+            if (!is.null(shinyProgress)) {
+                shinyProgress$inc(1/sum(adj_data != 0L))
+            } else {
+                pb$tick()
+            }
+            
             gene_i <- genes_op[i]
             gene_j <- genes_op[j]
-
+            
             matrix_weights[i, j] <-
                 `if`(
                     is.null(GO_data),
@@ -329,9 +357,13 @@ weighted_adj <- function(
 
     # for zero divisions
     matrix_weights@x %<>% replace_na(0)
-
-    log_info('Finished calculating weighted adjacency matrix.')
-
+    
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(value = NULL, message = 'Finished calculating weighted adjacency matrix.')
+    } else {
+        log_info('Finished calculating weighted adjacency matrix.')
+    }
+    
     return(matrix_weights)
 }
 
@@ -354,6 +386,8 @@ weighted_adj <- function(
 #'     RWR algorithm. When the error between probabilities is smaller than the
 #'     threshold defined, the algorithm stops. If not specified, 1e-5 is
 #'     the default value.
+#' @param shinyProgress An optional \code{shiny::Progress} object ID to display
+#'     progress in a shiny application
 #'
 #' @return Matrix of correlation/probabilities for the functional
 #'     similarities for all proteins/genes in the network.
@@ -376,6 +410,7 @@ weighted_adj <- function(
 #' # Random Walk with Restart
 #' w_rw <- random_walk(w_adj)
 #'
+#' @importFrom shiny Progress
 #' @export
 #' @seealso \itemize{
 #'     \item{\code{\link{weighted_adj}}}
@@ -385,30 +420,54 @@ weighted_adj <- function(
 random_walk <- function(
     weighted_adj_matrix,
     restart_prob = 0.4,
-    threshold = 1e-5) {
-
-    log_info(
-        paste0(
-            'Performing random walk with restart ',
-            '(restart probablilty: %g, threshold: %g, number of genes: %d).'
-        ),
-        restart_prob,
-        threshold,
-        ncol(weighted_adj_matrix)
-    )
-
+    threshold = 1e-5,
+    shinyProgress = NULL) {
+    
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(
+            message = sprintf(
+                paste0(
+                    'Performing random walk with restart ',
+                    '(restart probablilty: %g, threshold: %g, number of genes: %d).'
+                ),
+                restart_prob,
+                threshold,
+                ncol(weighted_adj_matrix)
+            ),
+            value = NULL
+        )
+    } else {
+        log_info(
+            paste0(
+                'Performing random walk with restart ',
+                '(restart probablilty: %g, threshold: %g, number of genes: %d).'
+            ),
+            restart_prob,
+            threshold,
+            ncol(weighted_adj_matrix)
+        )
+    }
+    
     matrix_rw <- 0L * weighted_adj_matrix
     nr_proteins <- ncol(matrix_rw)
     vector0 <- matrix(0, nr_proteins, 1)
     vector_prob0 <- matrix(1 / nr_proteins, nr_proteins, 1)
-
-    pb <- progress_bar$new(
-        total = nr_proteins,
-        format = '  Random walk [:bar] :percent eta: :eta'
-    )
-
+    
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(message = 'Random walk', value = 0)
+    } else {
+        pb <- progress_bar$new(
+            total = nr_proteins,
+            format = '  Random walk [:bar] :percent eta: :eta'
+        )
+    }
+    
     for (i in seq(nrow(matrix_rw))) {
-        pb$tick()
+        if (!is.null(shinyProgress)) {
+            shinyProgress$inc(1/nr_proteins)
+        } else {
+            pb$tick()
+        }
         start_vector <- vector0
         start_vector[i] <- 1
         q_previous <- vector_prob0
@@ -451,6 +510,8 @@ random_walk <- function(
 #'     specifying the percentage (%) of the total candidate genes in the
 #'     network returned in the output. If not specified, the score of all the
 #'     candidate genes is delivered.
+#' @param shinyProgress An optional \code{shiny::Progress} object ID to display
+#'     progress in a shiny application
 #'
 #' @return Data frame with the ranked candidate genes based on the functional
 #'     score inferred from given ontology terms, PPI and Random Walk with
@@ -482,6 +543,7 @@ random_walk <- function(
 #' @importFrom tibble tibble
 #' @importFrom logger log_info
 #' @importFrom stats quantile
+#' @importFrom shiny Progress
 #' @export
 #' @seealso \itemize{
 #'     \item{\code{\link{graph_from_op}}}
@@ -493,17 +555,31 @@ prioritization_genes <- function(
     graph_op,
     prob_matrix,
     genes_interest,
-    percentage_genes_ranked = 100) {
-
-    log_info(
-        paste0(
-            'Calculating WPPI gene scores ',
-            '(genes of interest: %d, genes in network: %d).'
-        ),
-        length(genes_interest),
-        vcount(graph_op)
-    )
-
+    percentage_genes_ranked = 100,
+    shinyProgress = NULL) {
+    
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(
+            message = sprintf(
+                paste0(
+                    'Calculating WPPI gene scores ',
+                    '(genes of interest: %d, genes in network: %d).'
+                ),
+                length(genes_interest),
+                vcount(graph_op)
+            )
+        )
+    } else {
+        log_info(
+            paste0(
+                'Calculating WPPI gene scores ',
+                '(genes of interest: %d, genes in network: %d).'
+            ),
+            length(genes_interest),
+            vcount(graph_op)
+        )
+    }
+    
     # NSE vs. R CMD check workaround
     score <- NULL
 

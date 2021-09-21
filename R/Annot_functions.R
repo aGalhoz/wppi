@@ -10,6 +10,8 @@
 #' @param data_annot Data frame (tibble) of GO or HPO datasets from
 #'     \code{\link{wppi_data}}, \code{\link{wppi_go_data}} or 
 #'     \code{\link{wppi_hpo_data}}.
+#' @param shinyProgress An optional \code{shiny::Progress} object ID to display
+#'     progress in a shiny application
 #'
 #' @return A list of four elements: 1) "term_size" a list which serves as a
 #'     lookup table for size (number of genes) for each ontology term; 2) 
@@ -24,14 +26,15 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr group_by count summarize
 #' @importFrom logger log_fatal log_info
+#' @importFrom shiny Progress
 #' @export
 #' @seealso \itemize{
 #'     \item{\code{\link{wppi_data}}}
 #'     \item{\code{\link{wppi_go_data}}}
 #'     \item{\code{\link{wppi_hpo_data}}}
 #' }
-process_annot <- function(data_annot) {
-
+process_annot <- function(data_annot, shinyProgress = NULL) {
+    
     # NSE vs. R CMD check workaround
     ID <- Gene_Symbol <- NULL
 
@@ -43,12 +46,21 @@ process_annot <- function(data_annot) {
         log_fatal(msg)
         stop(msg)
     }
-
-    log_info(
-        'Preprocessing annotations (%s).',
-        which_ontology_database(data_annot)
-    )
-
+    
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(
+            message = sprintf(
+                'Preprocessing annotations (%s).',
+                which_ontology_database(data_annot)
+            )
+        )
+    } else {
+        log_info(
+            'Preprocessing annotations (%s).',
+            which_ontology_database(data_annot)
+        )
+    }
+    
     list(
         term_size =
             data_annot %>%

@@ -16,6 +16,8 @@
 #'     The aspects are "C": cellular component, "F": molecular function and
 #'     "P" biological process.
 #' @param GO_organism Character: name of the organism for GO annotations.
+#' @param shinyProgress An optional \code{shiny::Progress} object ID to display
+#'     progress in a shiny application
 #' @param ... Passed to
 #'     \code{OmnipathR::import_post_translational_interactions}. With these
 #'     options you can customize the network retrieved from OmniPath.
@@ -53,24 +55,34 @@ wppi_data <- function(
     GO_slim = NULL,
     GO_aspects = c('C', 'F', 'P'),
     GO_organism = 'human',
+    shinyProgress = NULL,
     ...
 ){
-
-    log_info('Collecting database knowledge.')
-
+    
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(message = 'Collecting database knowledge.')
+    } else {
+        log_info('Collecting database knowledge.')
+    }
+    
     ### Collect database data
     hpo <- wppi_hpo_data()
     go <- wppi_go_data(GO_slim, GO_aspects, GO_organism)
     omnipath <- wppi_omnipath_data(...)
-
-    log_info('Finished collecting database knowledge.')
-
+    
+    
+    if (!is.null(shinyProgress)) {
+        shinyProgress$set(message = 'Finished collecting database knowledge.')
+    } else {
+        log_info('Finished collecting database knowledge.')
+    }
+    
     list(
         hpo = hpo,
         go = go,
         omnipath = omnipath
     )
-
+    
 }
 
 
