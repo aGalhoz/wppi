@@ -49,6 +49,16 @@
 #'     with Restart algorithm. When the error between probabilities is
 #'     smaller than the threshold, the algorithm stops. The default is 1e-5.
 #' @param databases Database knowledge as produced by \code{\link{wppi_data}}.
+#' @param visualize Logical: Additionally return a network graph based on the
+#' candidate genes in the neighborhood of the provided genes.
+#' @param palette Character: Determines the color scheme for
+#' the visualization. Choices include "blue", "green", "red" or "orange".
+#' @param colors List of character vectors: Provide custom colors for the
+#' visualization. Needs to include named list elements "nodes", "edges", and
+#' "genes_interest". Colors for "nodes" and "edges" are passed on to
+#' \code{grDevices::colorRampPalette}, color for "genes_interest" is passed on
+#' to \code{visNetwork::visNetwork}. If both \code{palette} and \code{colors}
+#' are provided, \code{colors} will be prioritized.
 #' @param ... Passed to
 #'     \code{OmnipathR::import_post_translational_interactions}. With these
 #'     options you can customize the network retrieved from OmniPath.
@@ -118,6 +128,9 @@ score_candidate_genes_from_PPI <- function(
     restart_prob_rw = 0.4,
     threshold_rw = 1e-5,
     databases = NULL,
+    visualize = FALSE,
+    palette = NULL,
+    colors = NULL,
     ...
 ) {
 
@@ -210,6 +223,26 @@ score_candidate_genes_from_PPI <- function(
         genes_interest = genes_interest,
         percentage_genes_ranked = percentage_output_genes
     )
+
+    # visualize graph
+    if (visualize) {
+        visualization <- visualize_graph(
+            sub_graph,
+            genes_interest,
+            genes_ranked_sub,
+            palette,
+            colors
+        )
+
+        log_success('WPPI workflow completed.')
+
+        return(
+            list(
+                genes_ranked_sub = genes_ranked_sub,
+                visualization = visualization
+            )
+        )
+    }
 
     log_success('WPPI workflow completed.')
 
