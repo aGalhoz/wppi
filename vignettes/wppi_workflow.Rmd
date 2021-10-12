@@ -124,7 +124,7 @@ customize the network can be passed directly to this function.
 db <- wppi_data(datasets = c('omnipath', 'kinaseextra'))
 names(db)
 # [1] "hpo"      "go"       "omnipath" "uniprot"
-````
+```
 
 Optionally, the Human Phenotype Ontology (HPO) annotations relevant in the
 context can be selected. For example, to select the annotations related to
