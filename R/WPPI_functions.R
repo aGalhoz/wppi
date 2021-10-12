@@ -609,3 +609,301 @@ prioritization_genes <- function(
     )
 
 }
+
+#' Visualize the sub graph
+#'
+#' Creates a network based on a sub graph, the genes of interest and the
+#' calculated scores. Nodes carry a tooltip listing the gene, its protein code,
+#' and its three neighbors with the highest score.
+#'
+#' @param sub_graph Igraph graph object from \code{\link{subgraph_op}}.
+#' @param genes_interest Character vector of gene symbols with genes known to
+#' be related to the investigated disease or condition.
+#' @param scores Data frame created by \code{\link{score_candidate_genes_from_PPI}}
+#' or \code{\link{prioritization_genes}}.
+#' @param palette An optional character string. Choices include "blue", "green",
+#' "red" or "orange".
+#' @param colors An optional named list of character vectors, containing colors
+#' for "nodes", "edges", and "genes_interest". Colors for "nodes" and "edges"
+#' are passed on to \code{grDevices::colorRampPalette}, color for "genes_interest"
+#' is passed on to \code{visNetwork::visNetwork}. If both \code{palette} and
+#' \code{colors} are provided, \code{colors} will be prioritized.
+#'
+#' @return A \code{visNetwork} object visualizing the PPI network of given
+#' genes of interest and their x-order degree neighbors.
+#'
+#' @importFrom grDevices colorRampPalette
+#' @importFrom visNetwork visNetwork toVisNetworkData visLegend visIgraphLayout visOptions
+#' @importFrom magrittr %>%
+#' @importFrom dplyr left_join mutate if_else filter
+#' @export
+#' @seealso \itemize{
+#'     \item{\code{\link{subgraph_op}}}
+#'     \item{\code{\link{prioritization_genes}}}
+#'     \item{\code{\link{score_candidate_genes_from_PPI}}}
+#' }
+visualize_graph <- function(sub_graph, genes_interest, scores, palette = NULL, colors = NULL) {
+
+    if (!is.null(colors)) {
+
+        if (!setequal(names(colors), c("nodes", "edges", "genes_interest"))) {
+            stop("colors must be a named list including 'nodes', 'edges' and 'genes_interest'")
+        }
+
+    } else {
+
+        if (is.null(palette)) {
+            palette <- TRUE
+        }
+
+        colors <- case_when(
+
+            palette == "blue" ~ list(
+                nodes = c(
+                    "#084081",
+                    "#0868ac",
+                    "#2b8cbe",
+                    "#4eb3d3",
+                    "#7bccc4",
+                    "#a8ddb5",
+                    "#ccebc5",
+                    "#e0f3db",
+                    "#f7fcf0"
+                ),
+                edges = c("#9b9b9b", "#ededed"),
+                genes_interest = "#BE5D2B"
+            ),
+
+            palette == "red" ~ list(
+                nodes = c(
+                    "#800026",
+                    "#bd0026",
+                    "#e31a1c",
+                    "#fc4e2a",
+                    "#fd8d3c",
+                    "#feb24c",
+                    "#fed976",
+                    "#ffeda0",
+                    "#ffffcc"
+                ),
+                edges = c("#9b9b9b", "#ededed"),
+                genes_interest = "#00BD97"
+            ),
+
+            palette == "green" ~ list(
+                nodes = c(
+                    "#00441b",
+                    "#006d2c",
+                    "#238b45",
+                    "#41ae76",
+                    "#66c2a4",
+                    "#99d8c9",
+                    "#ccece6",
+                    "#e5f5f9",
+                    "#f7fcfd"
+                ),
+                edges = c("#9b9b9b", "#ededed"),
+                genes_interest = "#AE4179"
+            ),
+
+            palette == "orange" ~ list(
+                nodes = c(
+                    "#662506",
+                    "#993404",
+                    "#cc4c02",
+                    "#ec7014",
+                    "#fe9929",
+                    "#fec44f",
+                    "#fee391",
+                    "#fff7bc",
+                    "#ffffe5"
+                ),
+                edges = c("#9b9b9b", "#ededed"),
+                genes_interest = "#1490EC"
+            ),
+
+            TRUE ~ list(
+                nodes = c(
+                    "#FDE725",
+                    "#8FD744",
+                    "#35B779",
+                    "#22908C",
+                    "#30688E",
+                    "#443A83",
+                    "#440D54"
+                ),
+                edges = c("#9b9b9b", "#ededed"),
+                genes_interest = "#FF0000"
+            )
+
+        )
+
+        names(colors) <- c("nodes", "edges", "genes_interest")
+
+    }
+
+    create_node_color_gradient <- colorRampPalette(colors$nodes)
+
+    create_edge_color_gradient <- colorRampPalette(colors$edges)
+
+    color_mapping <- data.frame(
+        score = scores$score %>%
+            unique(),
+        adj_score = (scores$score * 8)%>%
+            unique()
+    )
+
+    color_mapping$node_color <- color_mapping %>%
+        nrow() %>%
+        create_node_color_gradient()
+
+    color_mapping$edge_color <- color_mapping %>%
+        nrow() %>%
+        create_edge_color_gradient()
+
+    nodes <- sub_graph %>%
+        toVisNetworkData() %>%
+        .$nodes %>%
+        left_join(scores, by = c("Gene_Symbol" = "gene_symbol", "label" = "uniprot")) %>%
+        mutate(
+            is_gene_of_interest = Gene_Symbol %in% genes_interest,
+            shape = if_else(
+                is_gene_of_interest,
+                "diamond",
+                "dot"
+            ),
+            score = if_else(
+                is.na(score),
+                1,
+                score
+            ),
+            color = ifelse(
+                is_gene_of_interest,
+                colors$genes_interest,
+                color_mapping$node_color[match(score, color_mapping$score)]
+            ),
+            label = ifelse(
+                score >= 1,
+                Gene_Symbol,
+                NA
+            ),
+            size = if_else(
+                is_gene_of_interest,
+                40,
+                25 * (score * 8 + 1)
+            ),
+            group = if_else(
+                is_gene_of_interest,
+                "gene of interest",
+                "similar gene"
+            )
+        )
+
+    top_neighbors <- nodes$Gene_Symbol %>%
+        sapply(function(gene) {
+            filter(scores, grepl(gene, gene_symbol)) %>%
+                .$uniprot %>%
+                neighbors(sub_graph, ., mode = "all") %>%
+                names() %>%
+                {scores$uniprot %in% .} %>%
+                which() %>%
+                scores[., ] %>%
+                .[order(.$score, decreasing = TRUE), ] %>%
+                head(3)
+        }, simplify = FALSE)
+
+    neighbor_text <- names(top_neighbors) %>%
+        sapply(function(gene) {
+            neighbors <- top_neighbors[[gene]]
+            text <- ""
+
+            if (nrow(neighbors) != 0) {
+                for (i in 1:nrow(neighbors)) {
+                    text <- sprintf(
+                        "<br>%s (%s)",
+                        neighbors$gene_symbol[i],
+                        neighbors$score[i] %>%
+                            round(3)
+                    ) %>%
+                        paste0(text, .)
+                }
+
+                text
+            } else NA
+        })
+
+    nodes <- nodes %>%
+        mutate(
+            title = if_else(
+                is_gene_of_interest,
+                sprintf("<b>%s</b>", Gene_Symbol),
+                sprintf(
+                    "<p><b>%s</b> (%s)<br>Score: %s<br><br><b>Top neighbors:</b> %s</p>",
+                    Gene_Symbol,
+                    id,
+                    scores$score[match(Gene_Symbol, scores$gene_symbol)] %>%
+                        round(3),
+                    neighbor_text[Gene_Symbol]
+                )
+            )
+        )
+
+    edges <- sub_graph %>%
+        toVisNetworkData() %>%
+        .$edges %>%
+        left_join(scores, by = c("from" = "uniprot")) %>%
+        mutate(
+            score = 8 * score,
+            color = if_else(
+                !is.na(score),
+                color_mapping$edge_color[match(score, color_mapping$adj_score)],
+                "#000000"
+            ),
+            id = seq_along(score)
+        )
+
+
+
+    unique_scores <- scores$score %>% unique()
+    min_score <- tail(unique_scores, 1)
+    max_score <- head(unique_scores, 1)
+    ideal_breaks <- seq(
+        1,
+        length(unique_scores),
+        (length(unique_scores) - 1) / 6
+    )
+
+    legend_nodes <- data.frame(
+        id = 1:7,
+        score = unique_scores[ideal_breaks],
+        shape = "dot"
+    ) %>%
+        mutate(
+            color = color_mapping$node_color[match(score, color_mapping$score)],
+            label = score %>% round(3),
+            size = seq(20, 10, length.out = 7)
+        ) %>%
+        rbind.data.frame(
+            data.frame(
+                id = "gene_of_interest",
+                score = 1,
+                color = colors$genes_interest,
+                shape = "diamond",
+                label = "gene of interest",
+                size = 15
+            )
+        )
+
+    visNetwork(nodes, edges) %>%
+        visLegend(
+            addNodes = legend_nodes,
+            useGroups = FALSE,
+            position = "right",
+            zoom = FALSE
+        ) %>%
+        visIgraphLayout(layout = "layout.fruchterman.reingold") %>%
+        visOptions(
+            selectedBy = "Gene_Symbol",
+            highlightNearest = TRUE
+        )
+}
