@@ -8,6 +8,7 @@ wppi_data(
   GO_slim = NULL,
   GO_aspects = c("C", "F", "P"),
   GO_organism = "human",
+  shinyProgress = NULL,
   ...
 )
 }
@@ -22,6 +23,9 @@ The aspects are "C": cellular component, "F": molecular function and
 "P" biological process.}
 
 \item{GO_organism}{Character: name of the organism for GO annotations.}
+
+\item{shinyProgress}{An optional \code{shiny::Progress} object ID to display
+progress in a shiny application}
 
 \item{...}{Passed to
 \code{OmnipathR::import_post_translational_interactions}. With these

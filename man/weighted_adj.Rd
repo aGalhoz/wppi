@@ -4,7 +4,7 @@
 \alias{weighted_adj}
 \title{Weighted adjacency matrix}
 \usage{
-weighted_adj(graph_op, GO_data, HPO_data)
+weighted_adj(graph_op, GO_data, HPO_data, shinyProgress = NULL)
 }
 \arguments{
 \item{graph_op}{Igraph object based on OmniPath PPI interactions from
@@ -15,6 +15,9 @@ weighted_adj(graph_op, GO_data, HPO_data)
 
 \item{HPO_data}{Data frame with HPO annotations as provided by
 \code{\link{wppi_hpo_data}}.}
+
+\item{shinyProgress}{An optional \code{shiny::Progress} object ID to display
+progress in a shiny application}
 }
 \value{
 Weighted adjacency matrix based on network topology and functional

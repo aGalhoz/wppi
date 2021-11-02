@@ -4,12 +4,15 @@
 \alias{process_annot}
 \title{Processing of ontology annotations}
 \usage{
-process_annot(data_annot)
+process_annot(data_annot, shinyProgress = NULL)
 }
 \arguments{
 \item{data_annot}{Data frame (tibble) of GO or HPO datasets from
 \code{\link{wppi_data}}, \code{\link{wppi_go_data}} or 
 \code{\link{wppi_hpo_data}}.}
+
+\item{shinyProgress}{An optional \code{shiny::Progress} object ID to display
+progress in a shiny application}
 }
 \value{
 A list of four elements: 1) "term_size" a list which serves as a

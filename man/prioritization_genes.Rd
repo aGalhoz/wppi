@@ -8,7 +8,8 @@ prioritization_genes(
   graph_op,
   prob_matrix,
   genes_interest,
-  percentage_genes_ranked = 100
+  percentage_genes_ranked = 100,
+  shinyProgress = NULL
 )
 }
 \arguments{
@@ -24,6 +25,9 @@ all nodes in the network from \code{\link{random_walk}}.}
 specifying the percentage (%) of the total candidate genes in the
 network returned in the output. If not specified, the score of all the
 candidate genes is delivered.}
+
+\item{shinyProgress}{An optional \code{shiny::Progress} object ID to display
+progress in a shiny application}
 }
 \value{
 Data frame with the ranked candidate genes based on the functional

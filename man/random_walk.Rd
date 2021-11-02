@@ -4,7 +4,12 @@
 \alias{random_walk}
 \title{Random Walk with Restart (RWR)}
 \usage{
-random_walk(weighted_adj_matrix, restart_prob = 0.4, threshold = 1e-05)
+random_walk(
+  weighted_adj_matrix,
+  restart_prob = 0.4,
+  threshold = 1e-05,
+  shinyProgress = NULL
+)
 }
 \arguments{
 \item{weighted_adj_matrix}{Matrix object corresponding to the weighted
@@ -18,6 +23,9 @@ is the default value.}
 RWR algorithm. When the error between probabilities is smaller than the
 threshold defined, the algorithm stops. If not specified, 1e-5 is
 the default value.}
+
+\item{shinyProgress}{An optional \code{shiny::Progress} object ID to display
+progress in a shiny application}
 }
 \value{
 Matrix of correlation/probabilities for the functional
