@@ -791,7 +791,7 @@ visualize_graph <- function(
                 color_mapping$node_color[match(score, color_mapping$score)]
             ),
             label = ifelse(
-                score >= 1,
+                is_gene_of_interest,
                 Gene_Symbol,
                 NA
             ),
