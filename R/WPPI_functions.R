@@ -873,8 +873,6 @@ visualize_graph <- function(
 
 
     unique_scores <- scores$score %>% unique()
-    min_score <- tail(unique_scores, 1)
-    max_score <- head(unique_scores, 1)
     ideal_breaks <- seq(
         1,
         length(unique_scores),
