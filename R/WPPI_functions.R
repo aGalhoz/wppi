@@ -628,6 +628,7 @@ prioritization_genes <- function(
 #' are passed on to \code{grDevices::colorRampPalette}, color for "genes_interest"
 #' is passed on to \code{visNetwork::visNetwork}. If both \code{palette} and
 #' \code{colors} are provided, \code{colors} will be prioritized.
+#' @param legend An optional boolean if the visualization should contain a legend or not.
 #'
 #' @return A \code{visNetwork} object visualizing the PPI network of given
 #' genes of interest and their x-order degree neighbors.
@@ -642,7 +643,14 @@ prioritization_genes <- function(
 #'     \item{\code{\link{prioritization_genes}}}
 #'     \item{\code{\link{score_candidate_genes_from_PPI}}}
 #' }
-visualize_graph <- function(sub_graph, genes_interest, scores, palette = NULL, colors = NULL) {
+visualize_graph <- function(
+    sub_graph,
+    genes_interest,
+    scores,
+    palette = NULL,
+    colors = NULL,
+    legend = TRUE
+) {
 
     if (!is.null(colors)) {
 
@@ -895,12 +903,17 @@ visualize_graph <- function(sub_graph, genes_interest, scores, palette = NULL, c
         )
 
     visNetwork(nodes, edges) %>%
-        visLegend(
-            addNodes = legend_nodes,
-            useGroups = FALSE,
-            position = "right",
-            zoom = FALSE
-        ) %>%
+        {
+            if (legend) {
+                visLegend(
+                    .,
+                    addNodes = legend_nodes,
+                    useGroups = FALSE,
+                    position = "right",
+                    zoom = FALSE
+                )
+            } else .
+        } %>%
         visIgraphLayout(layout = "layout.fruchterman.reingold") %>%
         visOptions(
             selectedBy = "Gene_Symbol",

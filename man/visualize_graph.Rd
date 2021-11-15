@@ -9,7 +9,8 @@ visualize_graph(
   genes_interest,
   scores,
   palette = NULL,
-  colors = NULL
+  colors = NULL,
+  legend = TRUE
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ for "nodes", "edges", and "genes_interest". Colors for "nodes" and "edges"
 are passed on to \code{grDevices::colorRampPalette}, color for "genes_interest"
 is passed on to \code{visNetwork::visNetwork}. If both \code{palette} and
 \code{colors} are provided, \code{colors} will be prioritized.}
+
+\item{legend}{An optional boolean if the visualization should contain a legend or not.}
 }
 \value{
 A \code{visNetwork} object visualizing the PPI network of given
