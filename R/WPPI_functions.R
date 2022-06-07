@@ -289,29 +289,31 @@ weighted_adj <- function(
         total = sum(adj_data != 0L),
         format = '  Weighted adjacency matrix [:bar] :percent eta: :eta'
     )
-
-    walk2(
-        adj_data@i + 1,
-        adj_data@j + 1,
-        function(i, j){
-            pb$tick()
-
-            gene_i <- genes_op[i]
-            gene_j <- genes_op[j]
-
-            matrix_weights[i, j] <-
-                `if`(
-                    is.null(GO_data),
-                    0L,
-                    functional_annot(GO_data, gene_i, gene_j)
-                ) +
-                `if`(
-                    is.null(HPO_data),
-                    0L,
-                    functional_annot(HPO_data, gene_i, gene_j)
-                )
-        }
-    )
+    
+    adj_i <- adj_data@i + 1
+    adj_j <- adj_data@j + 1 
+    
+    for (w in 1:length(adj_i)) {
+      i <- adj_i[w]
+      j <- adj_j[w]
+      
+      pb$tick()
+      
+      gene_i <- genes_op[i]
+      gene_j <- genes_op[j]
+      
+      matrix_weights[i, j] <-
+        `if`(
+          is.null(GO_data),
+          0L,
+          functional_annot(GO_data, gene_i, gene_j)
+        ) +
+        `if`(
+          is.null(HPO_data),
+          0L,
+          functional_annot(HPO_data, gene_i, gene_j)
+        )
+    }
 
     neighbors_data <- common_neighbors(graph_op)
 
