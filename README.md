@@ -13,7 +13,7 @@ weighted PPI.
 In this repository it is provided the relevant functions to run and customize the workflow.
 
 ## Installation
-wppi is an available package published on [Bioconductor](http://bioconductor.org/packages/3.15/bioc/html/wppi.html) and [GitHub](https://github.com/AnaGalhoz37/wppi).
+wppi is an available package published on [Bioconductor](http://bioconductor.org/packages/3.16/bioc/html/wppi.html) and [GitHub](https://github.com/AnaGalhoz37/wppi).
 
 The package can be installed using the following commands:
 
@@ -22,7 +22,7 @@ The package can be installed using the following commands:
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
     
-BiocManager::install("wppi", version = '3.15')
+BiocManager::install("wppi", version = '3.16')
 
 ## Development version with the lastest updates
 BiocManager::install('wppi', version = 'devel')
@@ -36,8 +36,7 @@ install_github('AnaGalhoz37/wppi')
 
 ### Dependencies 
 The `wppi` package depends on the `OmnipathR` package. Since it relies on
-features more recent than the latest Bioconductor version (OmnipathR 2.0.0
-in Bioconductor 3.13), until the release of Bioconductor 3.15, it is
+features more recent than the latest Bioconductor version, until the release of Bioconductor 3.16, it is
 recommended to install OmnipathR from git.
 
 ```{r bioconductor Omnipath, results='hide'}
